@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.params=A\ B
+comment0.target=double\ dot_prod(Vect,\ Vect)
+comment1.params=A\ s
+comment1.target=void\ sizeMult(Vect,\ double)
+comment2.params=A\ B
+comment2.target=Vect\ vectAdd(Vect,\ Vect)
+comment3.params=A
+comment3.target=void\ flipYaxis(Vect)
+comment4.params=A
+comment4.target=void\ flipLeft(Vect)
+comment5.params=A
+comment5.target=void\ flipRight(Vect)
+comment6.params=A
+comment6.target=void\ flipXaxis(Vect)
+comment7.params=A
+comment7.target=void\ flipUp(Vect)
+comment8.params=A
+comment8.target=void\ flipDown(Vect)
+numComments=9

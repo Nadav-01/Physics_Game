@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.params=x\ y\ rad
+comment0.target=Proj(int,\ int,\ int)
+comment1.params=x\ y\ velX\ velY\ rad
+comment1.target=Proj(int,\ int,\ double,\ double,\ int)
+comment2.params=
+comment2.target=int\ getCentX()
+comment3.params=
+comment3.target=int\ getCentY()
+comment4.params=other
+comment4.target=boolean\ isCol(Item)
+numComments=5

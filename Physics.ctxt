@@ -1,0 +1,27 @@
+#BlueJ class context
+comment0.params=
+comment0.target=Physics()
+comment1.params=p\ f
+comment1.target=void\ upplyF(Proj,\ Vect)
+comment10.params=a\ b
+comment10.target=boolean\ areColliding(Item,\ Item)
+comment11.params=a\ b
+comment11.target=double\ projDist(Proj,\ Proj)
+comment2.params=p\ n
+comment2.target=void\ upplyG(Proj[],\ int)
+comment3.params=p
+comment3.target=void\ upplyFric(Proj)
+comment4.params=p\ n
+comment4.target=void\ upplyFric(Proj[],\ int)
+comment5.params=p
+comment5.target=double\ kineticE(Proj)
+comment6.params=p\ winSize
+comment6.target=double\ potenE(Proj,\ java.awt.Dimension)
+comment7.params=p\ winSize
+comment7.target=double\ Energy(Proj,\ java.awt.Dimension)
+comment8.params=a\ b
+comment8.target=void\ collision(Proj,\ Proj)
+comment8.text=\r\n\ only\ send\ 2\ projectiles\ that\ are\ colliding\ now.\r\n
+comment9.params=a\ b
+comment9.target=void\ collision(Proj,\ Wall)
+numComments=12
