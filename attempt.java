@@ -10,8 +10,8 @@ import java.awt.Color;
 @SuppressWarnings("serial")
 public class attempt extends JPanel {
     
-	// Define code of arrow keys
-    static int up = KeyEvent.VK_UP;	
+    // Define code of arrow keys
+    static int up = KeyEvent.VK_UP; 
     static int right = KeyEvent.VK_RIGHT;
     static int down = KeyEvent.VK_DOWN;
     static int left = KeyEvent.VK_LEFT;
@@ -19,13 +19,13 @@ public class attempt extends JPanel {
     
     
     static final int PLAYER_SIZE = 60;
-    static Proj[] pro = new Proj[] { new Proj(300,300,PLAYER_SIZE/2) , new Proj(50,50,1,1,PLAYER_SIZE/2) };	// Projectile array
-    static Wall[] walls = {new Wall(-20,480,680,520), new Wall(-20,-20,20,550), new Wall(630,-20,670,550), new Wall(-20,-20,680,20)};	// Wall array
+    static Proj[] pro = new Proj[] { new Proj(300,300,PLAYER_SIZE/2) , new Proj(50,50,1,1,PLAYER_SIZE/2) }; // Projectile array
+    static Wall[] walls = {new Wall(-20,480,680,520), new Wall(-20,-20,20,550), new Wall(630,-20,670,550), new Wall(-20,-20,680,20)};   // Wall array
     
     //static Proj pro[0] = new Proj(300,300,PLAYER_SIZE/2);
     //static Proj c = new Proj(300,500,PLAYER_SIZE/2);
     
-    @Override	// Overriding paint of Jpanel
+    @Override   // Overriding paint of Jpanel
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
@@ -44,13 +44,13 @@ public class attempt extends JPanel {
         
         g2d.setColor(Color.black);
         
-        for (int i = 0; i < 4; i++)	// Paints walls
+        for (int i = 0; i < 4; i++) // Paints walls
             g2d.fillRect(walls[i]._x, walls[i]._y, walls[i].getLength(), walls[i].getHeight());
         
         g2d.fillOval(pro[0]._x, pro[0]._y, PLAYER_SIZE, PLAYER_SIZE);   // Paint player
         //g2d.drawRect(pro[0]._x, pro[0]._y, PLAYER_SIZE, PLAYER_SIZE);
         
-        g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 100);	// Debug info
+        g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 100);   // Debug info
         g2d.drawString("dir = " + pro[0]._vel.getDir(), 200, 150);
         g2d.drawLine(350, 150, 350 + (int)(10 * Math.cos(pro[0]._vel.getDir())), 150 - (int)(10 * Math.sin(pro[0]._vel.getDir())));
         g2d.fillOval(347 + (int)(10 * Math.cos(pro[0]._vel.getDir())), 147 - (int)(10 * Math.sin(pro[0]._vel.getDir())), 5, 5);
@@ -58,7 +58,7 @@ public class attempt extends JPanel {
         g2d.drawString("Energy = " + Physics.Energy(pro[0],this.getSize()) , 200, 250);
     }
     
-    public attempt() {	// Implementing keylistener
+    public attempt() {  // Implementing keylistener
         KeyListener listener = new MyKeyListener();
         addKeyListener(listener);
         setFocusable(true);
@@ -78,11 +78,11 @@ public class attempt extends JPanel {
         //int flipYcnt = 1;
         while (true)
         {
-        	// Upply gravity and friction to all projectiles.
+            // Upply gravity and friction to all projectiles.
             Physics.upplyG(pro, 2);
             Physics.upplyFric(pro, 2);
             
-            /*	// Obselete collision mechanics
+            /*  // Obselete collision mechanics
             for (int i = 0; i < 2; i++)
             {
                 Vect fric = new Vect(pro[0]._vel);
@@ -118,8 +118,37 @@ public class attempt extends JPanel {
                     flipYcnt = 1;
             }
                 */
+            
                
-            for (int i = 0; i < 2; i++)	// Check all combination of items that can collide with each other
+            // Try to predict if the next frame will be a collision
+            
+            
+            {
+                Proj[] pred = new Proj[] { new Proj(pro[0]._x,pro[0]._y,pro[0]._vel.getX(),pro[0]._vel.getY(),pro[0]._rad) , new Proj(pro[1]._x,pro[1]._y,pro[1]._vel.getX(),pro[1]._vel.getY(),pro[1]._rad) };
+                for (int i = 0; i < 2; i++) // Upply speed to projectiles.
+                {
+                    pred[i]._x += 2*pro[i]._vel.getX();
+                    pred[i]._y -= 2*pro[i]._vel.getY();    //coordinate system flipped because window starts in upper left.
+                }
+                for (int i = 0; i < 2; i++) // Check all combination of items that can collide with each other
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (Physics.areColliding((Item)pred[i],(Item)walls[j]))
+                        {
+                            System.out.println("bounce");
+                            Physics.collision(pro[i],walls[j]);
+                        }
+                    }
+                }
+                if(Physics.areColliding(pred[0],pred[1]))
+                {
+                    Physics.collision(pro[0],pro[1]);
+                }
+            }
+            
+            /*
+            for (int i = 0; i < 2; i++) // Check all combination of items that can collide with each other
             {
                 for (int j = 0; j < 4; j++)
                 {
@@ -134,9 +163,9 @@ public class attempt extends JPanel {
             {
                 Physics.collision(pro[0],pro[1]);
             }
+            */
             
-            
-            for (int i = 0; i < 2; i++)	// Upply speed to projectiles.
+            for (int i = 0; i < 2; i++) // Upply speed to projectiles.
             {
                 pro[i]._x += pro[i]._vel.getX();
                 pro[i]._y -= pro[i]._vel.getY();    //coordinate system flipped because window starts in upper left.
@@ -146,9 +175,9 @@ public class attempt extends JPanel {
             try{
                 Thread.sleep(10);}
             catch (InterruptedException e)
-			{
-			    System.out.println("fuck");
-			 }
+            {
+                System.out.println("fuck");
+             }
         }
     }
 

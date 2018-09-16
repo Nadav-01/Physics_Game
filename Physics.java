@@ -29,6 +29,7 @@ public class Physics
         Vect fric = new Vect(p._vel);
         fric.setDir(fric.getDir() + (float)(Math.PI));
         fric.setSize(fric.getSize() * Physics.airFric);
+        fric = new Vect(fric.getX()/3,fric.getY());
         Physics.upplyF(p, fric);
     }
     
@@ -63,7 +64,7 @@ public class Physics
         if (!areColliding(a,b))
         {
             System.out.println("Error: cannot collide non colliding projectiles");
-            return;
+            //return;
         }
         Vect temp = new Vect ((double)(a._x - b._x), (double)(a._y -b._y));
         temp.setDir(temp.getDir()+ (float)Math.PI/2);
