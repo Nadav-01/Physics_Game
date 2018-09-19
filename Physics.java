@@ -130,7 +130,7 @@ public class Physics
             double sD1 = Vec_Math.dot_prod(dir1,a._vel);    // Smaller
             double sD2 = Vec_Math.dot_prod(dir2,a._vel);
             
-            double bNewD1 = (2 * bigger._mass * sD1) / (bigger._mass + smaller._mass);
+            double bNewD1 = (2 * bigger._mass * sD1) / (bigger._mass + smaller._mass);  // Using math formula developed by 2 equations of conservation of kinetic energy and momentum.
             double sNewD1 = (bD1 - sD1 + bNewD1);
             
             double bNewD2 = (2 * bigger._mass * sD2) / (bigger._mass + smaller._mass);
