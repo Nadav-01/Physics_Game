@@ -122,24 +122,26 @@ public class attempt extends JPanel {
                
             // Try to predict if the next frame will be a collision
             {
-                Proj[] pred = new Proj[] { new Proj(pro[0]._x,pro[0]._y,pro[0]._vel.getX(),pro[0]._vel.getY(),pro[0]._rad) , new Proj(pro[1]._x,pro[1]._y,pro[1]._vel.getX(),pro[1]._vel.getY(),pro[1]._rad) };
-                for (int i = 0; i < 2; i++) // Upply current speed to projectiles.
-                {
-                    pred[i]._x += 2*pro[i]._vel.getX();
-                    pred[i]._y -= 2*pro[i]._vel.getY();    //coordinate system flipped because window starts in upper left.
-                }
+                //Proj[] pred = new Proj[] { new Proj(pro[0]._x,pro[0]._y,pro[0]._vel.getX(),pro[0]._vel.getY(),pro[0]._rad) , new Proj(pro[1]._x,pro[1]._y,pro[1]._vel.getX(),pro[1]._vel.getY(),pro[1]._rad) };
+                //for (int i = 0; i < 2; i++) // Upply current speed to projectiles.
+                //{
+                //    pred[i]._x += 2*pro[i]._vel.getX();
+                //    pred[i]._y -= 2*pro[i]._vel.getY();    //coordinate system flipped because window starts in upper left.
+                //}
                 for (int i = 0; i < 2; i++) // Check all combination of items that can collide with each other
                 {
                     for (int j = 0; j < 4; j++)
                     {
-                        if (Physics.areColliding((Item)pred[i],(Item)walls[j]))
+                        //if (Physics.areColliding((Item)pred[i],(Item)walls[j]))
+                        if (Physics.areColliding((Item)pro[i],(Item)walls[j]))
                         {
                             System.out.println("bounce");
                             Physics.collision(pro[i],walls[j]);
                         }
                     }
                 }
-                if(Physics.areColliding(pred[0],pred[1]))
+                //if(Physics.areColliding(pred[0],pred[1]))
+                if(Physics.areColliding(pro[0],pro[1]))
                 {
                     Physics.collision(pro[0],pro[1]);
                 }
