@@ -2,8 +2,8 @@
 
 public abstract class Item
 {
-    public int _x;
-    public int _y;
+    public double _x;
+    public double _y;
 
     
     public Item()
@@ -11,7 +11,7 @@ public abstract class Item
         _x = 0;
         _y = 0;
     }
-    public Item(int x, int y)
+    public Item(double x, double y)
     {
         _x = x;
         _y = y;

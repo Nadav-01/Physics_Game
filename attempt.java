@@ -19,7 +19,7 @@ public class attempt extends JPanel {
     
     
     static final int PLAYER_SIZE = 60;
-    static Proj[] pro = new Proj[] { new Proj(300,300,PLAYER_SIZE/2) , new Proj(50,50,1,1,PLAYER_SIZE/2) }; // Projectile array
+    static Proj[] pro = new Proj[] { new Proj(300,300,PLAYER_SIZE/2) , new Proj(50,50,PLAYER_SIZE/2) }; // Projectile array
     static Wall[] walls = {new Wall(-20,480,680,520), new Wall(-20,-20,20,550), new Wall(630,-20,670,550), new Wall(-20,-20,680,20)};   // Wall array
     
     //static Proj pro[0] = new Proj(300,300,PLAYER_SIZE/2);
@@ -39,15 +39,15 @@ public class attempt extends JPanel {
     public void putItems(Graphics2D g2d)
     {
         g2d.setColor(Color.red);
-        g2d.fillOval(pro[1]._x, pro[1]._y, PLAYER_SIZE, PLAYER_SIZE);   // Paint negetive player
+        g2d.fillOval((int)pro[1]._x, (int)pro[1]._y, PLAYER_SIZE, PLAYER_SIZE);   // Paint negetive player
         //g2d.drawRect(pro[1]._x, pro[1]._y, PLAYER_SIZE, PLAYER_SIZE);
         
         g2d.setColor(Color.black);
         
         for (int i = 0; i < 4; i++) // Paints walls
-            g2d.fillRect(walls[i]._x, walls[i]._y, walls[i].getLength(), walls[i].getHeight());
+            g2d.fillRect((int)walls[i]._x, (int)walls[i]._y, (int)walls[i].getLength(), (int)walls[i].getHeight());
         
-        g2d.fillOval(pro[0]._x, pro[0]._y, PLAYER_SIZE, PLAYER_SIZE);   // Paint player
+        g2d.fillOval((int)pro[0]._x, (int)pro[0]._y, PLAYER_SIZE, PLAYER_SIZE);   // Paint player
         //g2d.drawRect(pro[0]._x, pro[0]._y, PLAYER_SIZE, PLAYER_SIZE);
         
         g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 100);   // Debug info
@@ -165,6 +165,8 @@ public class attempt extends JPanel {
             
             for (int i = 0; i < 2; i++) // Upply speed to projectiles.
             {
+                double curX = pro[i]._vel.getX();
+                double currX = pro[i]._x;
                 pro[i]._x += pro[i]._vel.getX();
                 pro[i]._y -= pro[i]._vel.getY();    //coordinate system flipped because window starts in upper left.
             }

@@ -3,16 +3,16 @@ public class Proj extends Item
         
         // X and Y from Item represent top left of cube containing the ball
         public Vect _vel = new Vect(0,0);
-        public int _rad;
+        public double _rad;
         public double _mass;
         
-        public Proj(int x, int y, int rad)
+        public Proj(double x, double y, double rad)
         {
             super(x,y);
             _rad = rad;
             _mass = Math.PI * Math.pow(_rad,2);
         }
-        public Proj(int x, int y, double velX, double velY, int rad)
+        public Proj(double x, double y, double velX, double velY, double rad)
         {
             _x = x;
             _y = y;
@@ -30,12 +30,12 @@ public class Proj extends Item
         }
 
         
-        public int getCentX()
+        public double getCentX()
         {
             return _x + _rad;
         }
         
-        public int getCentY()
+        public double getCentY()
         {
             return _y + _rad;
         }

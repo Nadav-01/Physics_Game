@@ -5,8 +5,8 @@
 public class Wall extends Item
 {
     // X and Y of Item are the top left point. W and Z here are the bottom right point.
-    public int _w;
-    public int _z;
+    public double _w;
+    public double _z;
     /**
      * Constructor for objects of class Wall
      */
@@ -17,29 +17,29 @@ public class Wall extends Item
         _z = 0;
     }
 
-    public Wall(int x, int y, int w, int z)
+    public Wall(double x, double y, double w, double z)
     {
         super(x,y);
         _w = w;
         _z = z;
     }
     
-    public int getHeight()
+    public double getHeight()
     {
         return _z - super._y;
     }
     
-    public void setHeight(int h)
+    public void setHeight(double h)
     {
         _z = super._y + h;
     }
     
-    public int getLength()
+    public double getLength()
     {
         return _w - super._x;
     }
     
-    public void setLength(int l)
+    public void setLength(double l)
     {
         _w = super._x + l;
     }
