@@ -121,11 +121,9 @@ public class attempt extends JPanel {
             
                
             // Try to predict if the next frame will be a collision
-            
-            
             {
                 Proj[] pred = new Proj[] { new Proj(pro[0]._x,pro[0]._y,pro[0]._vel.getX(),pro[0]._vel.getY(),pro[0]._rad) , new Proj(pro[1]._x,pro[1]._y,pro[1]._vel.getX(),pro[1]._vel.getY(),pro[1]._rad) };
-                for (int i = 0; i < 2; i++) // Upply speed to projectiles.
+                for (int i = 0; i < 2; i++) // Upply current speed to projectiles.
                 {
                     pred[i]._x += 2*pro[i]._vel.getX();
                     pred[i]._y -= 2*pro[i]._vel.getY();    //coordinate system flipped because window starts in upper left.
@@ -192,26 +190,26 @@ public class attempt extends JPanel {
             if (action == up)
             {
                 System.out.println("up");
-                Physics.upplyF(pro[0], new Vect(0.7,(float)(Math.PI/2)));
-                Physics.upplyF(pro[1], new Vect(0.45,(float)(3*Math.PI/2)));
+                Physics.upplyF(pro[0], new Vect(500,(float)(Math.PI/2)));
+                Physics.upplyF(pro[1], new Vect(400,(float)(3*Math.PI/2)));
             }
             if (action == down)
             {
                 System.out.println("down");
-                Physics.upplyF(pro[0], new Vect(0.45,(float)(3*Math.PI/2)));
-                Physics.upplyF(pro[1], new Vect(0.7,(float)(Math.PI/2)));
+                Physics.upplyF(pro[0], new Vect(400,(float)(3*Math.PI/2)));
+                Physics.upplyF(pro[1], new Vect(500,(float)(Math.PI/2)));
             }
             if (action == right)
             {
                 System.out.println("right");
-                Physics.upplyF(pro[0], new Vect(0.45,(float)(0)));
-                Physics.upplyF(pro[1], new Vect(0.45,(float)(Math.PI)));
+                Physics.upplyF(pro[0], new Vect(400,(float)(0)));
+                Physics.upplyF(pro[1], new Vect(400,(float)(Math.PI)));
             }
             if (action == left)
             {
                 System.out.println("left");
-                Physics.upplyF(pro[0], new Vect(0.45,(float)(Math.PI)));
-                Physics.upplyF(pro[1], new Vect(0.45,(float)(0)));
+                Physics.upplyF(pro[0], new Vect(400,(float)(Math.PI)));
+                Physics.upplyF(pro[1], new Vect(400,(float)(0)));
             }
         }
 

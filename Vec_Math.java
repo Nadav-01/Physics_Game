@@ -11,6 +11,13 @@ public abstract class Vec_Math
         A.sizeMult(s);
     }
     
+    public static Vect retSizeMult (Vect A, double s)
+    {
+        Vect temp = new Vect(A);
+        temp.sizeMult(s);
+        return temp;
+    }
+    
     public static Vect vectAdd(Vect A, Vect B)
     {
         return new Vect (A.getX() + B.getX(), A.getY() + B.getY());

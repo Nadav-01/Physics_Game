@@ -3,7 +3,7 @@ import java.awt.Dimension;
 public class Physics
 {
     public static Vect grav = new Vect(0.09, (float)(3*Math.PI/2));
-    public static double airFric = 0.005;
+    public static double airFric = 0.8;
     
     public Physics()
     {
@@ -13,14 +13,20 @@ public class Physics
     // Upplys force on a projectile.
     public static void upplyF(Proj p, Vect f)
     {
-        p._vel = Vec_Math.vectAdd(p._vel,f);
+        f.sizeMult(1/p._mass);
+        p._vel = Vec_Math.vectAdd(p._vel, f);
     }
     
     // Upplys Gravity on an array of projectiles.
     public static void upplyG(Proj p[], int n)
     {
+        Vect Wei = new Vect(grav);
         for (int i = 0; i < n; i++)
-            upplyF(p[i],grav);
+        {
+            Wei = new Vect(grav);
+            Wei.sizeMult(p[i]._mass);
+            upplyF(p[i],Wei);
+        }
     }
     
     // Upplys friction on a projectile.
@@ -42,13 +48,12 @@ public class Physics
     
     public static double kineticE(Proj p)
     {
-        return Math.pow(p._vel.getSize(),2)/2;
+        return p._mass * Math.pow(p._vel.getSize(),2)/2;
     }
-    
     
     public static double potenE(Proj p, Dimension winSize)
     {
-        return grav.getSize()*(winSize.getHeight()-p._y);
+        return p._mass * grav.getSize()*(winSize.getHeight()-p._y);
     }
     
     public static double Energy(Proj p, Dimension winSize)
@@ -56,11 +61,18 @@ public class Physics
         return kineticE(p) + potenE(p, winSize);
     }
     
+    public static Vect momentum(Proj p)
+    {
+        Vect mom = new Vect(p._vel);
+        mom.sizeMult(p._mass);
+        return mom;
+    }
     /*
      * only send 2 projectiles that are colliding now.
      */
     public static void collision(Proj a, Proj b)
     {
+        /*
         if (!areColliding(a,b))
         {
             System.out.println("Error: cannot collide non colliding projectiles");
@@ -74,16 +86,76 @@ public class Physics
         b._vel.setDir(2*Dir-b._vel.getDir());
         a._vel.sizeMult(0.98);
         b._vel.sizeMult(0.98);
+        */
+
+        Vect temp = new Vect ((double)(a._x - b._x), (double)(a._y -b._y));
+        Vect dir1 = new Vect((double)1,temp.getDir());
+        Vect dir2 = new Vect((double)1,(float)(temp.getDir()+Math.PI/2));
+        
+        
+
+        if (a._mass > b._mass)
+        {
+            Proj bigger = new Proj(a);
+            Proj smaller = new Proj(b);
+            // Getting the speed for each new direction.
+            double bD1 = Vec_Math.dot_prod(dir1,a._vel);    // Bigger
+            double bD2 = Vec_Math.dot_prod(dir2,a._vel);
+            double sD1 = Vec_Math.dot_prod(dir1,b._vel);    // Smaller
+            double sD2 = Vec_Math.dot_prod(dir2,b._vel);
+            
+            double bNewD1 = (2 * bigger._mass * sD1) / (bigger._mass + smaller._mass);
+            double sNewD1 = (bD1 - sD1 + bNewD1);
+            
+            double bNewD2 = (2 * bigger._mass * sD2) / (bigger._mass + smaller._mass);
+            double sNewD2 = (bD2 - sD2 + bNewD2);
+            
+            Vect aNewVel = new Vect(Vec_Math.retSizeMult(dir1,bNewD1));
+            aNewVel = Vec_Math.vectAdd(aNewVel, new Vect(Vec_Math.retSizeMult(dir2,bNewD2)));
+            
+            Vect bNewVel = new Vect(Vec_Math.retSizeMult(dir1,sNewD1));
+            bNewVel = Vec_Math.vectAdd(bNewVel, new Vect(Vec_Math.retSizeMult(dir2,sNewD2)));
+            
+            a._vel = new Vect(aNewVel);
+            b._vel = new Vect(bNewVel);
+        }
+        else
+        {
+            Proj bigger = new Proj(b);
+            Proj smaller = new Proj(a);
+            
+            // Getting the speed for each new direction.
+            double bD1 = Vec_Math.dot_prod(dir1,b._vel);    // Bigger
+            double bD2 = Vec_Math.dot_prod(dir2,b._vel);
+            double sD1 = Vec_Math.dot_prod(dir1,a._vel);    // Smaller
+            double sD2 = Vec_Math.dot_prod(dir2,a._vel);
+            
+            double bNewD1 = (2 * bigger._mass * sD1) / (bigger._mass + smaller._mass);
+            double sNewD1 = (bD1 - sD1 + bNewD1);
+            
+            double bNewD2 = (2 * bigger._mass * sD2) / (bigger._mass + smaller._mass);
+            double sNewD2 = (bD2 - sD2 + bNewD2);
+            
+            Vect bNewVel = new Vect(Vec_Math.retSizeMult(dir1,bNewD1));
+            bNewVel = Vec_Math.vectAdd(bNewVel, new Vect(Vec_Math.retSizeMult(dir2,bNewD2)));
+            
+            Vect aNewVel = new Vect(Vec_Math.retSizeMult(dir1,sNewD1));
+            aNewVel = Vec_Math.vectAdd(aNewVel, new Vect(Vec_Math.retSizeMult(dir2,sNewD2)));
+            
+            a._vel = new Vect(aNewVel);
+            b._vel = new Vect(bNewVel);
+        }
     }
     
     
     // Collides a projectile with a wall, by flipping the correct axis in its velocity.
     public static void collision(Proj a, Wall b)
     {
+
         if (!areColliding(a,b))
         {
             System.out.println("Error: cannot collide non colliding items");
-            return;
+            //return;
         }
         a._vel.sizeMult(0.98);
         if (a.getCentX() <= b._x)
