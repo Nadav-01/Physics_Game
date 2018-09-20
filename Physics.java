@@ -94,7 +94,7 @@ public class Physics
         
         
 
-        if (a._mass > b._mass)
+        if (a._mass * a._vel.getSize() * a._vel.getSize() > b._mass * b._vel.getSize() * b._vel.getSize())
         {
             Proj bigger = new Proj(a);
             Proj smaller = new Proj(b);
