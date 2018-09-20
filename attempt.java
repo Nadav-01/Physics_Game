@@ -6,6 +6,8 @@ import java.awt.RenderingHints;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Color;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @SuppressWarnings("serial")
 public class attempt extends JPanel {
@@ -64,124 +66,7 @@ public class attempt extends JPanel {
         setFocusable(true);
     }
     
-    public static void main(String[] args) {
-        
-        Physics phy = new Physics();
-        JFrame frame = new JFrame("game");
-        attempt attempt = new attempt();
-        frame.add(attempt);
-        frame.setSize(680, 550);
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        //int flipXcnt = 1;
-        //int flipYcnt = 1;
-        while (true)
-        {
-            // Upply gravity and friction to all projectiles.
-            Physics.upplyG(pro, 2);
-            Physics.upplyFric(pro, 2);
-            
-            /*  // Obselete collision mechanics
-            for (int i = 0; i < 2; i++)
-            {
-                Vect fric = new Vect(pro[0]._vel);
-                fric.setDir(fric.getDir() + (float)(Math.PI));
-                fric.setSize(fric.getSize() * Physics.airFric);
-                Physics.upplyF(pro[0], fric);
-                if ((flipXcnt > 0) && (pro[i]._x >= frame.getSize().getWidth()-1.5*PLAYER_SIZE || pro[i]._x <= 0))   //when hits walls flip the velocity
-                {
-                    Vec_Math.flipYaxis(pro[i]._vel);
-                    Vec_Math.sizeMult(pro[i]._vel, 0.95); //Bug: causes ball to stick to left wall or ceiling
-                    flipXcnt--;
-                    System.out.println("bounce");
-                }
-                else if (flipXcnt > -21 && (pro[i]._x >= frame.getSize().getWidth()-1.5*PLAYER_SIZE || pro[i]._x <= 0))
-                {
-                    flipXcnt--;
-                }
-                else
-                    flipXcnt = 1;
-                    
-                if ((flipYcnt > 0) && (pro[i]._y >= frame.getSize().getHeight()-2.25*PLAYER_SIZE || pro[i]._y <= 0))
-                {
-                    Vec_Math.flipXaxis(pro[i]._vel);
-                    Vec_Math.sizeMult(pro[i]._vel, 0.95);
-                    flipYcnt--;
-                    System.out.println("bounce");
-                }
-                else if ((flipYcnt > -21) && (pro[i]._y >= frame.getSize().getHeight()-2.25*PLAYER_SIZE || pro[i]._y <= 0))
-                {
-                    flipYcnt--;
-                }
-                else
-                    flipYcnt = 1;
-            }
-                */
-            
-               
-            // Try to predict if the next frame will be a collision
-            {
-                //Proj[] pred = new Proj[] { new Proj(pro[0]._x,pro[0]._y,pro[0]._vel.getX(),pro[0]._vel.getY(),pro[0]._rad) , new Proj(pro[1]._x,pro[1]._y,pro[1]._vel.getX(),pro[1]._vel.getY(),pro[1]._rad) };
-                //for (int i = 0; i < 2; i++) // Upply current speed to projectiles.
-                //{
-                //    pred[i]._x += 2*pro[i]._vel.getX();
-                //    pred[i]._y -= 2*pro[i]._vel.getY();    //coordinate system flipped because window starts in upper left.
-                //}
-                for (int i = 0; i < 2; i++) // Check all combination of items that can collide with each other
-                {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        //if (Physics.areColliding((Item)pred[i],(Item)walls[j]))
-                        if (Physics.areColliding((Item)pro[i],(Item)walls[j]))
-                        {
-                            System.out.println("bounce");
-                            Physics.collision(pro[i],walls[j]);
-                        }
-                    }
-                }
-                //if(Physics.areColliding(pred[0],pred[1]))
-                if(Physics.areColliding(pro[0],pro[1]))
-                {
-                    Physics.collision(pro[0],pro[1]);
-                }
-            }
-            
-            /*
-            for (int i = 0; i < 2; i++) // Check all combination of items that can collide with each other
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    if (Physics.areColliding((Item)pro[i],(Item)walls[j]))
-                    {
-                        System.out.println("bounce");
-                        Physics.collision(pro[i],walls[j]);
-                    }
-                }
-            }
-            if(Physics.areColliding(pro[0],pro[1]))
-            {
-                Physics.collision(pro[0],pro[1]);
-            }
-            */
-            
-            for (int i = 0; i < 2; i++) // Upply speed to projectiles.
-            {
-                double curX = pro[i]._vel.getX();
-                double currX = pro[i]._x;
-                pro[i]._x += pro[i]._vel.getX();
-                pro[i]._y -= pro[i]._vel.getY();    //coordinate system flipped because window starts in upper left.
-            }
-            
-            attempt.repaint();
-            try{
-                Thread.sleep(10);}
-            catch (InterruptedException e)
-            {
-                System.out.println("fuck");
-             }
-        }
-    }
+    
 
     public class MyKeyListener implements KeyListener {
         @Override
@@ -219,6 +104,72 @@ public class attempt extends JPanel {
 
         @Override
         public void keyReleased(KeyEvent e) {
+        }
+    }
+    
+    public static class gameloop extends TimerTask
+    {
+        public attempt at;
+        public gameloop(attempt att)
+        {
+            at = att;
+        }
+        public void run()
+        {
+            // Upply gravity and friction to all projectiles.
+            
+            Physics.upplyG(pro, 2);
+            Physics.upplyFric(pro, 2);
+            
+
+            for (int i = 0; i < 2; i++) // Check all combination of items that can collide with each other
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    //if (Physics.areColliding((Item)pred[i],(Item)walls[j]))
+                    if (Physics.areColliding((Item)pro[i],(Item)walls[j]))
+                    {
+                        System.out.println("bounce");
+                        Physics.collision(pro[i],walls[j]);
+                    }
+                }
+            }
+            //if(Physics.areColliding(pred[0],pred[1]))
+            if(Physics.areColliding(pro[0],pro[1]))
+            {
+                Physics.collision(pro[0],pro[1]);
+            }
+            
+            
+            for (int i = 0; i < 2; i++) // Upply speed to projectiles.
+            {
+                double curX = pro[i]._vel.getX();
+                double currX = pro[i]._x;
+                pro[i]._x += pro[i]._vel.getX();
+                pro[i]._y -= pro[i]._vel.getY();    //coordinate system flipped because window starts in upper left.
+            } 
+            at.repaint();
+        }
+    }
+    
+    public static void main(String[] args) {
+        
+        Physics phy = new Physics();
+        JFrame frame = new JFrame("game");
+        
+        attempt attempt = new attempt();
+        frame.add(attempt);
+        frame.setSize(680, 550);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        //int flipXcnt = 1;
+        //int flipYcnt = 1;
+        TimerTask gameloop = new gameloop(attempt);
+        Timer timer = new Timer(true);
+        while (true)
+        {
+            timer.scheduleAtFixedRate(gameloop, 0, 7);
         }
     }
 }
