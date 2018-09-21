@@ -92,9 +92,33 @@ public class Physics
         Vect dir1 = new Vect((double)1,temp.getDir());
         Vect dir2 = new Vect((double)1,(float)(temp.getDir()+Math.PI/2));
         
+        double aD1 = Vec_Math.dot_prod(dir1,a._vel);
+        double aD2 = Vec_Math.dot_prod(dir2,a._vel);
+        double bD1 = Vec_Math.dot_prod(dir1,b._vel);
+        double bD2 = Vec_Math.dot_prod(dir2,b._vel);
+        /*
+        double aNewD1 = (aD1 * (a._mass - b._mass) + 2 * a._mass * bD1) / (a._mass + b._mass);
+        double bNewD1 = (aD1 - bD1 + aNewD1);
         
-
-        if (a._mass * a._vel.getSize() * a._vel.getSize() > b._mass * b._vel.getSize() * b._vel.getSize())
+        double aNewD2 = (aD2 * (a._mass - b._mass) + 2 * a._mass * bD2) / (a._mass + b._mass);
+        double bNewD2 = (aD2 - bD2 + aNewD2);
+        
+        Vect aNewVel = new Vect(Vec_Math.retSizeMult(dir1,aNewD1));
+        aNewVel = Vec_Math.vectAdd(aNewVel, new Vect(Vec_Math.retSizeMult(dir2,aNewD2)));
+        
+        Vect bNewVel = new Vect(Vec_Math.retSizeMult(dir1,bNewD1));
+        bNewVel = Vec_Math.vectAdd(bNewVel, new Vect(Vec_Math.retSizeMult(dir2,bNewD2)));
+        */
+        double velAx = (aD1 * (a._mass - b._mass) + 2 * b._mass * bD1 ) / (a._mass + b._mass) * Math.cos(dir1.getDir()) + aD2 * Math.cos(dir2.getDir());
+        double velAy = (aD1 * (a._mass - b._mass) + 2 * b._mass * bD1 ) / (a._mass + b._mass) * Math.sin(dir1.getDir()) + aD2 * Math.sin(dir2.getDir());
+        double velBx = (bD1 * (b._mass - a._mass) + 2 * a._mass * aD1 ) / (a._mass + b._mass) * Math.cos(dir1.getDir()) + bD2 * Math.cos(dir2.getDir());
+        double velBy = (bD1 * (b._mass - a._mass) + 2 * a._mass * aD1 ) / (a._mass + b._mass) * Math.sin(dir1.getDir()) + bD2 * Math.sin(dir2.getDir());
+        
+        a._vel = new Vect(velAx, velAy);
+        b._vel = new Vect(velBx, velBy);
+        
+        /*
+        if (a._mass > b._mass )
         {
             Proj bigger = new Proj(a);
             Proj smaller = new Proj(b);
@@ -144,7 +168,7 @@ public class Physics
             
             a._vel = new Vect(aNewVel);
             b._vel = new Vect(bNewVel);
-        }
+        } */
     }
     
     
