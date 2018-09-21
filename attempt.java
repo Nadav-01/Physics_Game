@@ -23,6 +23,8 @@ public class attempt extends JPanel {
     static final int PLAYER_SIZE = 60;
     static Proj[] pro = new Proj[] { new Proj(300,300,PLAYER_SIZE) , new Proj(50,50,PLAYER_SIZE/2) }; // Projectile array
     static Wall[] walls = {new Wall(-20,480,680,520), new Wall(-20,-20,20,550), new Wall(630,-20,670,550), new Wall(-20,-20,680,20)};   // Wall array
+    static int proSize = pro.length;
+    static int wallSize = walls.length;
     
     //static Proj pro[0] = new Proj(300,300,PLAYER_SIZE/2);
     //static Proj c = new Proj(300,500,PLAYER_SIZE/2);
@@ -46,7 +48,7 @@ public class attempt extends JPanel {
         
         g2d.setColor(Color.black);
         
-        for (int i = 0; i < 4; i++) // Paints walls
+        for (int i = 0; i < wallSize; i++) // Paints walls
             g2d.fillRect((int)walls[i]._x, (int)walls[i]._y, (int)walls[i].getLength(), (int)walls[i].getHeight());
         
         g2d.fillOval((int)pro[0]._x, (int)pro[0]._y, PLAYER_SIZE*2, PLAYER_SIZE*2);   // Paint player
@@ -122,9 +124,9 @@ public class attempt extends JPanel {
             Physics.upplyFric(pro, 2);
             
 
-            for (int i = 0; i < 2; i++) // Check all combination of items that can collide with each other
+            for (int i = 0; i < proSize; i++) // Check all combination of items that can collide with each other
             {
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < wallSize; j++)
                 {
                     //if (Physics.areColliding((Item)pred[i],(Item)walls[j]))
                     if (Physics.areColliding((Item)pro[i],(Item)walls[j]))
@@ -141,12 +143,20 @@ public class attempt extends JPanel {
             }
             
             
-            for (int i = 0; i < 2; i++) // Upply speed to projectiles.
+            for (int i = 0; i < proSize; i++) // Upply speed to projectiles.
             {
                 double curX = pro[i]._vel.getX();
                 double currX = pro[i]._x;
                 pro[i]._x += pro[i]._vel.getX();
                 pro[i]._y -= pro[i]._vel.getY();    //coordinate system flipped because window starts in upper left.
+                
+                if (pro[i]._x < -1000 || pro[i]._x > 2000 || pro[i]._y < -1000 || pro[i]._y > 2000)
+                {
+                    pro[i]._x = 50 + i*60;
+                    pro[i]._y = 50 + i*60;
+                    if (pro[i]._vel.getSize() > 500)
+                        pro[i]._vel.setSize(50);
+                }
             } 
             at.repaint();
         }
@@ -167,9 +177,6 @@ public class attempt extends JPanel {
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
         Timer timer = new Timer(true);
-        while (true)
-        {
-            timer.scheduleAtFixedRate(gameloop, 0, 7);
-        }
+        timer.scheduleAtFixedRate(gameloop, 0, 7);
     }
 }
