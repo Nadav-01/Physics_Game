@@ -13,6 +13,6 @@ https://gamedev.stackexchange.com/questions/56017/java-best-implementation-keyli
 try improving the input to reduce lag between holding down the movement keys and the movement.
 
 
-https://www.toptal.com/game/video-game-physics-part-ii-collision-detection-for-solid-objects
+https://gamedevelopment.tutsplus.com/tutorials/when-worlds-collide-simulating-circle-circle-collisions--gamedev-769
 
 improve the 2d collision
