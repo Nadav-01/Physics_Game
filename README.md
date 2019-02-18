@@ -14,5 +14,6 @@ try improving the input to reduce lag between holding down the movement keys and
 
 
 https://gamedevelopment.tutsplus.com/tutorials/when-worlds-collide-simulating-circle-circle-collisions--gamedev-769
+https://www.gamedev.net/forums/topic/551488-2d-vector-based-collision/
 
 improve the 2d collision
