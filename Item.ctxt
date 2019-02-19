@@ -1,8 +1,0 @@
-#BlueJ class context
-comment0.params=
-comment0.target=Item()
-comment1.params=x\ y
-comment1.target=Item(double,\ double)
-comment2.params=other
-comment2.target=boolean\ isCol(Item)
-numComments=3
