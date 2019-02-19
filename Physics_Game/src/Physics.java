@@ -72,6 +72,35 @@ public class Physics
      */
     public static void collision(Proj a, Proj b)
     {
+    	
+    		Vect v1 = new Vect(a._vel);
+    		Vect v2 = new Vect(b._vel);
+    		Vect x1 = new Vect(a._x, a._y);
+    		Vect x2 = new Vect(b._x, b._y);
+    		
+    		double m1 = a._mass;
+    		double m2 = b._mass;
+    		
+    		
+    		Vect v1_2 = Vec_Math.vectAdd(v1,v2.sizeMultRet(-1));
+    		Vect x1_2 = Vec_Math.vectAdd(x1,x2.sizeMultRet(-1));
+    		double dotProd1_2 = Vec_Math.dot_prod(v1_2,x1_2);
+    		double x1_2Size = Vec_Math.dot_prod(x1_2,x1_2);
+    		
+    		Vect v2_1 = Vec_Math.vectAdd(v2,v1.sizeMultRet(-1));
+    		Vect x2_1 = Vec_Math.vectAdd(x2,x1.sizeMultRet(-1));
+    		double dotProd2_1 = Vec_Math.dot_prod(v2_1,x2_1);
+    		double x2_1Size = Vec_Math.dot_prod(x2_1,x2_1);
+    		
+    		
+    		Vect finalVect1 = new Vect (x1_2.sizeMultRet((-2*m2*dotProd1_2)/((m1+m2)*x1_2Size*x1_2Size )));
+    		Vect finalVect2 = new Vect( x2_1.sizeMultRet((-2*m1*dotProd2_1)/((m2+m1)*x2_1Size*x2_1Size)));
+    		
+    		Vect u1 = Vec_Math.vectAdd(v1, finalVect1);
+    		Vect u2 = Vec_Math.vectAdd(v2, finalVect2);
+    		
+    		a._vel = new Vect(u1);
+    		b._vel = new Vect(u2);
         /*
         if (!areColliding(a,b))
         {
@@ -87,7 +116,7 @@ public class Physics
         a._vel.sizeMult(0.98);
         b._vel.sizeMult(0.98);
         */
-
+    		/*
         Vect temp = new Vect ((double)(b._x - a._x), (double)(b._y -a._y));
         Vect dir1 = new Vect((double)1,temp.getDir());
         Vect dir2 = new Vect((double)1,(float)(temp.getDir()+Math.PI/2));
@@ -95,7 +124,7 @@ public class Physics
         double aD1 = Vec_Math.dot_prod(dir1,a._vel);
         double aD2 = Vec_Math.dot_prod(dir2,a._vel);
         double bD1 = Vec_Math.dot_prod(dir1,b._vel);
-        double bD2 = Vec_Math.dot_prod(dir2,b._vel);
+        double bD2 = Vec_Math.dot_prod(dir2,b._vel);*/
         /*
         double aNewD1 = (aD1 * (a._mass - b._mass) + 2 * a._mass * bD1) / (a._mass + b._mass);
         double bNewD1 = (aD1 - bD1 + aNewD1);
@@ -108,7 +137,7 @@ public class Physics
         
         Vect bNewVel = new Vect(Vec_Math.retSizeMult(dir1,bNewD1));
         bNewVel = Vec_Math.vectAdd(bNewVel, new Vect(Vec_Math.retSizeMult(dir2,bNewD2)));
-        */
+        *//*
         double velAx = (aD1 * (a._mass - b._mass) + 2 * b._mass * bD1 ) / (a._mass + b._mass) * Math.cos(dir1.getDir()) + aD2 * Math.cos(dir2.getDir());
         double velAy = (aD1 * (a._mass - b._mass) + 2 * b._mass * bD1 ) / (a._mass + b._mass) * Math.sin(dir1.getDir()) + aD2 * Math.sin(dir2.getDir());
         double velBx = (bD1 * (b._mass - a._mass) + 2 * a._mass * aD1 ) / (a._mass + b._mass) * Math.cos(dir1.getDir()) + bD2 * Math.cos(dir2.getDir());
@@ -116,7 +145,7 @@ public class Physics
         
         a._vel = new Vect(velAx, velAy);
         b._vel = new Vect(velBx, velBy);
-        
+        */
         /*
         if (a._mass > b._mass )
         {
