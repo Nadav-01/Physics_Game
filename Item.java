@@ -1,4 +1,4 @@
-package broke;
+package src;
 
 // Super class of things that interact with eachother on screen. Cannot be initialized on its own, must be a type.
 
