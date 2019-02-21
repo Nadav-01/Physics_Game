@@ -34,7 +34,7 @@ public class attempt extends JPanel {
     
     public static void inintilizeProj()
     {
-    	pro = new Proj[] { new Proj(300,300,PLAYER_SIZE/2) , new Proj(50,50,PLAYER_SIZE/3) }; 
+    	pro = new Proj[] { new Proj(300,300,PLAYER_SIZE*1.5) , new Proj(50,50,PLAYER_SIZE/3) }; 
     	proSize = pro.length;
     }
     
@@ -60,7 +60,7 @@ public class attempt extends JPanel {
         for (int i = 0; i < wallSize; i++) // Paints walls
             g2d.fillRect((int)walls[i]._x, (int)walls[i]._y, (int)walls[i].getLength(), (int)walls[i].getHeight());
         
-        g2d.fillOval((int)pro[0]._x, (int)pro[0]._y, (int)pro[0]._rad*2, (int)pro[0]._rad*2);   // Paint player
+        g2d.drawOval((int)pro[0]._x, (int)pro[0]._y, (int)pro[0]._rad*2, (int)pro[0]._rad*2);   // Paint player
         //g2d.drawRect(pro[0]._x, pro[0]._y, PLAYER_SIZE, PLAYER_SIZE);
         
         g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 100);   // Debug info
@@ -199,6 +199,6 @@ public class attempt extends JPanel {
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(gameloop, 0, 7);
+        timer.scheduleAtFixedRate(gameloop, 0, 10);
     }
 }
