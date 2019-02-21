@@ -1,3 +1,5 @@
+package broke;
+
 /*
  * Wall is a static, immovable rectangle Item that affects other items.
  */

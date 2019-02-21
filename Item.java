@@ -1,3 +1,5 @@
+package broke;
+
 // Super class of things that interact with eachother on screen. Cannot be initialized on its own, must be a type.
 
 public abstract class Item

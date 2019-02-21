@@ -1,3 +1,5 @@
+package broke;
+
 public abstract class Vec_Math
 {
     
@@ -27,6 +29,14 @@ public abstract class Vec_Math
     {
         A.setDir((float)(Math.PI) - A.getDir());
     }
+    
+    public static Vect rotate180(Vect A)
+    {
+    	Vect ret = new Vect(A);
+        ret.setDir((float)(ret.getDir()+Math.PI));
+        return ret;
+    }
+    
     
     public static void flipLeft(Vect A)
     {

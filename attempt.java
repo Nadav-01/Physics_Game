@@ -1,3 +1,5 @@
+package broke;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.Graphics;
@@ -17,11 +19,11 @@ public class attempt extends JPanel {
     static int right = KeyEvent.VK_RIGHT;
     static int down = KeyEvent.VK_DOWN;
     static int left = KeyEvent.VK_LEFT;
-    
+    static int reset = KeyEvent.VK_R;
     
     
     static final int PLAYER_SIZE = 60;
-    static Proj[] pro = new Proj[] { new Proj(300,300,PLAYER_SIZE) , new Proj(50,50,PLAYER_SIZE/2) }; // Projectile array
+    static Proj[] pro = new Proj[] { new Proj(300,300,PLAYER_SIZE/2) , new Proj(50,50,PLAYER_SIZE/3) }; // Projectile array
     static Wall[] walls = {new Wall(-20,480,680,520), new Wall(-20,-20,20,550), new Wall(630,-20,670,550), new Wall(-20,-20,680,20)};   // Wall array
     static int proSize = pro.length;
     static int wallSize = walls.length;
@@ -43,7 +45,7 @@ public class attempt extends JPanel {
     public void putItems(Graphics2D g2d)
     {
         g2d.setColor(Color.red);
-        g2d.fillOval((int)pro[1]._x, (int)pro[1]._y, PLAYER_SIZE, PLAYER_SIZE);   // Paint negetive player
+        g2d.fillOval((int)pro[1]._x, (int)pro[1]._y, (int)pro[1]._rad*2, (int)pro[1]._rad*2);   // Paint negetive player
         //g2d.drawRect(pro[1]._x, pro[1]._y, PLAYER_SIZE, PLAYER_SIZE);
         
         g2d.setColor(Color.black);
@@ -51,7 +53,7 @@ public class attempt extends JPanel {
         for (int i = 0; i < wallSize; i++) // Paints walls
             g2d.fillRect((int)walls[i]._x, (int)walls[i]._y, (int)walls[i].getLength(), (int)walls[i].getHeight());
         
-        g2d.fillOval((int)pro[0]._x, (int)pro[0]._y, PLAYER_SIZE*2, PLAYER_SIZE*2);   // Paint player
+        g2d.fillOval((int)pro[0]._x, (int)pro[0]._y, (int)pro[0]._rad*2, (int)pro[0]._rad*2);   // Paint player
         //g2d.drawRect(pro[0]._x, pro[0]._y, PLAYER_SIZE, PLAYER_SIZE);
         
         g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 100);   // Debug info
@@ -102,6 +104,11 @@ public class attempt extends JPanel {
                 Physics.upplyF(pro[0], new Vect(400,(float)(Math.PI)));
                 Physics.upplyF(pro[1], new Vect(400,(float)(0)));
             }
+            if (action == reset)
+            {
+            	System.out.println("reset");
+            	pro = new Proj[] { new Proj(300,300,PLAYER_SIZE*1.5) , new Proj(50,50,PLAYER_SIZE/2) };
+            }
         }
 
         @Override
@@ -140,6 +147,10 @@ public class attempt extends JPanel {
             if(Physics.areColliding(pro[0],pro[1]))
             {
                 Physics.collision(pro[0],pro[1]);
+                if(Physics.isOverlapse(pro[0],pro[1]))
+                {
+                    Physics.fixOverlapse(pro[0],pro[1]);
+                }
             }
             
             
@@ -158,6 +169,9 @@ public class attempt extends JPanel {
                         pro[i]._vel.setSize(50);
                 }
             } 
+            
+            
+            
             at.repaint();
         }
     }
@@ -177,6 +191,6 @@ public class attempt extends JPanel {
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(gameloop, 0, 7);
+        timer.scheduleAtFixedRate(gameloop, 0, 3);
     }
 }
