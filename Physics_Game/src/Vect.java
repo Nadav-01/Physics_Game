@@ -133,27 +133,4 @@ public class Vect
             _dir = 0;
         }
     }
-    
-    public Vect sizeMultRet(double scal)
-    {
-    	double size = _size, dir = _dir;
-        if (scal > 0)
-        {
-            size *= scal;
-        }
-        else if (scal < 0)  // If the scaler is negetive, flips the vector.
-        {
-            size *= Math.abs(scal);
-            if (dir >= Math.PI)
-                dir -= Math.PI;
-            else
-                dir += Math.PI; 
-        }
-        else
-        {
-            size = 0;
-            dir = 0;
-        }
-        return new Vect(size,dir);
-    }
 }

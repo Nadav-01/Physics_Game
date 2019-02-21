@@ -3,7 +3,7 @@ public abstract class Vec_Math
     
     public static double dot_prod(Vect A, Vect B)
     {
-        return (A.getX() * B.getX() + A.getY() * B.getY());
+        return A.getX() * B.getX() + A.getY() * B.getY();
     }
     
     public static void sizeMult (Vect A, double s)
@@ -27,6 +27,14 @@ public abstract class Vec_Math
     {
         A.setDir((float)(Math.PI) - A.getDir());
     }
+    
+    public static Vect rotate180(Vect A)
+    {
+    	Vect ret = new Vect(A);
+        ret.setDir((float)(ret.getDir()+Math.PI));
+        return ret;
+    }
+    
     
     public static void flipLeft(Vect A)
     {
