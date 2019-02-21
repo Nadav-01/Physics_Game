@@ -23,13 +23,20 @@ public class attempt extends JPanel {
     
     
     static final int PLAYER_SIZE = 60;
-    static Proj[] pro = new Proj[] { new Proj(300,300,PLAYER_SIZE/2) , new Proj(50,50,PLAYER_SIZE/3) }; // Projectile array
+    static Proj[] pro; // Projectile array
     static Wall[] walls = {new Wall(-20,480,680,520), new Wall(-20,-20,20,550), new Wall(630,-20,670,550), new Wall(-20,-20,680,20)};   // Wall array
-    static int proSize = pro.length;
+    static int proSize;
     static int wallSize = walls.length;
     
     //static Proj pro[0] = new Proj(300,300,PLAYER_SIZE/2);
     //static Proj c = new Proj(300,500,PLAYER_SIZE/2);
+    
+    
+    public static void inintilizeProj()
+    {
+    	pro = new Proj[] { new Proj(300,300,PLAYER_SIZE/2) , new Proj(50,50,PLAYER_SIZE/3) }; 
+    	proSize = pro.length;
+    }
     
     @Override   // Overriding paint of Jpanel
     public void paint(Graphics g) {
@@ -107,7 +114,7 @@ public class attempt extends JPanel {
             if (action == reset)
             {
             	System.out.println("reset");
-            	pro = new Proj[] { new Proj(300,300,PLAYER_SIZE*1.5) , new Proj(50,50,PLAYER_SIZE/2) };
+            	inintilizeProj();
             }
         }
 
@@ -176,8 +183,9 @@ public class attempt extends JPanel {
         }
     }
     
-    public static void main(String[] args) {
-        
+    public static void main(String[] args)
+    {
+    	inintilizeProj();
         Physics phy = new Physics();
         JFrame frame = new JFrame("game");
         
@@ -191,6 +199,6 @@ public class attempt extends JPanel {
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(gameloop, 0, 3);
+        timer.scheduleAtFixedRate(gameloop, 0, 7);
     }
 }
