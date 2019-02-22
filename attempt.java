@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.time.*;
 
 @SuppressWarnings("serial")
 public class attempt extends JPanel {
@@ -28,13 +29,15 @@ public class attempt extends JPanel {
     static int proSize;
     static int wallSize = walls.length;
     
+    static long oldT;
+	
     //static Proj pro[0] = new Proj(300,300,PLAYER_SIZE/2);
     //static Proj c = new Proj(300,500,PLAYER_SIZE/2);
     
     
     public static void inintilizeProj()
     {
-    	pro = new Proj[] { new Proj(300,300,PLAYER_SIZE*1.5) , new Proj(50,50,PLAYER_SIZE/3) }; 
+    	pro = new Proj[] { new Proj(300,300,PLAYER_SIZE/2) , new Proj(50,50,PLAYER_SIZE) }; 
     	proSize = pro.length;
     }
     
@@ -80,6 +83,8 @@ public class attempt extends JPanel {
     
 
     public class MyKeyListener implements KeyListener {
+    	
+    	int POWER = 40000000;
         @Override
         public void keyTyped(KeyEvent e) {
         }
@@ -90,26 +95,26 @@ public class attempt extends JPanel {
             if (action == up)
             {
                 System.out.println("up");
-                Physics.upplyF(pro[0], new Vect(500,(float)(Math.PI/2)));
-                Physics.upplyF(pro[1], new Vect(400,(float)(3*Math.PI/2)));
+                Physics.upplyF(pro[0], new Vect(POWER,(float)(Math.PI/2)));
+                Physics.upplyF(pro[1], new Vect(POWER,(float)(3*Math.PI/2)));
             }
             if (action == down)
             {
                 System.out.println("down");
-                Physics.upplyF(pro[0], new Vect(400,(float)(3*Math.PI/2)));
-                Physics.upplyF(pro[1], new Vect(500,(float)(Math.PI/2)));
+                Physics.upplyF(pro[0], new Vect(POWER,(float)(3*Math.PI/2)));
+                Physics.upplyF(pro[1], new Vect(POWER,(float)(Math.PI/2)));
             }
             if (action == right)
             {
                 System.out.println("right");
-                Physics.upplyF(pro[0], new Vect(400,(float)(0)));
-                Physics.upplyF(pro[1], new Vect(400,(float)(Math.PI)));
+                Physics.upplyF(pro[0], new Vect(POWER,(float)(0)));
+                Physics.upplyF(pro[1], new Vect(POWER,(float)(Math.PI)));
             }
             if (action == left)
             {
                 System.out.println("left");
-                Physics.upplyF(pro[0], new Vect(400,(float)(Math.PI)));
-                Physics.upplyF(pro[1], new Vect(400,(float)(0)));
+                Physics.upplyF(pro[0], new Vect(POWER,(float)(Math.PI)));
+                Physics.upplyF(pro[1], new Vect(POWER,(float)(0)));
             }
             if (action == reset)
             {
@@ -125,6 +130,8 @@ public class attempt extends JPanel {
     
     public static class gameloop extends TimerTask
     {
+    	
+    	
         public attempt at;
         public gameloop(attempt att)
         {
@@ -132,6 +139,8 @@ public class attempt extends JPanel {
         }
         public void run()
         {
+        	long newT = System.currentTimeMillis();
+        	long deltaT = newT - oldT;
             // Upply gravity and friction to all projectiles.
             
             Physics.upplyG(pro, 2);
@@ -153,20 +162,20 @@ public class attempt extends JPanel {
             //if(Physics.areColliding(pred[0],pred[1]))
             if(Physics.areColliding(pro[0],pro[1]))
             {
+            	 if(Physics.isOverlapse(pro[0],pro[1]))
+                 {
+                     Physics.fixOverlapse(pro[0],pro[1]);
+                 }
                 Physics.collision(pro[0],pro[1]);
-                if(Physics.isOverlapse(pro[0],pro[1]))
-                {
-                    Physics.fixOverlapse(pro[0],pro[1]);
-                }
+               
             }
             
             
             for (int i = 0; i < proSize; i++) // Upply speed to projectiles.
             {
-                double curX = pro[i]._vel.getX();
-                double currX = pro[i]._x;
-                pro[i]._x += pro[i]._vel.getX();
-                pro[i]._y -= pro[i]._vel.getY();    //coordinate system flipped because window starts in upper left.
+
+                pro[i]._x += deltaT*pro[i]._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
+                pro[i]._y -= deltaT*pro[i]._vel.getY()/1000;    //coordinate system flipped because window starts in upper left.
                 
                 if (pro[i]._x < -1000 || pro[i]._x > 2000 || pro[i]._y < -1000 || pro[i]._y > 2000)
                 {
@@ -180,12 +189,14 @@ public class attempt extends JPanel {
             
             
             at.repaint();
+            oldT = newT;
         }
     }
     
     public static void main(String[] args)
     {
     	inintilizeProj();
+    	oldT = System.currentTimeMillis();
         Physics phy = new Physics();
         JFrame frame = new JFrame("game");
         
@@ -199,6 +210,6 @@ public class attempt extends JPanel {
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(gameloop, 0, 10);
+        timer.scheduleAtFixedRate(gameloop, 0, 5);
     }
 }

@@ -9,13 +9,16 @@ public class Physics
     
     public Physics()
     {
-        grav = new Vect(0.09, (float)(3*Math.PI/2));
+        grav = new Vect(900, (float)(3*Math.PI/2));
     }
     
     // Upplys force on a projectile.
     public static void upplyF(Proj p, Vect f)
     {
-        f.sizeMult(1/p._mass);
+    	long newT = System.currentTimeMillis();
+    	long deltaT =  newT - attempt.oldT;
+    	
+        f.sizeMult(deltaT/(p._mass*1000));
         p._vel = Vec_Math.vectAdd(p._vel, f);
     }
     
