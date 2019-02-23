@@ -1,21 +1,25 @@
 package src;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.Graphics;
+import java.awt.event.KeyEvent;		//for input
+import java.awt.event.KeyListener;	
+import java.awt.Graphics;			//for graphics
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import javax.swing.JFrame;
+import javax.swing.JFrame;			//to render the frame
 import javax.swing.JPanel;
 import java.awt.Color;
-import java.util.Timer;
+import java.util.Timer;				//to keep fps stable
 import java.util.TimerTask;
-import java.time.*;
 
 @SuppressWarnings("serial")
 public class attempt extends JPanel {
     
     // Define code of arrow keys
+	/*	TODO- make boolean array of keys so more then one can be pressed at once.
+		like so: static boolean[] keys = new boolean[]
+		that is so i can access the key using the keycodes themselves.
+		like:	keys[keyEvent.VK_UP] = true		//means up is pressed right now
+	*/
     static int up = KeyEvent.VK_UP; 
     static int right = KeyEvent.VK_RIGHT;
     static int down = KeyEvent.VK_DOWN;
@@ -30,12 +34,10 @@ public class attempt extends JPanel {
     static int wallSize = walls.length;
     
     static long oldT;
-	
-    //static Proj pro[0] = new Proj(300,300,PLAYER_SIZE/2);
-    //static Proj c = new Proj(300,500,PLAYER_SIZE/2);
     
     
-    public static void inintilizeProj()
+    
+    public static void inintilizeProj()	//initilize projectile array.
     {
     	pro = new Proj[] { new Proj(300,300,PLAYER_SIZE/2) , new Proj(50,50,PLAYER_SIZE) }; 
     	proSize = pro.length;
@@ -56,7 +58,6 @@ public class attempt extends JPanel {
     {
         g2d.setColor(Color.red);
         g2d.fillOval((int)pro[1]._x, (int)pro[1]._y, (int)pro[1]._rad*2, (int)pro[1]._rad*2);   // Paint negetive player
-        //g2d.drawRect(pro[1]._x, pro[1]._y, PLAYER_SIZE, PLAYER_SIZE);
         
         g2d.setColor(Color.black);
         
@@ -64,7 +65,7 @@ public class attempt extends JPanel {
             g2d.fillRect((int)walls[i]._x, (int)walls[i]._y, (int)walls[i].getLength(), (int)walls[i].getHeight());
         
         g2d.drawOval((int)pro[0]._x, (int)pro[0]._y, (int)pro[0]._rad*2, (int)pro[0]._rad*2);   // Paint player
-        //g2d.drawRect(pro[0]._x, pro[0]._y, PLAYER_SIZE, PLAYER_SIZE);
+        g2d.drawRect((int)pro[0]._x, (int)pro[0]._y, PLAYER_SIZE, PLAYER_SIZE);
         
         g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 100);   // Debug info
         g2d.drawString("dir = " + pro[0]._vel.getDir(), 200, 150);
@@ -89,9 +90,9 @@ public class attempt extends JPanel {
     {
     	
     	
-        public attempt at;
+        public attempt at;	
         
-        static int action;
+        static int action;	//the action that the player is taking this frame
         
         public gameloop(attempt att)
         {
@@ -135,20 +136,18 @@ public class attempt extends JPanel {
         
         public void run()
         {
-        	long newT = System.currentTimeMillis();
-        	long deltaT = newT - oldT;
+        	long newT = System.currentTimeMillis();	//gets new time from the system.
+        	long deltaT = newT - oldT;				//gets the difference of the times between last frame and now.
         	
             // Upply gravity and friction to all projectiles.
-            
             Physics.upplyG(pro, 2);
-            Physics.upplyFric(pro, 2);
+            //Physics.upplyFric(pro, 2);
             
 
             for (int i = 0; i < proSize; i++) // Check all combination of items that can collide with each other
             {
                 for (int j = 0; j < wallSize; j++)
                 {
-                    //if (Physics.areColliding((Item)pred[i],(Item)walls[j]))
                     if (Physics.areColliding((Item)pro[i],(Item)walls[j]))
                     {
                         System.out.println("bounce");
@@ -156,19 +155,20 @@ public class attempt extends JPanel {
                     }
                 }
             }
-            //if(Physics.areColliding(pred[0],pred[1]))
-            if(Physics.areColliding(pro[0],pro[1]))
+            
+            //TODO- update for large array of projectiles.
+            if(Physics.areColliding(pro[0],pro[1]))	//collision calculations and updates
             {
-            	 if(Physics.isOverlapse(pro[0],pro[1]))
+            	 if(Physics.isOverlap(pro[0],pro[1]))
                  {
-                     Physics.fixOverlapse(pro[0],pro[1]);
+                     Physics.fixOverlap(pro[0],pro[1]);
                  }
                 Physics.collision(pro[0],pro[1]);
                
             }
             
             
-            for (int i = 0; i < proSize; i++) // Upply speed to projectiles.
+            for (int i = 0; i < proSize; i++) // apply speed to projectiles.
             {
 
                 pro[i]._x += deltaT*pro[i]._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
@@ -176,8 +176,12 @@ public class attempt extends JPanel {
                 
                 if (pro[i]._x < -1000 || pro[i]._x > 2000 || pro[i]._y < -1000 || pro[i]._y > 2000)
                 {
-                    pro[i]._x = 50 + i*60;
-                    pro[i]._y = 50 + i*60;
+                	if ( 50 + i*pro[i]._rad*2 < 680)
+                		pro[i]._x = 50 + i*pro[i]._rad*2;
+                	
+                	if (50 + i*pro[i]._rad*2 < 550)
+                		pro[i]._y = 50 + i*pro[i]._rad*2;
+                	
                     if (pro[i]._vel.getSize() > 500)
                         pro[i]._vel.setSize(50);
                 }
@@ -185,9 +189,9 @@ public class attempt extends JPanel {
             
             
             
-            at.repaint();
+            at.repaint();		//repaint the screen
             processInput();
-            oldT = newT;
+            oldT = newT;		//update oldT to newT to remember this frames time for the next frame.
         }
     }
     
@@ -202,7 +206,7 @@ public class attempt extends JPanel {
         
         attempt attempt = new attempt();
         frame.add(attempt);
-        frame.setSize(680, 550);
+        frame.setSize(680, 550);	//setting window size
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -210,6 +214,6 @@ public class attempt extends JPanel {
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(gameloop, 0, 1);
+        timer.scheduleAtFixedRate(gameloop, 0, 1);	//setting fps
     }
 }

@@ -115,6 +115,7 @@ public class Vect
      return Math.sin(_dir)*_size;
  }
  
+ //multiplys the vector's size. can include negetive values; will reverse the vector.
  public void sizeMult(double scal)
  {
      if (scal > 0)

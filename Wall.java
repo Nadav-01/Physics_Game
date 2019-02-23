@@ -46,6 +46,7 @@ public class Wall extends Item
         _w = super._x + l;
     }
     
+    //checks if the wall collides with another item.
     public boolean isCol(Item other)
     {
         if (other instanceof Proj)

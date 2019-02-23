@@ -15,10 +15,10 @@ public class Physics
     // Upplys force on a projectile.
     public static void upplyF(Proj p, Vect f)
     {
-    	long newT = System.currentTimeMillis();
+    	long newT = System.currentTimeMillis();	//applying as much force as needed depending on how much time has passed since last frame.
     	long deltaT =  newT - attempt.oldT;
     	
-        f.sizeMult(deltaT/(p._mass*1000));
+        f.sizeMult(deltaT/(p._mass*1000));	// by formula v = v0 + at -> v = v0 + ft/m. divide by 1000 because messurment is in milliseconds.
         p._vel = Vec_Math.vectAdd(p._vel, f);
     }
     
@@ -38,7 +38,7 @@ public class Physics
     public static void upplyFric(Proj p)
     {
         Vect fric = new Vect(p._vel);
-        fric.setDir(fric.getDir() + (float)(Math.PI));
+        fric.setDir(fric.getDir() + (float)(Math.PI));	//friction is in opposite direction to velocity.
         fric.setSize(fric.getSize() * Physics.airFric);
         fric = new Vect(fric.getX()/3,fric.getY());
         Physics.upplyF(p, fric);
@@ -51,22 +51,22 @@ public class Physics
             upplyFric(p[i]);
     }
     
-    public static double kineticE(Proj p)
+    public static double kineticE(Proj p)	//returns kinetic energy- 0.5 * m * v^2
     {
         return p._mass * Math.pow(p._vel.getSize(),2)/2;
     }
     
-    public static double potenE(Proj p, Dimension winSize)
+    public static double potenE(Proj p, Dimension winSize)	//returns potential (height) energy- m*g*h
     {
         return p._mass * grav.getSize()*(winSize.getHeight()-p._y);
     }
     
-    public static double Energy(Proj p, Dimension winSize)
+    public static double Energy(Proj p, Dimension winSize)	//returns total energy- E_k + U_g
     {
         return kineticE(p) + potenE(p, winSize);
     }
     
-    public static Vect momentum(Proj p)
+    public static Vect momentum(Proj p)	//returns momentum- m*v
     {
         Vect mom = new Vect(p._vel);
         mom.sizeMult(p._mass);
@@ -74,6 +74,7 @@ public class Physics
     }
     /*
      * only send 2 projectiles that are colliding now.
+     * used formula from wikipedia.
      */
     public static void collision(Proj a, Proj b)
     {
@@ -139,7 +140,7 @@ public class Physics
             System.out.println("Error: cannot collide non colliding items");
             //return;
         }
-        a._vel.sizeMult(0.98);
+        //a._vel.sizeMult(0.98);
         if (a.getCentX() <= b._x)
             Vec_Math.flipLeft(a._vel);
         else if (a.getCentX() >= b._w)
@@ -150,39 +151,41 @@ public class Physics
             Vec_Math.flipDown(a._vel);
     }
     
+    //checks if two items are colliding using the function built into them.
     public static boolean areColliding(Item a, Item b)
     {
         return a.isCol(b);
     }
     
-    
+    //returns the distance between the centers of 2 projectiles.
     public static double projDist(Proj a, Proj b)
     {
         return Math.sqrt(Math.pow(Math.abs(a.getCentX() - b.getCentX()),2) + Math.pow(Math.abs(a.getCentY() - b.getCentY()),2) );
     }
 
-	public static boolean isOverlapse(Proj a, Proj b) 
+    //checks if there is overlap between two projectiles.
+	public static boolean isOverlap(Proj a, Proj b) 
 	{
-		double dist = Math.sqrt(Math.pow(a.getCentX()-b.getCentX(),2) + Math.pow(a.getCentY()-b.getCentY(),2));
-    	if (a._rad + b._rad > dist*0.95)
+		double dist = projDist(a,b);
+		if (a._rad + b._rad > dist*0.95)	//checks if the distance between the projectiles is smaller then the sum of their radius'.
 	    	return true;
     	return false;
 	}
 
-	public static void fixOverlapse(Proj a, Proj b)
+	//fixes overlap between two overlapping projectiles.
+	public static void fixOverlap(Proj a, Proj b)
 	{
-		double dist = Math.sqrt(Math.pow(a.getCentX() - b.getCentX(),2) + Math.pow(a.getCentY()-b.getCentY(),2));
-		
-		double angle = Math.atan(((a.getCentY() - b.getCentY())/(a.getCentX() - b.getCentX())));
-		if (a.getCentX() < b.getCentX())
+		double dist = projDist(a,b);		
+		double angle = Math.atan(((a.getCentY() - b.getCentY())/(a.getCentX() - b.getCentX())));	//gets the angle between a and b.
+		if (a.getCentX() < b.getCentX())	//if a is more left then b, add PI to the angle, so the math will work.
 			angle += Math.PI;
 		
 		double d = a._rad + b._rad - dist;
-		d *= 1.01;
+		d *= 1.05;
 		
-		a._x += d * Math.cos(angle) * b._mass/(a._mass + b._mass);
-		a._y += d * Math.sin(angle) * b._mass/(a._mass + b._mass);
-		b._x -= d * Math.cos(angle) * a._mass/(a._mass + b._mass);
+		a._x += d * Math.cos(angle) * b._mass/(a._mass + b._mass);	//changes the location of both projectiles,
+		a._y += d * Math.sin(angle) * b._mass/(a._mass + b._mass);	//inversly proportional to their mass,
+		b._x -= d * Math.cos(angle) * a._mass/(a._mass + b._mass);	//so they wont overlap anymore.
 		b._y -= d * Math.sin(angle) * a._mass/(a._mass + b._mass);
 	}
 }

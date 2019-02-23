@@ -1,6 +1,6 @@
 package src;
 
-// Super class of things that interact with eachother on screen. Cannot be initialized on its own, must be a type.
+// Super class of things that interact with each other on screen. Cannot be initialized on its own, must be a type.
 
 public abstract class Item
 {

@@ -8,12 +8,16 @@ public class Proj extends Item
     public double _rad;
     public double _mass;
     
+    
+    //constructor using x,y coordinates and a radius.
     public Proj(double x, double y, double rad)
     {
         super(x,y);
         _rad = rad;
         _mass = Math.PI * Math.pow(_rad,2);
     }
+    
+    //constructor using x,y coordinates, velocity x and y coordinates, and a radius.
     public Proj(double x, double y, double velX, double velY, double rad)
     {
         _x = x;
@@ -22,6 +26,8 @@ public class Proj extends Item
         _rad = rad;
         _mass = Math.PI * Math.pow(_rad,2);
     }
+    
+    //copy constructor.
 	public Proj(Proj p)
     {
         _x = p._x;
@@ -31,7 +37,7 @@ public class Proj extends Item
         _mass = p._mass;
     }
 
-    
+    //TODO- make these function unnecessary by using the x and y values in item as the center.
     public double getCentX()
     {
         return _x + _rad;
@@ -42,6 +48,8 @@ public class Proj extends Item
         return _y + _rad;
     }
     
+    
+    //checks if another item is colliding with this projectile.
     public boolean isCol(Item other)
     {
         if (other instanceof Proj)
