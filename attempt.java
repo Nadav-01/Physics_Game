@@ -75,24 +75,34 @@ public class attempt extends JPanel {
     }
     
     public attempt() {  // Implementing keylistener
-        KeyListener listener = new MyKeyListener();
+    	InputManager manage = new InputManager();
+        KeyListener listener = manage.new MyKeyListener();
         addKeyListener(listener);
         setFocusable(true);
     }
     
     
 
-    public class MyKeyListener implements KeyListener {
+    
+    
+    public static class gameloop extends TimerTask
+    {
     	
-    	int POWER = 40000000;
-        @Override
-        public void keyTyped(KeyEvent e) {
+    	
+        public attempt at;
+        
+        static int action;
+        
+        public gameloop(attempt att)
+        {
+            at = att;
         }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            int action = e.getExtendedKeyCode();
-            if (action == up)
+        
+        public static void processInput()
+        {
+        	int POWER = 4000000;
+        	action = InputManager.action;
+        	if (action == up)
             {
                 System.out.println("up");
                 Physics.upplyF(pro[0], new Vect(POWER,(float)(Math.PI/2)));
@@ -122,25 +132,12 @@ public class attempt extends JPanel {
             	inintilizeProj();
             }
         }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-        }
-    }
-    
-    public static class gameloop extends TimerTask
-    {
-    	
-    	
-        public attempt at;
-        public gameloop(attempt att)
-        {
-            at = att;
-        }
+        
         public void run()
         {
         	long newT = System.currentTimeMillis();
         	long deltaT = newT - oldT;
+        	
             // Upply gravity and friction to all projectiles.
             
             Physics.upplyG(pro, 2);
@@ -189,9 +186,12 @@ public class attempt extends JPanel {
             
             
             at.repaint();
+            processInput();
             oldT = newT;
         }
     }
+    
+    
     
     public static void main(String[] args)
     {
@@ -210,6 +210,6 @@ public class attempt extends JPanel {
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(gameloop, 0, 5);
+        timer.scheduleAtFixedRate(gameloop, 0, 1);
     }
 }
