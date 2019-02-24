@@ -51,7 +51,7 @@ public class Wall extends Item
     {
         if (other instanceof Proj)
         {
-            return (Math.abs(other._y - _z) <= ((Proj)other)._rad) || (Math.abs(other._y - _y) <= ((Proj)other)._rad) || (Math.abs(other._x - _w) <= ((Proj)other)._rad) || (Math.abs(other._x - _x) <= ((Proj)other)._rad);
+            return other.isCol(this);
         }
         
         else if (other instanceof Wall)

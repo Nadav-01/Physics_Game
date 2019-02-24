@@ -29,8 +29,13 @@ public class attempt extends JPanel {
     
     static final int PLAYER_SIZE = 60;
     static Proj[] pro; // Projectile array
-    static Wall[] walls = {new Wall(-220,480,780,750), new Wall(-220,-220,20,750 ), new Wall(580,-120,780,750), new Wall(-220,-220,780,20)};   // Wall array
-    							// floor							// leftwall					// rightwall					// ceiling
+    static Wall[] walls = {	new Wall(-220,480,780,750),		// floor
+    						new Wall(-220,-220,20,750 ),	// leftwall	
+    						new Wall(580,-120,780,750), 	// rightwall
+    						new Wall(-220,-220,780,20),		// ceiling
+    						new Wall(200,200,250,250)
+    };   // Wall array
+    																							
     static int proSize;
     static int wallSize = walls.length;
     
@@ -40,7 +45,8 @@ public class attempt extends JPanel {
     
     public static void inintilizeProj()	//initilize projectile array.
     {
-    	pro = new Proj[] { new Proj(300,300,PLAYER_SIZE) , new Proj(50,50,PLAYER_SIZE/2), new Proj(100,300,PLAYER_SIZE/2), new Proj(200,300,PLAYER_SIZE/3) }; 
+    	pro = new Proj[] { 	new Proj(300,300,PLAYER_SIZE),
+    						new Proj(50,50,PLAYER_SIZE/2)}; 
     	proSize = pro.length;
     }
     
@@ -160,7 +166,7 @@ public class attempt extends JPanel {
                 {
                     if (Physics.areColliding((Item)pro[i],(Item)walls[j]))
                     {
-                        System.out.println("bounce");
+                        System.out.println("bounce wall");
                         Physics.collision(pro[i],walls[j]);
                     }
                 }

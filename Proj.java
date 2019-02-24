@@ -60,7 +60,30 @@ public class Proj extends Item
         else if (other instanceof Wall)
         {
             // Checks if the distance between the center of the projectile and any of the corners of  the wall is smaller then its radius.
-            return (Math.abs(this.getCentY() - ((Wall)other)._z) <= _rad) || (Math.abs(other._y - this.getCentY()) <= _rad) || (Math.abs(this.getCentX() - ((Wall)other)._w) <= _rad) || (Math.abs(other._x - this.getCentX()) <= _rad);
+            return 	
+            		((Math.abs(this.getCentY() - ((Wall)other)._z) <= _rad
+            		&&
+            		this.getCentX() <= ((Wall)other)._w + _rad
+            		&&
+            		this.getCentX() >= ((Wall)other)._x - _rad)
+            		||
+            		(Math.abs(other._y - this.getCentY()) <= _rad
+            		&&
+            		this.getCentX() <= ((Wall)other)._w + _rad 
+            		&&
+            		this.getCentX() >= ((Wall)other)._x - _rad )
+            		||
+            		(Math.abs(this.getCentX() - ((Wall)other)._w) <= _rad
+            		&&
+            		this.getCentY() <= ((Wall)other)._z + _rad
+            		&&
+            		this.getCentY() >= ((Wall)other)._y - _rad)
+					||
+            		(Math.abs(other._x - this.getCentX()) <= _rad
+            		&&
+            		this.getCentY() <= ((Wall)other)._z + _rad
+            		&&
+            		this.getCentY() >= ((Wall)other)._y - _rad));
         }
         else
         {
