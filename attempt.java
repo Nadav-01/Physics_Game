@@ -29,7 +29,8 @@ public class attempt extends JPanel {
     
     static final int PLAYER_SIZE = 60;
     static Proj[] pro; // Projectile array
-    static Wall[] walls = {new Wall(-20,480,680,520), new Wall(-20,-20,20,550), new Wall(630,-20,670,550), new Wall(-20,-20,680,20)};   // Wall array
+    static Wall[] walls = {new Wall(-220,480,780,750), new Wall(-220,-220,20,750 ), new Wall(580,-120,780,750), new Wall(-220,-220,780,20)};   // Wall array
+    							// floor							// leftwall					// rightwall					// ceiling
     static int proSize;
     static int wallSize = walls.length;
     
@@ -39,7 +40,7 @@ public class attempt extends JPanel {
     
     public static void inintilizeProj()	//initilize projectile array.
     {
-    	pro = new Proj[] { new Proj(300,300,PLAYER_SIZE/2) , new Proj(50,50,PLAYER_SIZE) }; 
+    	pro = new Proj[] { new Proj(300,300,PLAYER_SIZE) , new Proj(50,50,PLAYER_SIZE/2) }; 
     	proSize = pro.length;
     }
     
@@ -65,7 +66,7 @@ public class attempt extends JPanel {
             g2d.fillRect((int)walls[i]._x, (int)walls[i]._y, (int)walls[i].getLength(), (int)walls[i].getHeight());
         
         g2d.drawOval((int)pro[0]._x, (int)pro[0]._y, (int)pro[0]._rad*2, (int)pro[0]._rad*2);   // Paint player
-        g2d.drawRect((int)pro[0]._x, (int)pro[0]._y, PLAYER_SIZE, PLAYER_SIZE);
+        //g2d.drawRect((int)pro[0]._x, (int)pro[0]._y, (int)pro[0]._rad*2, (int)pro[0]._rad*2);
         
         g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 100);   // Debug info
         g2d.drawString("dir = " + pro[0]._vel.getDir(), 200, 150);
@@ -214,6 +215,6 @@ public class attempt extends JPanel {
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(gameloop, 0, 1);	//setting fps
+        timer.scheduleAtFixedRate(gameloop, 0, 7);	//setting fps
     }
 }

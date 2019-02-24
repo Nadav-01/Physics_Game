@@ -104,7 +104,6 @@ public class Physics
     	
     	Vect u1 = Vec_Math.vectAdd(v1, finalVect1);
     	Vect u2 = Vec_Math.vectAdd(v2, finalVect2);
-    	
     	a._vel = new Vect(u1);
     	b._vel = new Vect(u2);
       
@@ -140,7 +139,7 @@ public class Physics
             System.out.println("Error: cannot collide non colliding items");
             //return;
         }
-        //a._vel.sizeMult(0.98);
+        a._vel.sizeMult(0.99);
         if (a.getCentX() <= b._x)
             Vec_Math.flipLeft(a._vel);
         else if (a.getCentX() >= b._w)
