@@ -139,15 +139,72 @@ public class Physics
             System.out.println("Error: cannot collide non colliding items");
             //return;
         }
-        a._vel.sizeMult(0.99);
-        if (a.getCentX() <= b._x)
-            Vec_Math.flipLeft(a._vel);
-        else if (a.getCentX() >= b._w)
-            Vec_Math.flipRight(a._vel);
-        else if (a.getCentY() <= b._y)
-            Vec_Math.flipUp(a._vel);
+        
+        int corner = cornerCollision(a,b);
+        if (corner == 0)
+        {
+	        a._vel.sizeMult(0.99);
+	        if (a.getCentX() <= b._x)
+	            Vec_Math.flipLeft(a._vel);
+	        else if (a.getCentX() >= b._w)
+	            Vec_Math.flipRight(a._vel);
+	        else if (a.getCentY() <= b._y)
+	            Vec_Math.flipUp(a._vel);
+	        else
+	            Vec_Math.flipDown(a._vel);
+        }
         else
-            Vec_Math.flipDown(a._vel);
+        {
+        	//TODO - create class CircleWall and replace collision here in collision from there.
+        	double x = 0, y = 0;
+        	switch (corner) {
+        	case 1:
+        		x = b._x;
+        		y = b._y;
+        		break;
+        	case 2:
+        		x = b._w;
+        		y = b._y;
+        		break;
+        	case 3:
+        		x = b._w;
+        		y = b._z;
+        		break;
+        	case 4:
+        		x = b._x;
+        		y = b._z;
+        	}
+        	
+        	Proj temp = new Proj (x,y,3);
+        	temp._mass = 100000000;
+        	
+        	collision(a,temp); 
+        	
+        }
+    }
+    
+    public static int cornerCollision(Proj p, Wall other)
+    {
+    	
+    		boolean fromBelow =	Math.abs(p.getCentY() - ((Wall)other)._z) <= p._rad;
+
+    		boolean fromAbove =	Math.abs(other._y - p.getCentY()) <= p._rad;
+
+        	boolean fromLeft = 	Math.abs(p.getCentX() - ((Wall)other)._w) <= p._rad;
+
+        	boolean fromRight = Math.abs(other._x - p.getCentX()) <= p._rad;
+
+    	
+    	if (fromAbove&&fromLeft)
+    		return 1;
+    	if (fromAbove&&fromRight)
+    		return 2;
+    	if (fromBelow&&fromRight)
+    		return 3;
+    	if (fromBelow&&fromLeft)
+    		return 4;
+    	
+    	return 0;
     }
     
     //checks if two items are colliding using the function built into them.
