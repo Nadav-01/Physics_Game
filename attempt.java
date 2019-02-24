@@ -40,7 +40,7 @@ public class attempt extends JPanel {
     
     public static void inintilizeProj()	//initilize projectile array.
     {
-    	pro = new Proj[] { new Proj(300,300,PLAYER_SIZE) , new Proj(50,50,PLAYER_SIZE/2) }; 
+    	pro = new Proj[] { new Proj(300,300,PLAYER_SIZE) , new Proj(50,50,PLAYER_SIZE/2), new Proj(100,300,PLAYER_SIZE/2), new Proj(200,300,PLAYER_SIZE/3) }; 
     	proSize = pro.length;
     }
     
@@ -57,11 +57,20 @@ public class attempt extends JPanel {
     
     public void putItems(Graphics2D g2d)
     {
-        g2d.setColor(Color.red);
-        g2d.fillOval((int)pro[1]._x, (int)pro[1]._y, (int)pro[1]._rad*2, (int)pro[1]._rad*2);   // Paint negetive player
+        
+        
+        
         
         g2d.setColor(Color.black);
+        for (int i = 0; i < proSize; i++)	//paints projectiles
+        {
+        	g2d.drawOval((int)pro[i]._x, (int)pro[i]._y, (int)pro[i]._rad*2, (int)pro[i]._rad*2);   // Paint projectiles
+        }
         
+        g2d.setColor(Color.red);
+        g2d.fillOval((int)pro[1]._x, (int)pro[1]._y, (int)pro[1]._rad*2, (int)pro[1]._rad*2);   // Paint negetive proj
+
+        g2d.setColor(Color.black);
         for (int i = 0; i < wallSize; i++) // Paints walls
             g2d.fillRect((int)walls[i]._x, (int)walls[i]._y, (int)walls[i].getLength(), (int)walls[i].getHeight());
         
@@ -141,7 +150,7 @@ public class attempt extends JPanel {
         	long deltaT = newT - oldT;				//gets the difference of the times between last frame and now.
         	
             // Upply gravity and friction to all projectiles.
-            Physics.upplyG(pro, 2);
+            Physics.upplyG(pro, proSize);
             //Physics.upplyFric(pro, 2);
             
 
@@ -158,6 +167,23 @@ public class attempt extends JPanel {
             }
             
             //TODO- update for large array of projectiles.
+            
+            for (int i = 0; i < proSize; i++) // Check all combination of items that can collide with each other
+            {
+                for (int j = i+1; j < proSize; j++)
+                {
+                    if (Physics.areColliding((Item)pro[i],(Item)pro[j]))
+                    {
+                        System.out.println("bounce");
+                        if(Physics.isOverlap(pro[i],pro[j]))
+                        {
+                            Physics.fixOverlap(pro[i],pro[j]);
+                        }
+                       Physics.collision(pro[i],pro[j]);
+                    }
+                }
+            }
+            /*
             if(Physics.areColliding(pro[0],pro[1]))	//collision calculations and updates
             {
             	 if(Physics.isOverlap(pro[0],pro[1]))
@@ -167,7 +193,7 @@ public class attempt extends JPanel {
                 Physics.collision(pro[0],pro[1]);
                
             }
-            
+            */
             
             for (int i = 0; i < proSize; i++) // apply speed to projectiles.
             {
