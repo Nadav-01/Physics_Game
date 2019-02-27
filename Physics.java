@@ -79,10 +79,24 @@ public class Physics
     public static void collision(Proj a, Proj b)
     {
     	
-    	Vect v1 = new Vect(a._vel);
-    	Vect v2 = new Vect(b._vel);
-    	Vect x1 = new Vect(a.getCentX(), a.getCentY());
-    	Vect x2 = new Vect(b.getCentX(), b.getCentY());
+    	double angle = Math.atan(((a.getCentY() - b.getCentY())/(a.getCentX() - b.getCentX())));	//gets the angle between a and b.
+		if (a.getCentX() < b.getCentX())	//if a is more left then b, add PI to the angle, so the math will work.
+			angle += Math.PI;
+    	
+		Vect col1 = new Vect(Math.cos(angle), Math.sin(angle));
+		Vect col2 = new Vect(-Math.sin(angle),Math.cos(angle));
+		Matrix trans = new Matrix(col1,col2);
+		
+		col1 = new Vect(Math.cos(-angle), Math.sin(-angle));
+		col2 = new Vect(-Math.sin(-angle),Math.cos(-angle));
+		Matrix reverse = new Matrix(col1,col2);
+		
+    	Vect v1 = Vec_Math.transform(trans, new Vect(a._vel));
+    	Vect v2 = Vec_Math.transform(trans, new Vect(b._vel));
+    	
+    	Vect x1 = Vec_Math.transform(trans, new Vect(a.getCentX(), a.getCentY()));
+    	Vect x2 = Vec_Math.transform(trans, new Vect(b.getCentX(), b.getCentY()));
+    	
     	
     	double m1 = a._mass;
     	double m2 = b._mass;
@@ -104,8 +118,8 @@ public class Physics
     	
     	Vect u1 = Vec_Math.vectAdd(v1, finalVect1);
     	Vect u2 = Vec_Math.vectAdd(v2, finalVect2);
-    	a._vel = new Vect(u1);
-    	b._vel = new Vect(u2);
+    	a._vel = Vec_Math.transform(reverse, new Vect(u1));
+    	b._vel = Vec_Math.transform(reverse,new Vect(u2));
       
 
     	
@@ -176,7 +190,7 @@ public class Physics
         	}
         	
         	Proj temp = new Proj (x,y,3);
-        	temp._mass = 100000000;
+        	temp._mass = 10000000;
         	
         	collision(a,temp); 
         	
@@ -216,7 +230,7 @@ public class Physics
     //returns the distance between the centers of 2 projectiles.
     public static double projDist(Proj a, Proj b)
     {
-        return Math.sqrt(Math.pow(Math.abs(a.getCentX() - b.getCentX()),2) + Math.pow(Math.abs(a.getCentY() - b.getCentY()),2) );
+        return Math.sqrt(Math.pow(a.getCentX() - b.getCentX(),2) + Math.pow(a.getCentY() - b.getCentY(),2) );
     }
 
     //checks if there is overlap between two projectiles.

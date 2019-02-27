@@ -159,7 +159,7 @@ public class attempt extends JPanel {
             Physics.upplyG(pro, proSize);
             //Physics.upplyFric(pro, 2);
             
-
+            
             for (int i = 0; i < proSize; i++) // Check all combination of items that can collide with each other
             {
                 for (int j = 0; j < wallSize; j++)
@@ -171,8 +171,6 @@ public class attempt extends JPanel {
                     }
                 }
             }
-            
-            //TODO- update for large array of projectiles.
             
             for (int i = 0; i < proSize; i++) // Check all combination of items that can collide with each other
             {
@@ -203,9 +201,11 @@ public class attempt extends JPanel {
             
             for (int i = 0; i < proSize; i++) // apply speed to projectiles.
             {
-
-                pro[i]._x += deltaT*pro[i]._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
-                pro[i]._y -= deltaT*pro[i]._vel.getY()/1000;    //coordinate system flipped because window starts in upper left.
+            	
+            	
+            	 pro[i]._x += deltaT*pro[i]._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
+                 pro[i]._y -= deltaT*pro[i]._vel.getY()/1000;    //coordinate system flipped because window starts in upper left.
+                
                 
                 if (pro[i]._x < -1000 || pro[i]._x > 2000 || pro[i]._y < -1000 || pro[i]._y > 2000)
                 {
