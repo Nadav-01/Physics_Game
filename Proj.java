@@ -8,7 +8,6 @@ public class Proj extends Item
     public double _rad;
     public double _mass;
     
-    
     //constructor using x,y coordinates and a radius.
     public Proj(double x, double y, double rad)
     {

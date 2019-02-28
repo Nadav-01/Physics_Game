@@ -33,7 +33,7 @@ public class attempt extends JPanel {
     						new Wall(-220,-220,20,750 ),	// leftwall	
     						new Wall(580,-120,780,750), 	// rightwall
     						new Wall(-220,-220,780,20),		// ceiling
-    						new Wall(200,200,250,250)
+    						//new Wall(200,200,250,250)
     };   // Wall array
     																							
     static int proSize;
@@ -176,8 +176,10 @@ public class attempt extends JPanel {
             
             for (int i = 0; i < proSize; i++) // Check all combination of items that can collide with each other
             {
+            	
                 for (int j = i+1; j < proSize; j++)
                 {
+                	
                     if (Physics.areColliding((Item)pro[i],(Item)pro[j]))
                     {
                         System.out.println("bounce");
@@ -205,9 +207,10 @@ public class attempt extends JPanel {
             {
             	
             	
-            	 pro[i]._x += deltaT*pro[i]._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
-                 pro[i]._y -= deltaT*pro[i]._vel.getY()/1000;    //coordinate system flipped because window starts in upper left.
-                
+
+        		pro[i]._x += deltaT*pro[i]._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
+        		pro[i]._y -= deltaT*pro[i]._vel.getY()/1000;    //coordinate system flipped because window starts in upper left.
+
                 
                 if (pro[i]._x < -1000 || pro[i]._x > 2000 || pro[i]._y < -1000 || pro[i]._y > 2000)
                 {
