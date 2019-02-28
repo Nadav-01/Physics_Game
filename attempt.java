@@ -33,7 +33,7 @@ public class attempt extends JPanel {
     						new Wall(-220,-220,20,750 ),	// leftwall	
     						new Wall(580,-120,780,750), 	// rightwall
     						new Wall(-220,-220,780,20),		// ceiling
-    						//new Wall(200,200,250,250)
+    						new Wall(200,200,250,250)
     };   // Wall array
     																							
     static int proSize;

@@ -327,12 +327,35 @@ public class Physics
 	//fixes overlap between overlapping projectile and wall.
 	public static void fixOverlap(Proj a, Wall b)
 	{
-		double dir = a._vel.getDir()-Math.PI;
-		while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
-		{
-			a._x += Math.cos(dir)/10;
-			a._y -= Math.sin(dir)/10;
+		
+		boolean fromBelow =	a._y >= b._z;
+
+		boolean fromAbove =	a._y <= b._y;
+
+    	boolean fromLeft = 	a._x <= b._x;
+
+    	boolean fromRight = a._x >= b._w;
+    	
+    	
+    	
+		if (fromBelow)
+			a._y = b._z + a._rad;
+		if (fromAbove)
+			a._y = b._y - a._rad;
+		if (fromLeft)
+			a._x = b._x - a._rad;
+		if (fromRight)
+			a._x = b._w + a._rad;
+    	
+    	if (false)
+    	{
+			double dir = a._vel.getDir()-Math.PI;
+			while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
+			{
+				a._x += Math.cos(dir)/10;
+				a._y -= Math.sin(dir)/10;
 		}
+    	}
 		
 	}
 	
