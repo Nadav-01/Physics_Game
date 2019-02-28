@@ -75,6 +75,11 @@ public class Proj extends Item
             		&&
             		this._y >= ((Wall)other)._y - _rad));
         }
+        else if (other instanceof RoundWall)
+        {
+        	return (Physics.projDist(this,((RoundWall)other)) <= _rad + ((RoundWall)other)._rad); 
+        }
+        
         else
         {
             System.out.println("Error: got non Wall or Projectile item int isCol");

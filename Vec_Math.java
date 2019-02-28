@@ -73,5 +73,11 @@ public abstract class Vec_Math
     	 Vect ret = new Vect(dot_prod(a.getHvec1(),b),dot_prod(a.getHvec2(),b));
     	 return ret;	
     }
+
+	public static void flipAxis(Vect v, double angle)
+	{
+		double newDir = angle-v.getDir();
+		v.setDir((float)(v.getDir() + 2 * newDir));
+	}
     
 }

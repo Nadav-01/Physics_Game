@@ -33,7 +33,7 @@ public class attempt extends JPanel {
     						new Wall(-220,-220,20,750 ),	// leftwall	
     						new Wall(580,-120,780,750), 	// rightwall
     						new Wall(-220,-220,780,20),		// ceiling
-    						/*new Wall(200,200,250,250)*/
+    						new Wall(200,200,250,250)
     };   // Wall array
     																							
     static int proSize;
@@ -46,8 +46,11 @@ public class attempt extends JPanel {
     public static void inintilizeProj()	//initilize projectile array.
     {
     	pro = new Proj[] { 	new Proj(300,300,PLAYER_SIZE),
-    						new Proj(50,50,PLAYER_SIZE/2)
+    						new Proj(250,250,PLAYER_SIZE/2),
+    						new Proj(250,250,PLAYER_SIZE/2),
+    						new Proj(250,250,PLAYER_SIZE/2)
     						}; 
+    	pro[0]._mass = pro[1]._mass;
     	proSize = pro.length;
     }
     
@@ -178,10 +181,10 @@ public class attempt extends JPanel {
                     if (Physics.areColliding((Item)pro[i],(Item)pro[j]))
                     {
                         System.out.println("bounce");
-                        if(Physics.isOverlap(pro[i],pro[j]))
+                       /* if(Physics.isOverlap(pro[i],pro[j]))
                         {
                             Physics.fixOverlap(pro[i],pro[j]);
-                        }
+                        }*/
                        Physics.collision(pro[i],pro[j]);
                     }
                 }
@@ -246,6 +249,6 @@ public class attempt extends JPanel {
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(gameloop, 0, 7);	//setting fps
+        timer.scheduleAtFixedRate(gameloop, 0, 1);	//setting fps
     }
 }

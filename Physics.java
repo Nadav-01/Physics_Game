@@ -78,7 +78,10 @@ public class Physics
      */
     public static void collision(Proj a, Proj b)
     {
-    	
+    	if(Physics.isOverlap(a,b))
+        {
+            Physics.fixOverlap(a,b);
+        }
     	double angle = Math.atan(((a._y - b._y)/(a._x - b._x)));	//gets the angle between a and b.
 		if (a._x < b._x)	//if a is more left then b, add PI to the angle, so the math will work.
 			angle += Math.PI;
@@ -154,6 +157,11 @@ public class Physics
             //return;
         }
         
+        if(Physics.isOverlap(a,b))
+        {
+            Physics.fixOverlap(a,b);
+        }
+        
         int corner = cornerCollision(a,b);
         if (corner == 0)
         {
@@ -189,13 +197,28 @@ public class Physics
         		y = b._z;
         	}
         	
-        	Proj temp = new Proj (x,y,2);
-        	temp._mass = 100000000;
+        	RoundWall temp = new RoundWall (x,y,0.05);
         	
         	collision(a,temp); 
         	
         }
     }
+    public static void collision(Proj a, RoundWall b)
+    {
+    	
+    	if(Physics.isOverlap(a,b))
+        {
+            Physics.fixOverlap(a,b);
+        }
+    	
+    	double angle = Math.atan(((a._y - b._y)/(a._x - b._x)));	//gets the angle between a and b.
+		if (a._x < b._x)	//if a is more left then b, add PI to the angle, so the math will work.
+			angle += Math.PI;
+    	
+    	Vec_Math.flipAxis(a._vel,angle);
+		
+    }
+    
     
     public static int cornerCollision(Proj p, Wall other)
     {
@@ -232,7 +255,19 @@ public class Physics
     {
         return Math.sqrt(Math.pow(a._x - b._x,2) + Math.pow(a._y - b._y,2) );
     }
+    
+    //returns the distance between the centers of a projectile and a round wall.
+    public static double projDist(Proj a, RoundWall b)
+    {
+        return Math.sqrt(Math.pow(a._x - b._x,2) + Math.pow(a._y - b._y,2) );
+    }
 
+  //returns the distance between the centers of 2 round walls.
+    public static double projDist(RoundWall a, RoundWall b)
+    {
+        return Math.sqrt(Math.pow(a._x - b._x,2) + Math.pow(a._y - b._y,2) );
+    }
+    
     //checks if there is overlap between two projectiles.
 	public static boolean isOverlap(Proj a, Proj b) 
 	{
@@ -257,5 +292,64 @@ public class Physics
 		a._y += d * Math.sin(angle) * b._mass/(a._mass + b._mass);	//inversly proportional to their mass,
 		b._x -= d * Math.cos(angle) * a._mass/(a._mass + b._mass);	//so they wont overlap anymore.
 		b._y -= d * Math.sin(angle) * a._mass/(a._mass + b._mass);
+	}
+	
+	//checks if there's overlap between a projectile and a wall
+	public static boolean isOverlap(Proj a, Wall b) 
+	{
+		return ((Math.abs(a._y - b._z) < a._rad
+        		&&
+        		a._x < b._w + a._rad
+        		&&
+        		a._x > b._x - a._rad)
+        		||
+        		(Math.abs(b._y - a._y) < a._rad
+        		&&
+        		a._x < b._w + a._rad 
+        		&&
+        		a._x > b._x - a._rad )
+        		||
+        		(Math.abs(a._x - b._w) < a._rad
+        		&&
+        		a._y < b._z + a._rad
+        		&&
+        		a._y > b._y - a._rad)
+				||
+        		(Math.abs(b._x - a._x) < a._rad
+        		&&
+        		a._y < b._z + a._rad
+        		&&
+        		a._y > b._y - a._rad));
+	}
+	
+	//fixes overlap between overlapping projectile and wall.
+	public static void fixOverlap(Proj a, Wall b)
+	{
+		double dir = a._vel.getDir()-Math.PI;
+		while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
+		{
+			a._x += Math.cos(dir);
+			a._y -= Math.sin(dir);
+		}
+		
+	}
+	
+	public static boolean isOverlap(Proj a, RoundWall b) 
+	{
+		double dist = projDist(a,b);
+		if (a._rad + b._rad > dist)	//checks if the distance between the projectiles is smaller then the sum of their radius'.
+	    	return true;
+    	return false;
+	}
+
+	//fixes overlap between two overlapping projectiles.
+	public static void fixOverlap(Proj a, RoundWall b)
+	{
+		double dir = a._vel.getDir()-Math.PI;
+		while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
+		{
+			a._x += Math.cos(dir);
+			a._y -= Math.sin(dir);
+		}
 	}
 }

@@ -79,6 +79,10 @@ public class Wall extends Item
                 }
             }
         }
+        else if (other instanceof RoundWall)
+        {
+        	return other.isCol(this);
+        }
         else
         {
             System.out.println("Error: got non Wall or Projectile item int isCol");
