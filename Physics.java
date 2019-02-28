@@ -94,8 +94,8 @@ public class Physics
     	Vect v1 = Vec_Math.transform(trans, new Vect(a._vel));
     	Vect v2 = Vec_Math.transform(trans, new Vect(b._vel));
     	
-    	Vect x1 = Vec_Math.transform(trans, new Vect(a._x, a._y));
-    	Vect x2 = Vec_Math.transform(trans, new Vect(b._x, b._y));
+    	Vect x1 = Vec_Math.transform(trans, new Vect(a._x, -a._y));
+    	Vect x2 = Vec_Math.transform(trans, new Vect(b._x, -b._y));
     	
     	
     	double m1 = a._mass;
