@@ -38,16 +38,6 @@ public class Proj extends Item
     }
 
     //TODO- make these function unnecessary by using the x and y values in item as the center.
-    public double getCentX()
-    {
-        return _x + _rad;
-    }
-    
-    public double getCentY()
-    {
-        return _y + _rad;
-    }
-    
     
     //checks if another item is colliding with this projectile.
     public boolean isCol(Item other)
@@ -61,29 +51,29 @@ public class Proj extends Item
         {
             // Checks if the distance between the center of the projectile and any of the corners of  the wall is smaller then its radius.
             return 	
-            		((Math.abs(this.getCentY() - ((Wall)other)._z) <= _rad
+            		((Math.abs(this._y - ((Wall)other)._z) <= _rad
             		&&
-            		this.getCentX() <= ((Wall)other)._w + _rad
+            		this._x <= ((Wall)other)._w + _rad
             		&&
-            		this.getCentX() >= ((Wall)other)._x - _rad)
+            		this._x >= ((Wall)other)._x - _rad)
             		||
-            		(Math.abs(other._y - this.getCentY()) <= _rad
+            		(Math.abs(other._y - this._y) <= _rad
             		&&
-            		this.getCentX() <= ((Wall)other)._w + _rad 
+            		this._x <= ((Wall)other)._w + _rad 
             		&&
-            		this.getCentX() >= ((Wall)other)._x - _rad )
+            		this._x >= ((Wall)other)._x - _rad )
             		||
-            		(Math.abs(this.getCentX() - ((Wall)other)._w) <= _rad
+            		(Math.abs(this._x - ((Wall)other)._w) <= _rad
             		&&
-            		this.getCentY() <= ((Wall)other)._z + _rad
+            		this._y <= ((Wall)other)._z + _rad
             		&&
-            		this.getCentY() >= ((Wall)other)._y - _rad)
+            		this._y >= ((Wall)other)._y - _rad)
 					||
-            		(Math.abs(other._x - this.getCentX()) <= _rad
+            		(Math.abs(other._x - this._x) <= _rad
             		&&
-            		this.getCentY() <= ((Wall)other)._z + _rad
+            		this._y <= ((Wall)other)._z + _rad
             		&&
-            		this.getCentY() >= ((Wall)other)._y - _rad));
+            		this._y >= ((Wall)other)._y - _rad));
         }
         else
         {

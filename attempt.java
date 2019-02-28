@@ -70,18 +70,16 @@ public class attempt extends JPanel {
         g2d.setColor(Color.black);
         for (int i = 0; i < proSize; i++)	//paints projectiles
         {
-        	g2d.drawOval((int)pro[i]._x, (int)pro[i]._y, (int)pro[i]._rad*2, (int)pro[i]._rad*2);   // Paint projectiles
+        	g2d.drawOval((int)(pro[i]._x - pro[i]._rad), (int)(pro[i]._y - pro[i]._rad), (int)pro[i]._rad*2, (int)pro[i]._rad*2);   // Paint projectiles
         }
         
         g2d.setColor(Color.red);
-        g2d.fillOval((int)pro[1]._x, (int)pro[1]._y, (int)pro[1]._rad*2, (int)pro[1]._rad*2);   // Paint negetive proj
+        g2d.fillOval((int)(pro[1]._x - pro[1]._rad), (int)(pro[1]._y - pro[1]._rad), (int)pro[1]._rad*2, (int)pro[1]._rad*2);   // Paint negetive proj
 
         g2d.setColor(Color.black);
         for (int i = 0; i < wallSize; i++) // Paints walls
             g2d.fillRect((int)walls[i]._x, (int)walls[i]._y, (int)walls[i].getLength(), (int)walls[i].getHeight());
         
-        g2d.drawOval((int)pro[0]._x, (int)pro[0]._y, (int)pro[0]._rad*2, (int)pro[0]._rad*2);   // Paint player
-        //g2d.drawRect((int)pro[0]._x, (int)pro[0]._y, (int)pro[0]._rad*2, (int)pro[0]._rad*2);
         
         g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 100);   // Debug info
         g2d.drawString("dir = " + pro[0]._vel.getDir(), 200, 150);

@@ -79,8 +79,8 @@ public class Physics
     public static void collision(Proj a, Proj b)
     {
     	
-    	double angle = Math.atan(((a.getCentY() - b.getCentY())/(a.getCentX() - b.getCentX())));	//gets the angle between a and b.
-		if (a.getCentX() < b.getCentX())	//if a is more left then b, add PI to the angle, so the math will work.
+    	double angle = Math.atan(((a._y - b._y)/(a._x - b._x)));	//gets the angle between a and b.
+		if (a._x < b._x)	//if a is more left then b, add PI to the angle, so the math will work.
 			angle += Math.PI;
     	
 		Vect col1 = new Vect(Math.cos(angle), Math.sin(angle));
@@ -94,8 +94,8 @@ public class Physics
     	Vect v1 = Vec_Math.transform(trans, new Vect(a._vel));
     	Vect v2 = Vec_Math.transform(trans, new Vect(b._vel));
     	
-    	Vect x1 = Vec_Math.transform(trans, new Vect(a.getCentX(), a.getCentY()));
-    	Vect x2 = Vec_Math.transform(trans, new Vect(b.getCentX(), b.getCentY()));
+    	Vect x1 = Vec_Math.transform(trans, new Vect(a._x, a._y));
+    	Vect x2 = Vec_Math.transform(trans, new Vect(b._x, b._y));
     	
     	
     	double m1 = a._mass;
@@ -124,7 +124,7 @@ public class Physics
 
     	
     	/*
-        Vect temp = new Vect ((double)(b.getCentX() - a.getCentX()), (double)(b.getCentY() -a.getCentY()));
+        Vect temp = new Vect ((double)(b._x - a._x), (double)(b._y -a._y));
         Vect dir1 = new Vect((double)1,temp.getDir());
         Vect dir2 = new Vect((double)1,(float)(temp.getDir()+Math.PI/2));
         
@@ -158,11 +158,11 @@ public class Physics
         if (corner == 0)
         {
 	        a._vel.sizeMult(0.99);
-	        if (a.getCentX() <= b._x)
+	        if (a._x <= b._x)
 	            Vec_Math.flipLeft(a._vel);
-	        else if (a.getCentX() >= b._w)
+	        else if (a._x >= b._w)
 	            Vec_Math.flipRight(a._vel);
-	        else if (a.getCentY() <= b._y)
+	        else if (a._y <= b._y)
 	            Vec_Math.flipUp(a._vel);
 	        else
 	            Vec_Math.flipDown(a._vel);
@@ -189,8 +189,8 @@ public class Physics
         		y = b._z;
         	}
         	
-        	Proj temp = new Proj (x,y,3);
-        	temp._mass = 10000000;
+        	Proj temp = new Proj (x,y,2);
+        	temp._mass = 100000000;
         	
         	collision(a,temp); 
         	
@@ -200,13 +200,13 @@ public class Physics
     public static int cornerCollision(Proj p, Wall other)
     {
     	
-    		boolean fromBelow =	Math.abs(p.getCentY() - ((Wall)other)._z) <= p._rad;
+    		boolean fromBelow =	Math.abs(p._y - ((Wall)other)._z) <= p._rad;
 
-    		boolean fromAbove =	Math.abs(other._y - p.getCentY()) <= p._rad;
+    		boolean fromAbove =	Math.abs(other._y - p._y) <= p._rad;
 
-        	boolean fromLeft = 	Math.abs(p.getCentX() - ((Wall)other)._w) <= p._rad;
+        	boolean fromLeft = 	Math.abs(p._x - ((Wall)other)._w) <= p._rad;
 
-        	boolean fromRight = Math.abs(other._x - p.getCentX()) <= p._rad;
+        	boolean fromRight = Math.abs(other._x - p._x) <= p._rad;
 
     	
     	if (fromAbove&&fromLeft)
@@ -230,7 +230,7 @@ public class Physics
     //returns the distance between the centers of 2 projectiles.
     public static double projDist(Proj a, Proj b)
     {
-        return Math.sqrt(Math.pow(a.getCentX() - b.getCentX(),2) + Math.pow(a.getCentY() - b.getCentY(),2) );
+        return Math.sqrt(Math.pow(a._x - b._x,2) + Math.pow(a._y - b._y,2) );
     }
 
     //checks if there is overlap between two projectiles.
@@ -246,8 +246,8 @@ public class Physics
 	public static void fixOverlap(Proj a, Proj b)
 	{
 		double dist = projDist(a,b);		
-		double angle = Math.atan(((a.getCentY() - b.getCentY())/(a.getCentX() - b.getCentX())));	//gets the angle between a and b.
-		if (a.getCentX() < b.getCentX())	//if a is more left then b, add PI to the angle, so the math will work.
+		double angle = Math.atan(((a._y - b._y)/(a._x - b._x)));	//gets the angle between a and b.
+		if (a._x < b._x)	//if a is more left then b, add PI to the angle, so the math will work.
 			angle += Math.PI;
 		
 		double d = a._rad + b._rad - dist;
