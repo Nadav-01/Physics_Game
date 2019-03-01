@@ -29,11 +29,12 @@ public class attempt extends JPanel {
     
     static final int PLAYER_SIZE = 60;
     static Proj[] pro; // Projectile array
-    static Wall[] walls = {	new Wall(-220,480,780,750),		// floor
+    static Item[] walls = {	new Wall(-220,480,780,750),		// floor
     						new Wall(-220,-220,20,750 ),	// leftwall	
     						new Wall(580,-120,780,750), 	// rightwall
     						new Wall(-220,-220,780,20),		// ceiling
-    						new Wall(200,200,250,250)
+    						new Wall(200,200,250,250),
+    						new RoundWall(200,200,60)
     };   // Wall array
     																							
     static int proSize;
@@ -82,8 +83,12 @@ public class attempt extends JPanel {
 
         g2d.setColor(Color.black);
         for (int i = 0; i < wallSize; i++) // Paints walls
-            g2d.fillRect((int)walls[i]._x, (int)walls[i]._y, (int)walls[i].getLength(), (int)walls[i].getHeight());
-        
+        {
+        	if (walls[i] instanceof Wall)
+        		g2d.fillRect((int)walls[i]._x, (int)walls[i]._y, (int)((Wall)walls[i]).getLength(), (int)((Wall)walls[i]).getHeight());
+        	if (walls[i] instanceof RoundWall)
+        		g2d.fillOval((int)(((RoundWall)walls[i])._x - ((RoundWall)walls[i])._rad), (int)(((RoundWall)walls[i])._y - ((RoundWall)walls[i])._rad), (int)((RoundWall)walls[i])._rad*2, (int)((RoundWall)walls[i])._rad*2);
+        }
         
         g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 100);   // Debug info
         g2d.drawString("dir = " + pro[0]._vel.getDir(), 200, 150);
@@ -169,7 +174,7 @@ public class attempt extends JPanel {
                     if (Physics.areColliding((Item)pro[i],(Item)walls[j]))
                     {
                         System.out.println("bounce wall");
-                        Physics.collision(pro[i],walls[j]);
+                        Physics.collision(pro[i],(Item)walls[j]);
                     }
                 }
             }

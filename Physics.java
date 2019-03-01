@@ -146,8 +146,17 @@ public class Physics
        
     }
     
+    public static void collision(Proj a, Item b)
+    {
+    	if (b instanceof Proj)
+    		collision(a,(Proj)b);
+    	if (b instanceof Wall)
+    		collision(a,(Wall)b);
+    	if (b instanceof RoundWall)
+    		collision(a,(RoundWall)b);
+    }
     
-    // Collides a projectile with a wall, by flipping the correct axis in its velocity.
+    // Collides a projectile with a wall, by flipping the correct axis in its velocity.\
     public static void collision(Proj a, Wall b)
     {
 
