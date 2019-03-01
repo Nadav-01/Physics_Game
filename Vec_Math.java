@@ -76,7 +76,11 @@ public abstract class Vec_Math
 
 	public static void flipAxis(Vect v, double angle)
 	{
-		double newDir = angle-v.getDir();
+		double newDir = angle - v.getDir();
+		if (newDir > Math.PI)
+			newDir -= Math.PI;
+		if (newDir < -Math.PI)
+			newDir += Math.PI;
 		v.setDir((float)(v.getDir() + 2 * newDir));
 	}
     

@@ -215,19 +215,19 @@ public class Physics
     public static void collision(Proj a, RoundWall b)
     {
     	
-    	
-    	
-    	double angle = Math.atan(((a._y - b._y)/(a._x - b._x)));	//gets the angle between a and b.
-		if (a._x < b._x)	//if a is more left then b, add PI to the angle, so the math will work.
-			angle += Math.PI;
-    	
-    	angle += Math.PI/2;
-    	Vec_Math.flipAxis(a._vel,angle);
-    	
     	if(Physics.isOverlap(a,b))
         {
             Physics.fixOverlap(a,b);
         }
+    	
+    	double angle = Math.atan(((a._y - b._y)/(a._x - b._x)));	//gets the angle between a and b.
+		//if (a._x < b._x)	//if a is more left then b, add PI to the angle, so the math will work.
+			//angle += Math.PI;
+    	
+    	angle += Math.PI/2;
+    	Vec_Math.flipAxis(a._vel,angle);
+    	
+    	
     }
     
     
@@ -356,15 +356,15 @@ public class Physics
 		if (fromRight)
 			a._x = b._w + a._rad;
     	
-    	if (false)
-    	{
-			double dir = a._vel.getDir()-Math.PI;
-			while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
-			{
-				a._x += Math.cos(dir)/10;
-				a._y -= Math.sin(dir)/10;
+    	
+    	/*
+		double dir = a._vel.getDir()-Math.PI;
+		while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
+		{
+			a._x += Math.cos(dir)/10;
+			a._y -= Math.sin(dir)/10;
 		}
-    	}
+    */
 		
 	}
 	
@@ -379,7 +379,7 @@ public class Physics
 	//fixes overlap between two overlapping projectiles.
 	public static void fixOverlap(Proj a, RoundWall b)
 	{
-		double dir = a._vel.getDir()-Math.PI;
+		double dir = a._vel.getDir()+Math.PI;
 		while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
 		{
 			a._x += Math.cos(dir);
