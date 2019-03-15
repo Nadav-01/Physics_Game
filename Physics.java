@@ -186,7 +186,6 @@ public class Physics
         }
         else
         {
-        	//TODO - create class CircleWall and replace collision here in collision from there.
         	double x = 0, y = 0;
         	switch (corner) {
         	case 1:
