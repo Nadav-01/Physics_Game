@@ -19,8 +19,7 @@ public class Proj extends Item
     //constructor using x,y coordinates, velocity x and y coordinates, and a radius.
     public Proj(double x, double y, double velX, double velY, double rad)
     {
-        _x = x;
-        _y = y;
+    	super(x,y);
         _vel = new Vect(velX, velY);
         _rad = rad;
         _mass = Math.PI * Math.pow(_rad,2);
@@ -29,8 +28,7 @@ public class Proj extends Item
     //copy constructor.
 	public Proj(Proj p)
     {
-        _x = p._x;
-        _y = p._y;
+		super(p.cord1._x,p.cord1._y);
         _vel = new Vect(p._vel.getX(), p._vel.getY());
         _rad = p._rad;
         _mass = p._mass;
@@ -50,29 +48,29 @@ public class Proj extends Item
         {
             // Checks if the distance between the center of the projectile and any of the corners of  the wall is smaller then its radius.
             return 	
-            		((Math.abs(this._y - ((Wall)other)._z) <= _rad
+            		((Math.abs(this.cord1._y - ((Wall)other).cord2._y) <= _rad
             		&&
-            		this._x <= ((Wall)other)._w + _rad
+            		this.cord1._x <= ((Wall)other).cord2._x + _rad
             		&&
-            		this._x >= ((Wall)other)._x - _rad)
+            		this.cord1._x >= ((Wall)other).cord1._x - _rad)
             		||
-            		(Math.abs(other._y - this._y) <= _rad
+            		(Math.abs(other.cord1._y - this.cord1._y) <= _rad
             		&&
-            		this._x <= ((Wall)other)._w + _rad 
+            		this.cord1._x <= ((Wall)other).cord2._x + _rad 
             		&&
-            		this._x >= ((Wall)other)._x - _rad )
+            		this.cord1._x >= ((Wall)other).cord1._x - _rad )
             		||
-            		(Math.abs(this._x - ((Wall)other)._w) <= _rad
+            		(Math.abs(this.cord1._x - ((Wall)other).cord2._x) <= _rad
             		&&
-            		this._y <= ((Wall)other)._z + _rad
+            		this.cord1._y <= ((Wall)other).cord2._y + _rad
             		&&
-            		this._y >= ((Wall)other)._y - _rad)
+            		this.cord1._y >= ((Wall)other).cord1._y - _rad)
 					||
-            		(Math.abs(other._x - this._x) <= _rad
+            		(Math.abs(other.cord1._x - this.cord1._x) <= _rad
             		&&
-            		this._y <= ((Wall)other)._z + _rad
+            		this.cord1._y <= ((Wall)other).cord2._y + _rad
             		&&
-            		this._y >= ((Wall)other)._y - _rad));
+            		this.cord1._y >= ((Wall)other).cord1._y - _rad));
         }
         else if (other instanceof RoundWall)
         {

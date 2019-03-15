@@ -25,29 +25,29 @@ public class RoundWall extends Item
         {
             // Checks if the distance between the center of the projectile and any of the corners of  the wall is smaller then its radius.
             return 	
-            		((Math.abs(this._y - ((Wall)other)._z) <= _rad
+            		((Math.abs(this.cord1._y - ((Wall)other).cord2._y) <= _rad
             		&&
-            		this._x <= ((Wall)other)._w + _rad
+            		this.cord1._x <= ((Wall)other).cord2._x + _rad
             		&&
-            		this._x >= ((Wall)other)._x - _rad)
+            		this.cord1._x >= ((Wall)other).cord1._x - _rad)
             		||
-            		(Math.abs(other._y - this._y) <= _rad
+            		(Math.abs(other.cord1._y - this.cord1._y) <= _rad
             		&&
-            		this._x <= ((Wall)other)._w + _rad 
+            		this.cord1._x <= ((Wall)other).cord2._x + _rad 
             		&&
-            		this._x >= ((Wall)other)._x - _rad )
+            		this.cord1._x >= ((Wall)other).cord1._x - _rad )
             		||
-            		(Math.abs(this._x - ((Wall)other)._w) <= _rad
+            		(Math.abs(this.cord1._x - ((Wall)other).cord2._x) <= _rad
             		&&
-            		this._y <= ((Wall)other)._z + _rad
+            		this.cord1._y <= ((Wall)other).cord2._y + _rad
             		&&
-            		this._y >= ((Wall)other)._y - _rad)
+            		this.cord1._y >= ((Wall)other).cord1._y - _rad)
 					||
-            		(Math.abs(other._x - this._x) <= _rad
+            		(Math.abs(other.cord1._x - this.cord1._x) <= _rad
             		&&
-            		this._y <= ((Wall)other)._z + _rad
+            		this.cord1._y <= ((Wall)other).cord2._y + _rad
             		&&
-            		this._y >= ((Wall)other)._y - _rad));
+            		this.cord1._y >= ((Wall)other).cord1._y - _rad));
         }
         else if (other instanceof RoundWall)
         {
