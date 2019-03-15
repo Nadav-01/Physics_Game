@@ -29,10 +29,10 @@ public class attempt extends JPanel {
     
     static final int PLAYER_SIZE = 60;
     static Proj[] pro; // Projectile array
-    static Item[] walls = {	new Wall(-100,100,780,-100),		// floor
-    						new Wall(-100,650,100,-100 ),	// leftwall	
-    						new Wall(580,650,780,-100), 	// rightwall
-    						new Wall(-100,650,780,450),		// ceiling
+    static Item[] walls = {	new Wall(-100,100,attempt.getWidth()+100,-100),		// floor
+    						new Wall(-100,attempt.getHeight()+100,100,-100 ),	// leftwall	
+    						new Wall(attempt.getWidth()-100,attempt.getHeight()+100,attempt.getWidth()+100,-100), 	// rightwall
+    						new Wall(-100,attempt.getHeight()+100,attempt.getWidth()+100,attempt.getHeight()-100),		// ceiling
     						//new Wall(200,200,250,250),
     						//new RoundWall(200,200,60)
     };   // Wall array
@@ -42,7 +42,17 @@ public class attempt extends JPanel {
     
     static long oldT;
     
-    
+    public static void initilizeWall()
+    {
+    	walls = new Item[] {	new Wall(-100,100,attempt.getWidth()+100,-100),		// floor
+				new Wall(-100,attempt.getHeight()+100,100,-100 ),	// leftwall	
+				new Wall(attempt.getWidth()-100,attempt.getHeight()+100,attempt.getWidth()+100,-100), 	// rightwall
+				new Wall(-100,attempt.getHeight()+100,attempt.getWidth()+100,attempt.getHeight()-100),		// ceiling
+				//new Wall(200,200,250,250),
+				//new RoundWall(200,200,60)
+    		};   // Wall array
+    	wallSize = walls.length;
+    }
     
     public static void inintilizeProj()	//initilize projectile array.
     {
@@ -158,6 +168,7 @@ public class attempt extends JPanel {
         
         public void run()
         {
+        	initilizeWall();
         	long newT = System.currentTimeMillis();	//gets new time from the system.
         	long deltaT = newT - oldT;				//gets the difference of the times between last frame and now.
         	

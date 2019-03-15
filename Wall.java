@@ -25,22 +25,22 @@ public class Wall extends Item
     
     public double getHeight()
     {
-        return cord2._y - super.cord1._y;
+        return Math.abs(cord2._y - cord1._y);
     }
     
     public void setHeight(double h)
     {
-        cord2._y = super.cord1._y + h;
+        cord2._y = cord1._y + h;
     }
     
     public double getLength()
     {
-        return cord2._x - super.cord1._x;
+        return Math.abs(cord2._x - cord1._x);
     }
     
     public void setLength(double l)
     {
-        cord2._x = super.cord1._x + l;
+        cord2._x = cord1._x + l;
     }
     
     //checks if the wall collides with another item.

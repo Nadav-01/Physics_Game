@@ -13,7 +13,7 @@ public class Coord
 	
 	public Coord intoJcoord()
 	{
-		return new Coord(_x, 550 -_y);
+		return new Coord(_x, attempt.attempt.getHeight() -_y);
 	}
 	
 }
