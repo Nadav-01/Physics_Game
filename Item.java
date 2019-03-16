@@ -4,19 +4,16 @@ package src;
 
 public abstract class Item
 {
-    public double _x;
-    public double _y;
+    Coord cord1;
 
     
     public Item()
     {
-        _x = 0;
-        _y = 0;
+        cord1 = new Coord(0,0);
     }
     public Item(double x, double y)
     {
-        _x = x;
-        _y = y;
+        cord1 = new Coord(x,y);
     }
     
     public abstract boolean isCol(Item other);  // Items on the screen must be able to interact with eachother.

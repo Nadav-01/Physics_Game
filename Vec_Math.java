@@ -67,4 +67,21 @@ public abstract class Vec_Math
         if (A.getY() > 0)
             A.setDir(- A.getDir());
     }
+    
+    public static Vect transform(Matrix a, Vect b)
+    {
+    	 Vect ret = new Vect(dot_prod(a.getHvec1(),b),dot_prod(a.getHvec2(),b));
+    	 return ret;	
+    }
+
+	public static void flipAxis(Vect v, double angle)
+	{
+		double newDir = angle - v.getDir();
+		if (newDir > Math.PI)
+			newDir -= Math.PI;
+		if (newDir < -Math.PI)
+			newDir += Math.PI;
+		v.setDir((float)(v.getDir() + 2 * newDir));
+	}
+    
 }

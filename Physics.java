@@ -58,7 +58,7 @@ public class Physics
     
     public static double potenE(Proj p, Dimension winSize)	//returns potential (height) energy- m*g*h
     {
-        return p._mass * grav.getSize()*(winSize.getHeight()-p._y);
+        return p._mass * grav.getSize()*(winSize.getHeight()-p.cord1._y);
     }
     
     public static double Energy(Proj p, Dimension winSize)	//returns total energy- E_k + U_g
@@ -78,11 +78,28 @@ public class Physics
      */
     public static void collision(Proj a, Proj b)
     {
+    	if(Physics.isOverlap(a,b))
+        {
+            Physics.fixOverlap(a,b);
+        }
+    	double angle = Math.atan(((a.cord1._y - b.cord1._y)/(a.cord1._x - b.cord1._x)));	//gets the angle between a and b.
+		if (a.cord1._x < b.cord1._x)	//if a is more left then b, add PI to the angle, so the math will work.
+			angle += Math.PI;
     	
-    	Vect v1 = new Vect(a._vel);
-    	Vect v2 = new Vect(b._vel);
-    	Vect x1 = new Vect(a.getCentX(), a.getCentY());
-    	Vect x2 = new Vect(b.getCentX(), b.getCentY());
+		Vect col1 = new Vect(Math.cos(angle), Math.sin(angle));
+		Vect col2 = new Vect(-Math.sin(angle),Math.cos(angle));
+		Matrix trans = new Matrix(col1,col2);
+		
+		col1 = new Vect(Math.cos(-angle), Math.sin(-angle));
+		col2 = new Vect(-Math.sin(-angle),Math.cos(-angle));
+		Matrix reverse = new Matrix(col1,col2);
+		
+    	Vect v1 = Vec_Math.transform(trans, new Vect(a._vel));
+    	Vect v2 = Vec_Math.transform(trans, new Vect(b._vel));
+    	
+    	Vect x1 = Vec_Math.transform(trans, new Vect(a.cord1._x, a.cord1._y));
+    	Vect x2 = Vec_Math.transform(trans, new Vect(b.cord1._x, b.cord1._y));
+    	
     	
     	double m1 = a._mass;
     	double m2 = b._mass;
@@ -104,13 +121,13 @@ public class Physics
     	
     	Vect u1 = Vec_Math.vectAdd(v1, finalVect1);
     	Vect u2 = Vec_Math.vectAdd(v2, finalVect2);
-    	a._vel = new Vect(u1);
-    	b._vel = new Vect(u2);
+    	a._vel = Vec_Math.transform(reverse, new Vect(u1));
+    	b._vel = Vec_Math.transform(reverse,new Vect(u2));
       
 
     	
     	/*
-        Vect temp = new Vect ((double)(b.getCentX() - a.getCentX()), (double)(b.getCentY() -a.getCentY()));
+        Vect temp = new Vect ((double)(b.cord1._x - a.cord1._x), (double)(b.cord1._y -a.cord1._y));
         Vect dir1 = new Vect((double)1,temp.getDir());
         Vect dir2 = new Vect((double)1,(float)(temp.getDir()+Math.PI/2));
         
@@ -129,8 +146,17 @@ public class Physics
        
     }
     
+    public static void collision(Proj a, Item b)
+    {
+    	if (b instanceof Proj)
+    		collision(a,(Proj)b);
+    	if (b instanceof Wall)
+    		collision(a,(Wall)b);
+    	if (b instanceof RoundWall)
+    		collision(a,(RoundWall)b);
+    }
     
-    // Collides a projectile with a wall, by flipping the correct axis in its velocity.
+    // Collides a projectile with a wall, by flipping the correct axis in its velocity.\
     public static void collision(Proj a, Wall b)
     {
 
@@ -139,15 +165,93 @@ public class Physics
             System.out.println("Error: cannot collide non colliding items");
             //return;
         }
-        a._vel.sizeMult(0.99);
-        if (a.getCentX() <= b._x)
-            Vec_Math.flipLeft(a._vel);
-        else if (a.getCentX() >= b._w)
-            Vec_Math.flipRight(a._vel);
-        else if (a.getCentY() <= b._y)
-            Vec_Math.flipUp(a._vel);
+        
+        if(Physics.isOverlap(a,b))
+        {
+            Physics.fixOverlap(a,b);
+        }
+        
+        int corner = cornerCollision(a,b);
+        if (corner == 0)
+        {
+	        a._vel.sizeMult(0.99);
+	        if (a.cord1._x <= b.cord1._x)
+	            Vec_Math.flipLeft(a._vel);
+	        else if (a.cord1._x >= b.cord2._x)
+	            Vec_Math.flipRight(a._vel);
+	        else if (a.cord1._y >= b.cord1._y)
+	            Vec_Math.flipUp(a._vel);
+	        else
+	            Vec_Math.flipDown(a._vel);
+        }
         else
-            Vec_Math.flipDown(a._vel);
+        {
+        	double x = 0, y = 0;
+        	switch (corner) {
+        	case 1:
+        		x = b.cord1._x;
+        		y = b.cord1._y;
+        		break;
+        	case 2:
+        		x = b.cord2._x;
+        		y = b.cord1._y;
+        		break;
+        	case 3:
+        		x = b.cord2._x;
+        		y = b.cord2._y;
+        		break;
+        	case 4:
+        		x = b.cord1._x;
+        		y = b.cord2._y;
+        	}
+        	
+        	RoundWall temp = new RoundWall (x,y,0.005);
+        	
+        	collision(a,temp); 
+        	
+        }
+    }
+    public static void collision(Proj a, RoundWall b)
+    {
+    	
+    	if(Physics.isOverlap(a,b))
+        {
+            Physics.fixOverlap(a,b);
+        }
+    	
+    	double angle = Math.atan(((a.cord1._y - b.cord1._y)/(a.cord1._x - b.cord1._x)));	//gets the angle between a and b.
+		//if (a.cord1._x < b.cord1._x)	//if a is more left then b, add PI to the angle, so the math will work.
+			//angle += Math.PI;
+    	
+    	angle += Math.PI/2;
+    	Vec_Math.flipAxis(a._vel,angle);
+    	
+    	
+    }
+    
+    
+    public static int cornerCollision(Proj p, Wall other)
+    {
+    	
+    		boolean fromBelow =	Math.abs(p.cord1._y - ((Wall)other).cord2._y) <= p._rad;
+
+    		boolean fromAbove =	Math.abs(other.cord1._y - p.cord1._y) <= p._rad;
+
+        	boolean fromLeft = 	Math.abs(p.cord1._x - ((Wall)other).cord2._x) <= p._rad;
+
+        	boolean fromRight = Math.abs(other.cord1._x - p.cord1._x) <= p._rad;
+
+    	
+    	if (fromAbove&&fromLeft)
+    		return 1;
+    	if (fromAbove&&fromRight)
+    		return 2;
+    	if (fromBelow&&fromRight)
+    		return 3;
+    	if (fromBelow&&fromLeft)
+    		return 4;
+    	
+    	return 0;
     }
     
     //checks if two items are colliding using the function built into them.
@@ -159,9 +263,21 @@ public class Physics
     //returns the distance between the centers of 2 projectiles.
     public static double projDist(Proj a, Proj b)
     {
-        return Math.sqrt(Math.pow(Math.abs(a.getCentX() - b.getCentX()),2) + Math.pow(Math.abs(a.getCentY() - b.getCentY()),2) );
+        return Math.sqrt(Math.pow(a.cord1._x - b.cord1._x,2) + Math.pow(a.cord1._y - b.cord1._y,2) );
+    }
+    
+    //returns the distance between the centers of a projectile and a round wall.
+    public static double projDist(Proj a, RoundWall b)
+    {
+        return Math.sqrt(Math.pow(a.cord1._x - b.cord1._x,2) + Math.pow(a.cord1._y - b.cord1._y,2) );
     }
 
+  //returns the distance between the centers of 2 round walls.
+    public static double projDist(RoundWall a, RoundWall b)
+    {
+        return Math.sqrt(Math.pow(a.cord1._x - b.cord1._x,2) + Math.pow(a.cord1._y - b.cord1._y,2) );
+    }
+    
     //checks if there is overlap between two projectiles.
 	public static boolean isOverlap(Proj a, Proj b) 
 	{
@@ -175,16 +291,100 @@ public class Physics
 	public static void fixOverlap(Proj a, Proj b)
 	{
 		double dist = projDist(a,b);		
-		double angle = Math.atan(((a.getCentY() - b.getCentY())/(a.getCentX() - b.getCentX())));	//gets the angle between a and b.
-		if (a.getCentX() < b.getCentX())	//if a is more left then b, add PI to the angle, so the math will work.
+		double angle = Math.atan(((a.cord1._y - b.cord1._y)/(a.cord1._x - b.cord1._x)));	//gets the angle between a and b.
+		if (a.cord1._x < b.cord1._x)	//if a is more left then b, add PI to the angle, so the math will work.
 			angle += Math.PI;
 		
 		double d = a._rad + b._rad - dist;
 		d *= 1.05;
 		
-		a._x += d * Math.cos(angle) * b._mass/(a._mass + b._mass);	//changes the location of both projectiles,
-		a._y += d * Math.sin(angle) * b._mass/(a._mass + b._mass);	//inversly proportional to their mass,
-		b._x -= d * Math.cos(angle) * a._mass/(a._mass + b._mass);	//so they wont overlap anymore.
-		b._y -= d * Math.sin(angle) * a._mass/(a._mass + b._mass);
+		a.cord1._x += d * Math.cos(angle) * b._mass/(a._mass + b._mass);	//changes the location of both projectiles,
+		a.cord1._y += d * Math.sin(angle) * b._mass/(a._mass + b._mass);	//inversly proportional to their mass,
+		b.cord1._x -= d * Math.cos(angle) * a._mass/(a._mass + b._mass);	//so they wont overlap anymore.
+		b.cord1._y -= d * Math.sin(angle) * a._mass/(a._mass + b._mass);
+	}
+	
+	//checks if there's overlap between a projectile and a wall
+	public static boolean isOverlap(Proj a, Wall b) 
+	{
+		return ((Math.abs(a.cord1._y - b.cord2._y) < a._rad
+        		&&
+        		a.cord1._x < b.cord2._x + a._rad
+        		&&
+        		a.cord1._x > b.cord1._x - a._rad)
+        		||
+        		(Math.abs(b.cord1._y - a.cord1._y) < a._rad
+        		&&
+        		a.cord1._x < b.cord2._x + a._rad 
+        		&&
+        		a.cord1._x > b.cord1._x - a._rad )
+        		||
+        		(Math.abs(a.cord1._x - b.cord2._x) < a._rad
+        		&&
+        		a.cord1._y < b.cord2._y - a._rad
+        		&&
+        		a.cord1._y > b.cord1._y + a._rad)
+				||
+        		(Math.abs(b.cord1._x - a.cord1._x) < a._rad
+        		&&
+        		a.cord1._y < b.cord2._y - a._rad
+        		&&
+        		a.cord1._y > b.cord1._y + a._rad));
+	}
+	
+	//fixes overlap between overlapping projectile and wall.
+	public static void fixOverlap(Proj a, Wall b)
+	{
+		
+		boolean fromBelow =	a.cord1._y <= b.cord2._y;
+
+		boolean fromAbove =	a.cord1._y >= b.cord1._y;
+
+    	boolean fromLeft = 	a.cord1._x <= b.cord1._x;
+
+    	boolean fromRight = a.cord1._x >= b.cord2._x;
+    	
+    	
+    	
+		if (fromBelow)
+			a.cord1._y = b.cord2._y - a._rad - 1;
+		if (fromAbove)
+			a.cord1._y = b.cord1._y + a._rad + 1;
+		if (fromLeft)
+			a.cord1._x = b.cord1._x - a._rad - 1;
+		if (fromRight)
+			a.cord1._x = b.cord2._x + a._rad + 1;
+    	
+    	
+    	/*
+		double dir = a._vel.getDir()-Math.PI;
+		while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
+		{
+			a.cord1._x += Math.cos(dir)/10;
+			a.cord1._y -= Math.sin(dir)/10;
+		}
+    */
+		
+	}
+	
+	public static boolean isOverlap(Proj a, RoundWall b) 
+	{
+		double dist = projDist(a,b);
+		if (a._rad + b._rad > dist)	//checks if the distance between the projectiles is smaller then the sum of their radius'.
+	    	return true;
+    	return false;
+	}
+
+	//fixes overlap between two overlapping projectiles.
+	public static void fixOverlap(Proj a, RoundWall b)
+	{
+		double dir = a._vel.getDir()+Math.PI;
+		while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
+		{
+			a.cord1._x += Math.cos(dir);
+			a.cord1._y -= Math.sin(dir);
+		}
+		a.cord1._x += Math.cos(dir);
+		a.cord1._y -= Math.sin(dir);
 	}
 }

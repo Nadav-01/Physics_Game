@@ -25,15 +25,16 @@ public class attempt extends JPanel {
     static int down = KeyEvent.VK_DOWN;
     static int left = KeyEvent.VK_LEFT;
     static int reset = KeyEvent.VK_R;
-    
+    static attempt attempt = new attempt();
     
     static final int PLAYER_SIZE = 60;
     static Proj[] pro; // Projectile array
-    static Wall[] walls = {	new Wall(-220,480,780,750),		// floor
-    						new Wall(-220,-220,20,750 ),	// leftwall	
-    						new Wall(580,-120,780,750), 	// rightwall
-    						new Wall(-220,-220,780,20),		// ceiling
-    						new Wall(200,200,250,250)
+    static Item[] walls = {	new Wall(-100,100,attempt.getWidth()+100,-100),		// floor
+    						new Wall(-100,attempt.getHeight()+100,100,-100 ),	// leftwall	
+    						new Wall(attempt.getWidth()-100,attempt.getHeight()+100,attempt.getWidth()+100,-100), 	// rightwall
+    						new Wall(-100,attempt.getHeight()+100,attempt.getWidth()+100,attempt.getHeight()-100),		// ceiling
+    						//new Wall(200,200,250,250),
+    						//new RoundWall(200,200,60)
     };   // Wall array
     																							
     static int proSize;
@@ -41,12 +42,26 @@ public class attempt extends JPanel {
     
     static long oldT;
     
-    
+    public static void initilizeWall()
+    {
+    	walls = new Item[] {	new Wall(-100,100,attempt.getWidth()+100,-100),		// floor
+				new Wall(-100,attempt.getHeight()+100,100,-100 ),	// leftwall	
+				new Wall(attempt.getWidth()-100,attempt.getHeight()+100,attempt.getWidth()+100,-100), 	// rightwall
+				new Wall(-100,attempt.getHeight()+100,attempt.getWidth()+100,attempt.getHeight()-100),		// ceiling
+				//new Wall(200,200,250,250),
+				//new RoundWall(200,200,60)
+    		};   // Wall array
+    	wallSize = walls.length;
+    }
     
     public static void inintilizeProj()	//initilize projectile array.
     {
     	pro = new Proj[] { 	new Proj(300,300,PLAYER_SIZE),
-    						new Proj(50,50,PLAYER_SIZE/2)}; 
+    						new Proj(250,250,PLAYER_SIZE/2),
+    						new Proj(250,250,PLAYER_SIZE/2),
+    						new Proj(250,250,PLAYER_SIZE/2)
+    						}; 
+    	pro[0]._mass = pro[1]._mass;
     	proSize = pro.length;
     }
     
@@ -63,32 +78,33 @@ public class attempt extends JPanel {
     
     public void putItems(Graphics2D g2d)
     {
-        
-        
-        
-        
+    	
         g2d.setColor(Color.black);
         for (int i = 0; i < proSize; i++)	//paints projectiles
         {
-        	g2d.drawOval((int)pro[i]._x, (int)pro[i]._y, (int)pro[i]._rad*2, (int)pro[i]._rad*2);   // Paint projectiles
+        	Putstuff.putProj(pro[i],g2d);   // Paint projectiles
         }
         
         g2d.setColor(Color.red);
-        g2d.fillOval((int)pro[1]._x, (int)pro[1]._y, (int)pro[1]._rad*2, (int)pro[1]._rad*2);   // Paint negetive proj
+        //g2d.fillOval((int)(pro[1].cord1._x - pro[1]._rad), (int)(pro[1].cord1._y - pro[1]._rad), (int)pro[1]._rad*2, (int)pro[1]._rad*2);   // Paint negetive proj
 
         g2d.setColor(Color.black);
         for (int i = 0; i < wallSize; i++) // Paints walls
-            g2d.fillRect((int)walls[i]._x, (int)walls[i]._y, (int)walls[i].getLength(), (int)walls[i].getHeight());
+        {
+        	if (walls[i] instanceof Wall)
+        		Putstuff.putWall((Wall)walls[i],g2d); 
+        	if (walls[i] instanceof RoundWall)
+        		Putstuff.putRoundwall((RoundWall)walls[i],g2d); 
+        }
         
-        g2d.drawOval((int)pro[0]._x, (int)pro[0]._y, (int)pro[0]._rad*2, (int)pro[0]._rad*2);   // Paint player
-        //g2d.drawRect((int)pro[0]._x, (int)pro[0]._y, (int)pro[0]._rad*2, (int)pro[0]._rad*2);
-        
-        g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 100);   // Debug info
+        g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 200);   // Debug info
         g2d.drawString("dir = " + pro[0]._vel.getDir(), 200, 150);
         g2d.drawLine(350, 150, 350 + (int)(10 * Math.cos(pro[0]._vel.getDir())), 150 - (int)(10 * Math.sin(pro[0]._vel.getDir())));
         g2d.fillOval(347 + (int)(10 * Math.cos(pro[0]._vel.getDir())), 147 - (int)(10 * Math.sin(pro[0]._vel.getDir())), 5, 5);
-        g2d.drawString("x = " + pro[0]._x + "\t y = " + pro[0]._y, 200, 200);
-        g2d.drawString("Energy = " + Physics.Energy(pro[0],this.getSize()) , 200, 250);
+        g2d.drawString("x = " + pro[0].cord1._x + "\t y = " + pro[0].cord1._y, 200, 250);
+        g2d.drawString("Energy = " + Physics.Energy(pro[0],this.getSize()) , 200, 300);
+        
+        
     }
     
     public attempt() {  // Implementing keylistener
@@ -152,6 +168,7 @@ public class attempt extends JPanel {
         
         public void run()
         {
+        	initilizeWall();
         	long newT = System.currentTimeMillis();	//gets new time from the system.
         	long deltaT = newT - oldT;				//gets the difference of the times between last frame and now.
         	
@@ -159,7 +176,7 @@ public class attempt extends JPanel {
             Physics.upplyG(pro, proSize);
             //Physics.upplyFric(pro, 2);
             
-
+            
             for (int i = 0; i < proSize; i++) // Check all combination of items that can collide with each other
             {
                 for (int j = 0; j < wallSize; j++)
@@ -167,24 +184,24 @@ public class attempt extends JPanel {
                     if (Physics.areColliding((Item)pro[i],(Item)walls[j]))
                     {
                         System.out.println("bounce wall");
-                        Physics.collision(pro[i],walls[j]);
+                        Physics.collision(pro[i],(Item)walls[j]);
                     }
                 }
             }
             
-            //TODO- update for large array of projectiles.
-            
             for (int i = 0; i < proSize; i++) // Check all combination of items that can collide with each other
             {
+            	
                 for (int j = i+1; j < proSize; j++)
                 {
+                	
                     if (Physics.areColliding((Item)pro[i],(Item)pro[j]))
                     {
                         System.out.println("bounce");
-                        if(Physics.isOverlap(pro[i],pro[j]))
+                       /* if(Physics.isOverlap(pro[i],pro[j]))
                         {
                             Physics.fixOverlap(pro[i],pro[j]);
-                        }
+                        }*/
                        Physics.collision(pro[i],pro[j]);
                     }
                 }
@@ -203,17 +220,20 @@ public class attempt extends JPanel {
             
             for (int i = 0; i < proSize; i++) // apply speed to projectiles.
             {
+            	
+            	
 
-                pro[i]._x += deltaT*pro[i]._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
-                pro[i]._y -= deltaT*pro[i]._vel.getY()/1000;    //coordinate system flipped because window starts in upper left.
+        		pro[i].cord1._x += deltaT*pro[i]._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
+        		pro[i].cord1._y += deltaT*pro[i]._vel.getY()/1000;    //coordinate system flipped because window starts in upper left.
+
                 
-                if (pro[i]._x < -1000 || pro[i]._x > 2000 || pro[i]._y < -1000 || pro[i]._y > 2000)
+                if (pro[i].cord1._x < -1000 || pro[i].cord1._x > 2000 || pro[i].cord1._y < -1000 || pro[i].cord1._y > 2000)
                 {
                 	if ( 50 + i*pro[i]._rad*2 < 680)
-                		pro[i]._x = 50 + i*pro[i]._rad*2;
+                		pro[i].cord1._x = 50 + i*pro[i]._rad*2;
                 	
                 	if (50 + i*pro[i]._rad*2 < 550)
-                		pro[i]._y = 50 + i*pro[i]._rad*2;
+                		pro[i].cord1._y = 50 + i*pro[i]._rad*2;
                 	
                     if (pro[i]._vel.getSize() > 500)
                         pro[i]._vel.setSize(50);
@@ -237,7 +257,7 @@ public class attempt extends JPanel {
         Physics phy = new Physics();
         JFrame frame = new JFrame("game");
         
-        attempt attempt = new attempt();
+
         frame.add(attempt);
         frame.setSize(680, 550);	//setting window size
         frame.setVisible(true);
@@ -247,6 +267,6 @@ public class attempt extends JPanel {
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(gameloop, 0, 7);	//setting fps
+        timer.scheduleAtFixedRate(gameloop, 0, 1);	//setting fps
     }
 }
