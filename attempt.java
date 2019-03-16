@@ -58,8 +58,8 @@ public class attempt extends JPanel {
     {
     	pro = new Proj[] { 	new Proj(300,300,PLAYER_SIZE),
     						new Proj(250,250,PLAYER_SIZE/2),
-    						//new Proj(250,250,PLAYER_SIZE/2),
-    						//new Proj(250,250,PLAYER_SIZE/2)
+    						new Proj(250,250,PLAYER_SIZE/2),
+    						new Proj(250,250,PLAYER_SIZE/2)
     						}; 
     	pro[0]._mass = pro[1]._mass;
     	proSize = pro.length;
@@ -97,12 +97,12 @@ public class attempt extends JPanel {
         		Putstuff.putRoundwall((RoundWall)walls[i],g2d); 
         }
         
-        g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 100);   // Debug info
+        g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 200);   // Debug info
         g2d.drawString("dir = " + pro[0]._vel.getDir(), 200, 150);
         g2d.drawLine(350, 150, 350 + (int)(10 * Math.cos(pro[0]._vel.getDir())), 150 - (int)(10 * Math.sin(pro[0]._vel.getDir())));
         g2d.fillOval(347 + (int)(10 * Math.cos(pro[0]._vel.getDir())), 147 - (int)(10 * Math.sin(pro[0]._vel.getDir())), 5, 5);
-        g2d.drawString("x = " + pro[0].cord1._x + "\t y = " + pro[0].cord1._y, 200, 200);
-        g2d.drawString("Energy = " + Physics.Energy(pro[0],this.getSize()) , 200, 250);
+        g2d.drawString("x = " + pro[0].cord1._x + "\t y = " + pro[0].cord1._y, 200, 250);
+        g2d.drawString("Energy = " + Physics.Energy(pro[0],this.getSize()) , 200, 300);
         
         
     }

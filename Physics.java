@@ -299,9 +299,9 @@ public class Physics
 		d *= 1.05;
 		
 		a.cord1._x += d * Math.cos(angle) * b._mass/(a._mass + b._mass);	//changes the location of both projectiles,
-		a.cord1._y -= d * Math.sin(angle) * b._mass/(a._mass + b._mass);	//inversly proportional to their mass,
+		a.cord1._y += d * Math.sin(angle) * b._mass/(a._mass + b._mass);	//inversly proportional to their mass,
 		b.cord1._x -= d * Math.cos(angle) * a._mass/(a._mass + b._mass);	//so they wont overlap anymore.
-		b.cord1._y += d * Math.sin(angle) * a._mass/(a._mass + b._mass);
+		b.cord1._y -= d * Math.sin(angle) * a._mass/(a._mass + b._mass);
 	}
 	
 	//checks if there's overlap between a projectile and a wall
