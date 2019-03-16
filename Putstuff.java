@@ -8,7 +8,7 @@ public abstract class Putstuff
 	{
 		int x = (int)p.cord1.intoJcoord()._x;
 		int y = (int)p.cord1.intoJcoord()._y;
-		g2d.drawOval(x, y, (int)p._rad*2, (int)p._rad*2);  
+		g2d.drawOval(x - (int)p._rad , y - (int)p._rad, (int)p._rad*2, (int)p._rad*2);  
 	}
 	
 	public static void putWall(Wall w, Graphics2D g2d)
@@ -22,6 +22,6 @@ public abstract class Putstuff
 	{
 		int x = (int)w.cord1.intoJcoord()._x;
 		int y = (int)w.cord1.intoJcoord()._y;
-		g2d.fillOval(x, y, (int)w._rad*2, (int)w._rad*2);  
+		g2d.fillOval(x - (int)w._rad , y + (int)w._rad, (int)w._rad*2, (int)w._rad*2);  
 	}
 }

@@ -179,7 +179,7 @@ public class Physics
 	            Vec_Math.flipLeft(a._vel);
 	        else if (a.cord1._x >= b.cord2._x)
 	            Vec_Math.flipRight(a._vel);
-	        else if (a.cord1._y <= b.cord1._y)
+	        else if (a.cord1._y >= b.cord1._y)
 	            Vec_Math.flipUp(a._vel);
 	        else
 	            Vec_Math.flipDown(a._vel);
@@ -321,24 +321,24 @@ public class Physics
         		||
         		(Math.abs(a.cord1._x - b.cord2._x) < a._rad
         		&&
-        		a.cord1._y < b.cord2._y + a._rad
+        		a.cord1._y < b.cord2._y - a._rad
         		&&
-        		a.cord1._y > b.cord1._y - a._rad)
+        		a.cord1._y > b.cord1._y + a._rad)
 				||
         		(Math.abs(b.cord1._x - a.cord1._x) < a._rad
         		&&
-        		a.cord1._y < b.cord2._y + a._rad
+        		a.cord1._y < b.cord2._y - a._rad
         		&&
-        		a.cord1._y > b.cord1._y - a._rad));
+        		a.cord1._y > b.cord1._y + a._rad));
 	}
 	
 	//fixes overlap between overlapping projectile and wall.
 	public static void fixOverlap(Proj a, Wall b)
 	{
 		
-		boolean fromBelow =	a.cord1._y >= b.cord2._y;
+		boolean fromBelow =	a.cord1._y <= b.cord2._y;
 
-		boolean fromAbove =	a.cord1._y <= b.cord1._y;
+		boolean fromAbove =	a.cord1._y >= b.cord1._y;
 
     	boolean fromLeft = 	a.cord1._x <= b.cord1._x;
 
@@ -347,13 +347,13 @@ public class Physics
     	
     	
 		if (fromBelow)
-			a.cord1._y = b.cord2._y + a._rad;
+			a.cord1._y = b.cord2._y - a._rad - 1;
 		if (fromAbove)
-			a.cord1._y = b.cord1._y - a._rad;
+			a.cord1._y = b.cord1._y + a._rad + 1;
 		if (fromLeft)
-			a.cord1._x = b.cord1._x - a._rad;
+			a.cord1._x = b.cord1._x - a._rad - 1;
 		if (fromRight)
-			a.cord1._x = b.cord2._x + a._rad;
+			a.cord1._x = b.cord2._x + a._rad + 1;
     	
     	
     	/*

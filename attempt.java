@@ -58,8 +58,8 @@ public class attempt extends JPanel {
     {
     	pro = new Proj[] { 	new Proj(300,300,PLAYER_SIZE),
     						new Proj(250,250,PLAYER_SIZE/2),
-    						new Proj(250,250,PLAYER_SIZE/2),
-    						new Proj(250,250,PLAYER_SIZE/2)
+    						//new Proj(250,250,PLAYER_SIZE/2),
+    						//new Proj(250,250,PLAYER_SIZE/2)
     						}; 
     	pro[0]._mass = pro[1]._mass;
     	proSize = pro.length;
