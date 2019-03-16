@@ -36,7 +36,7 @@ public class attempt extends JPanel {
     						new Wall(attempt.getWidth()-100,attempt.getHeight()+100,attempt.getWidth()+100,-100), 	// rightwall
     						new Wall(-100,attempt.getHeight()+100,attempt.getWidth()+100,attempt.getHeight()-100),		// ceiling
     						//new Wall(200,200,250,250),
-    						//new RoundWall(200,200,60)
+    						//new RoundWall(400,400,60)
     };   // Wall array
     																							
     static int proSize;
@@ -50,8 +50,8 @@ public class attempt extends JPanel {
 				new Wall(-100,attempt.getHeight()+100,100,-100 ),	// leftwall	
 				new Wall(attempt.getWidth()-100,attempt.getHeight()+100,attempt.getWidth()+100,-100), 	// rightwall
 				new Wall(-100,attempt.getHeight()+100,attempt.getWidth()+100,attempt.getHeight()-100),		// ceiling
-				//new Wall(200,200,250,250),
-				//new RoundWall(200,200,60)
+				new Wall(200,200,250,250),
+				new RoundWall(400,400,60)
     		};   // Wall array
     	wallSize = walls.length;
     }
@@ -66,7 +66,7 @@ public class attempt extends JPanel {
     						new Proj(250,250,PLAYER_SIZE/4),
     						new Proj(250,250,PLAYER_SIZE/1.5)
     						}; 
-    	pro[0]._mass += pro[1]._mass;
+    	pro[0]._mass = pro[1]._mass;
     	proSize = pro.length;
     }
     

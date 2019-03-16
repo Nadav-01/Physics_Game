@@ -382,9 +382,9 @@ public class Physics
 		while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
 		{
 			a.cord1._x += Math.cos(dir);
-			a.cord1._y -= Math.sin(dir);
+			a.cord1._y += Math.sin(dir);
 		}
 		a.cord1._x += Math.cos(dir);
-		a.cord1._y -= Math.sin(dir);
+		a.cord1._y += Math.sin(dir);
 	}
 }

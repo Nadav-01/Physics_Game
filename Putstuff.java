@@ -22,6 +22,6 @@ public abstract class Putstuff
 	{
 		int x = (int)w.cord1.intoJcoord()._x;
 		int y = (int)w.cord1.intoJcoord()._y;
-		g2d.fillOval(x - (int)w._rad , y + (int)w._rad, (int)w._rad*2, (int)w._rad*2);  
+		g2d.fillOval(x - (int)w._rad , y - (int)w._rad, (int)w._rad*2, (int)w._rad*2);  
 	}
 }
