@@ -5,7 +5,7 @@ import java.awt.event.KeyListener;
 
 public class InputManager 
 {
-	static int action;
+	//static int action;
 	
 	public class MyKeyListener implements KeyListener {
     	
@@ -15,12 +15,12 @@ public class InputManager
 
         @Override
         public void keyPressed(KeyEvent e) {
-            action = e.getExtendedKeyCode();
+            attempt.key[e.getExtendedKeyCode()] = true;
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
-        	action = 0;
+        	attempt.key[e.getExtendedKeyCode()] = false;
         }
     }
 	

@@ -20,11 +20,13 @@ public class attempt extends JPanel {
 		that is so i can access the key using the keycodes themselves.
 		like:	keys[keyEvent.VK_UP] = true		//means up is pressed right now
 	*/
-    static int up = KeyEvent.VK_UP; 
-    static int right = KeyEvent.VK_RIGHT;
-    static int down = KeyEvent.VK_DOWN;
-    static int left = KeyEvent.VK_LEFT;
-    static int reset = KeyEvent.VK_R;
+	static boolean[] key = new boolean[Math.max(KeyEvent.VK_UP, Math.max(KeyEvent.VK_RIGHT, Math.max(KeyEvent.VK_DOWN, Math.max(KeyEvent.VK_LEFT, KeyEvent.VK_R)))) + 1];
+	
+    //static int up = KeyEvent.VK_UP; 
+    //static int right = KeyEvent.VK_RIGHT;
+    //static int down = KeyEvent.VK_DOWN;
+    //static int left = KeyEvent.VK_LEFT;
+    //static int reset = KeyEvent.VK_R;
     static attempt attempt = new attempt();
     
     static final int PLAYER_SIZE = 60;
@@ -59,9 +61,12 @@ public class attempt extends JPanel {
     	pro = new Proj[] { 	new Proj(300,300,PLAYER_SIZE),
     						new Proj(250,250,PLAYER_SIZE/2),
     						new Proj(250,250,PLAYER_SIZE/2),
-    						new Proj(250,250,PLAYER_SIZE/2)
+    						new Proj(250,250,PLAYER_SIZE/2),
+    						new Proj(250,250,PLAYER_SIZE/3),
+    						new Proj(250,250,PLAYER_SIZE/4),
+    						new Proj(250,250,PLAYER_SIZE/1.5)
     						}; 
-    	pro[0]._mass = pro[1]._mass;
+    	pro[0]._mass += pro[1]._mass;
     	proSize = pro.length;
     }
     
@@ -134,32 +139,32 @@ public class attempt extends JPanel {
         public static void processInput()
         {
         	int POWER = 4000000;
-        	action = InputManager.action;
-        	if (action == up)
+        	//action = InputManager.action;
+        	if (key[KeyEvent.VK_UP])
             {
                 System.out.println("up");
                 Physics.upplyF(pro[0], new Vect(POWER,(float)(Math.PI/2)));
                 Physics.upplyF(pro[1], new Vect(POWER,(float)(3*Math.PI/2)));
             }
-            if (action == down)
+            if (key[KeyEvent.VK_DOWN])
             {
                 System.out.println("down");
                 Physics.upplyF(pro[0], new Vect(POWER,(float)(3*Math.PI/2)));
                 Physics.upplyF(pro[1], new Vect(POWER,(float)(Math.PI/2)));
             }
-            if (action == right)
+            if (key[KeyEvent.VK_RIGHT])
             {
                 System.out.println("right");
                 Physics.upplyF(pro[0], new Vect(POWER,(float)(0)));
                 Physics.upplyF(pro[1], new Vect(POWER,(float)(Math.PI)));
             }
-            if (action == left)
+            if (key[KeyEvent.VK_LEFT])
             {
                 System.out.println("left");
                 Physics.upplyF(pro[0], new Vect(POWER,(float)(Math.PI)));
                 Physics.upplyF(pro[1], new Vect(POWER,(float)(0)));
             }
-            if (action == reset)
+            if (key[KeyEvent.VK_R])
             {
             	System.out.println("reset");
             	inintilizeProj();
@@ -252,6 +257,8 @@ public class attempt extends JPanel {
     
     public static void main(String[] args)
     {
+    	for (int i = 0 ; i < key.length ; i++) {
+    		key[i] = false;}
     	inintilizeProj();
     	oldT = System.currentTimeMillis();
         Physics phy = new Physics();
