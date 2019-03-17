@@ -205,7 +205,8 @@ public class Physics
         		y = b.cord2._y;
         	}
         	
-        	double angle = Math.tan((y-a.cord1._y)/(x-a.cord1._x));
+        	double angle = Math.tan((a.cord1._y - y)/(a.cord1._x - x));
+        	angle += Math.PI/2;
         	Vec_Math.flipAxis(a._vel, angle);
         	
         }
@@ -232,13 +233,13 @@ public class Physics
     public static int cornerCollision(Proj p, Wall other)
     {
     	
-    		boolean fromBelow =	p.cord1._y <= ((Wall)other).cord2._y;
+    		boolean fromBelow =	p.cord1._y < ((Wall)other).cord2._y;
 
-    		boolean fromAbove =	p.cord1._y >= other.cord1._y;
+    		boolean fromAbove =	p.cord1._y > other.cord1._y;
 
-        	boolean fromRight = p.cord1._x  >= ((Wall)other).cord2._x;
+        	boolean fromRight = p.cord1._x  > ((Wall)other).cord2._x;
 
-        	boolean fromLeft = p.cord1._x <= other.cord1._x;
+        	boolean fromLeft = p.cord1._x < other.cord1._x;
 
         	int ret;
         	
@@ -345,6 +346,17 @@ public class Physics
 	//fixes overlap between overlapping projectile and wall.
 	public static void fixOverlap(Proj a, Wall b)
 	{
+		
+		
+		double dir = a._vel.getDir()+Math.PI;
+		while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
+		{
+			a.cord1._x += Math.cos(dir);
+			a.cord1._y += Math.sin(dir);
+		}
+		//a.cord1._x += Math.cos(dir);
+		//a.cord1._y += Math.sin(dir);
+		/*
 		int c = cornerCollision(a,b);
 		if (c == 0)
 		{
@@ -389,15 +401,15 @@ public class Physics
         	}
         	Coord corner = new Coord(x,y);
 			double dist = projDist(a,corner);		
-			double angle = Math.atan(((a.cord1._y - corner._y)/(a.cord1._x - corner._x)));	//gets the angle between a and b.
-			if (a.cord1._x < corner._x)	//if a is more left then b, add PI to the angle, so the math will work.
+			double angle = Math.atan(((a.cord1._y - corner._y)/(a.cord1._x - corner._x)));
+			if (a.cord1._x < corner._x)
 				angle += Math.PI;
 			
 			
-			a.cord1._x +=  Math.cos(angle);	//changes the location of both projectiles,
-			a.cord1._y +=  Math.sin(angle);	//inversly proportional to their mass,
-
-		}
+			a.cord1._x +=  Math.cos(angle);
+			a.cord1._y +=  Math.sin(angle);	
+			*/
+		//}
 		
     	/*
 		double dir = a._vel.getDir()-Math.PI;

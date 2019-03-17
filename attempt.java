@@ -60,11 +60,11 @@ public class attempt extends JPanel {
     {
     	pro = new Proj[] { 	new Proj(300,300,PLAYER_SIZE),
     						new Proj(250,250,PLAYER_SIZE/2),
-    						//new Proj(250,250,PLAYER_SIZE/2),
-    						//new Proj(250,250,PLAYER_SIZE/2),
-    						//new Proj(250,250,PLAYER_SIZE/3),
-    						//new Proj(250,250,PLAYER_SIZE/4),
-    						//new Proj(250,250,PLAYER_SIZE/1.5)
+    						new Proj(250,250,PLAYER_SIZE/2),
+    						new Proj(250,250,PLAYER_SIZE/2),
+    						new Proj(250,250,PLAYER_SIZE/3),
+    						new Proj(250,250,PLAYER_SIZE/4),
+    						new Proj(250,250,PLAYER_SIZE/1.5)
     						}; 
     	pro[0]._mass = pro[1]._mass;
     	proSize = pro.length;
@@ -266,7 +266,7 @@ public class attempt extends JPanel {
         
 
         frame.add(attempt);
-        frame.setSize(1000, 1000);	//setting window size
+        frame.setSize(1800, 1000);	//setting window size
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
