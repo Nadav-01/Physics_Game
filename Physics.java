@@ -175,11 +175,11 @@ public class Physics
         if (corner == 0)
         {
 	        a._vel.sizeMult(0.99);
-	        if (a.cord1._x <= b.cord1._x)
+	        if (a.cord1._x < b.cord1._x)
 	            Vec_Math.flipLeft(a._vel);
-	        else if (a.cord1._x >= b.cord2._x)
+	        else if (a.cord1._x > b.cord2._x)
 	            Vec_Math.flipRight(a._vel);
-	        else if (a.cord1._y >= b.cord1._y)
+	        else if (a.cord1._y > b.cord1._y)
 	            Vec_Math.flipUp(a._vel);
 	        else
 	            Vec_Math.flipDown(a._vel);
@@ -208,8 +208,11 @@ public class Physics
         	double angle = Math.tan((a.cord1._y - y)/(a.cord1._x - x));
         	angle += Math.PI/2;
         	Vec_Math.flipAxis(a._vel, angle);
-        	
         }
+        long newT = System.currentTimeMillis();
+    	long deltaT =  newT - attempt.oldT;
+        a.cord1._x += deltaT*a._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
+		a.cord1._y += deltaT*a._vel.getY()/1000;
     }
     public static void collision(Proj a, RoundWall b)
     {
@@ -318,6 +321,11 @@ public class Physics
 	//checks if there's overlap between a projectile and a wall
 	public static boolean isOverlap(Proj a, Wall b) 
 	{
+		Coord UL = b.cord1;
+    	Coord UR = new Coord(((Wall)b).cord2._x, b.cord1._y);
+    	Coord LL = new Coord(b.cord1._x,((Wall)b).cord2._y);
+    	Coord LR = ((Wall)b).cord2;
+    	
 		return ((Math.abs(a.cord1._y - b.cord2._y) < a._rad
         		&&
         		a.cord1._x < b.cord2._x + a._rad
@@ -340,7 +348,16 @@ public class Physics
         		&&
         		a.cord1._y < b.cord2._y - a._rad
         		&&
-        		a.cord1._y > b.cord1._y + a._rad));
+        		a.cord1._y > b.cord1._y + a._rad))
+				||
+        		Physics.projDist(a, UL) <= a._rad
+        		||
+        		Physics.projDist(a, UR) <= a._rad
+        		||
+        		Physics.projDist(a, LL) <= a._rad
+        		||
+        		Physics.projDist(a, LR) <= a._rad
+        		;
 	}
 	
 	//fixes overlap between overlapping projectile and wall.

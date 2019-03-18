@@ -51,7 +51,8 @@ public class attempt extends JPanel {
 				new Wall(attempt.getWidth()-100,attempt.getHeight()+100,attempt.getWidth()+100,-100), 	// rightwall
 				new Wall(-100,attempt.getHeight()+100,attempt.getWidth()+100,attempt.getHeight()-100),		// ceiling
 				new Wall(600,600,850,450),
-				new RoundWall(400,400,60)
+				new RoundWall(400,400,60),
+				new RoundWall(800,400,2)
     		};   // Wall array
     	wallSize = walls.length;
     }
@@ -229,7 +230,7 @@ public class attempt extends JPanel {
             	
 
         		pro[i].cord1._x += deltaT*pro[i]._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
-        		pro[i].cord1._y += deltaT*pro[i]._vel.getY()/1000;    //coordinate system flipped because window starts in upper left.
+        		pro[i].cord1._y += deltaT*pro[i]._vel.getY()/1000;
 
                 
                 if (pro[i].cord1._x < -1000 || pro[i].cord1._x > 2000 || pro[i].cord1._y < -1000 || pro[i].cord1._y > 2000)
