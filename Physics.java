@@ -210,10 +210,16 @@ public class Physics
         	angle -= Math.PI/2;
         	Vec_Math.flipUpAxis(a._vel, angle);
         }
+        
         long newT = System.currentTimeMillis();
     	long deltaT =  newT - attempt.oldT;
         a.cord1._x += deltaT*a._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
 		a.cord1._y += deltaT*a._vel.getY()/1000;
+		if(Physics.isOverlap(a,b))
+        {
+			a._vel.setSize(5);
+            Physics.fixOverlap(a,b);
+        }
     }
     public static void collision(Proj a, RoundWall b)
     {
@@ -364,14 +370,15 @@ public class Physics
 	//fixes overlap between overlapping projectile and wall.
 	public static void fixOverlap(Proj a, Wall b)
 	{
-		
-		
+
 		double dir = a._vel.getDir()+Math.PI;
 		while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
 		{
 			a.cord1._x += Math.cos(dir);
 			a.cord1._y += Math.sin(dir);
 		}
+	
+		
 		//a.cord1._x += Math.cos(dir);
 		//a.cord1._y += Math.sin(dir);
 		/*

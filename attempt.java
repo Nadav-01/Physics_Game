@@ -8,6 +8,7 @@ import java.awt.RenderingHints;
 import javax.swing.JFrame;			//to render the frame
 import javax.swing.JPanel;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.util.LinkedList;
 import java.util.Timer;				//to keep fps stable
 import java.util.TimerTask;
@@ -15,12 +16,6 @@ import java.util.TimerTask;
 @SuppressWarnings("serial")
 public class attempt extends JPanel {
     
-    // Define code of arrow keys
-	/*	TODO- make boolean array of keys so more then one can be pressed at once.
-		like so: static boolean[] keys = new boolean[]
-		that is so i can access the key using the keycodes themselves.
-		like:	keys[keyEvent.VK_UP] = true		//means up is pressed right now
-	*/
 	static boolean[] key = new boolean[Math.max(KeyEvent.VK_UP, Math.max(KeyEvent.VK_RIGHT, Math.max(KeyEvent.VK_DOWN, Math.max(KeyEvent.VK_LEFT, KeyEvent.VK_R)))) + 1];
 	
     //static int up = KeyEvent.VK_UP; 
@@ -80,6 +75,7 @@ public class attempt extends JPanel {
     	pro.add(new Proj(250,250,PLAYER_SIZE/3));
     	pro.add(new Proj(250,250,PLAYER_SIZE/4));
     	pro.add(new Proj(250,250,PLAYER_SIZE/1.5));
+    	pro.add(new Proj(250,250,PLAYER_SIZE*2));
     	proSize = pro.size();
     	
     	/*pro = new Proj[] { 	new Proj(300,300,PLAYER_SIZE),
@@ -256,16 +252,13 @@ public class attempt extends JPanel {
         		pro.get(i).cord1._y += deltaT*pro.get(i)._vel.getY()/1000;
 
                 
-                if (pro.get(i).cord1._x < -1000 || pro.get(i).cord1._x > 2000 || pro.get(i).cord1._y < -1000 || pro.get(i).cord1._y > 2000)
+                if 		(pro.get(i).cord1._x < ((Wall)walls.get(1)).cord2._x ||
+                		pro.get(i).cord1._x > walls.get(2).cord1._x ||
+                		pro.get(i).cord1._y < walls.get(0).cord1._y ||
+                		pro.get(i).cord1._y > ((Wall)walls.get(3)).cord2._y)
                 {
-                	if ( 50 + i*pro.get(i)._rad*2 < 680)
-                		pro.get(i).cord1._x = 50 + i*pro.get(i)._rad*2;
-                	
-                	if (50 + i*pro.get(i)._rad*2 < 550)
-                		pro.get(i).cord1._y = 50 + i*pro.get(i)._rad*2;
-                	
-                    if (pro.get(i)._vel.getSize() > 500)
-                        pro.get(i)._vel.setSize(50);
+                		pro.get(i).cord1._x = 450;
+                		pro.get(i).cord1._y = 450;
                 }
             } 
             
