@@ -34,6 +34,14 @@ public class Proj extends Item
         _mass = Math.PI * Math.pow(_rad,2);
     }
     
+    public Proj(Coord c, Vect vel, double rad)
+    {
+    	super(c);
+        _vel = new Vect(vel);
+        _rad = rad;
+        _mass = Math.PI * Math.pow(_rad,2);
+    }
+    
     //copy constructor.
 	public Proj(Proj p)
     {

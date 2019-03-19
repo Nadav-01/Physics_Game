@@ -500,4 +500,17 @@ public class Physics
 		a.cord1._x += Math.cos(dir);
 		a.cord1._y += Math.sin(dir);
 	}
+	
+	
+	public static double CoordDist(Coord a, Coord b)
+	{
+		return Math.sqrt(Math.pow(a._x - b._x, 2) + Math.pow(a._y - b._y, 2));
+	}
+	
+	public static Coord findMiddle(Coord a, Coord b)
+	{
+		double x = b._x + (a._x - b._x) / 2 ;
+		double y = b._y + (a._y - b._y) / 2 ;
+		return new Coord (x,y);
+	}
 }

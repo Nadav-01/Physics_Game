@@ -3,6 +3,7 @@ package src;
 import java.awt.event.KeyEvent;		//for input
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.Graphics;			//for graphics
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -55,11 +56,15 @@ public class attempt extends JPanel {
     																							
     static int proSize;
     static int wallSize;
-    static mode CurMode;
+    static mode CurMode = mode.BALL;
     
     static Coord mouseLocation = new Coord (0,0);
+    static Coord curMouseLoc = new Coord(0,0);
+    
     static boolean mouseInScreen;
     static boolean mousePressed;
+    static Coord startLocation;
+    static Coord endLocation;
     
     static Point windowLocation;
     
@@ -147,7 +152,58 @@ public class attempt extends JPanel {
         		Putstuff.putRoundwall((RoundWall)walls.get(i),g2d); 
         }
         
-        Coord loc = mouseLocation.intoJcoord();
+        if (startLocation != null)	//if the cursor is clicked (a new item is added) draw a display
+        {
+        	switch(CurMode)
+        	{
+            	case BALL:
+            	{
+	        	double rad = Physics.CoordDist(startLocation, curMouseLoc)/2;
+	        	Coord cent = Physics.findMiddle(startLocation, curMouseLoc);
+	        	Proj temp = new Proj(cent, rad);
+	        	Putstuff.putProj(temp,g2d);
+            	}
+				case RWALL:
+				{
+					double rad = Physics.CoordDist(startLocation, curMouseLoc)/2;
+		        	Coord cent = Physics.findMiddle(startLocation, curMouseLoc);
+		        	RoundWall temp = new RoundWall(cent, rad);
+		        	Putstuff.putRoundwall(temp,g2d);
+					break;
+				}
+				case VBALL:
+				{
+					double rad = PLAYER_SIZE/2;
+	            	Coord cent = startLocation;
+	            	Proj temp = new Proj(cent, rad);
+	            	Putstuff.putProj(temp,g2d);
+	            	Coord strtLoc = startLocation.intoJcoord();
+	            	Coord curMseLoc = curMouseLoc.intoJcoord();
+	            	
+	            	g2d.drawLine((int)strtLoc._x,  (int)strtLoc._y, (int)curMseLoc._x, (int)curMseLoc._y);
+	            	
+					break;
+				}
+				case WALL:
+				{
+					double minX = Math.min(startLocation._x, curMouseLoc._x);
+            		double maxX = Math.max(startLocation._x, curMouseLoc._x);
+            		double minY = Math.min(startLocation._y, curMouseLoc._y);
+            		double maxY = Math.max(startLocation._y, curMouseLoc._y);
+            		Coord c1 = new Coord(minX, maxY);
+            		Coord c2 = new Coord(maxX, minY);
+            		Wall temp = new Wall(c1,c2);
+            		Putstuff.putWall(temp,g2d);
+					break;
+				}
+				default:
+				{
+					break;
+				}
+        	}
+        }
+        
+        Coord loc = curMouseLoc;
         g2d.drawString(" mouse location: x = " + loc._x + " y = " + loc._y , 500, 400);
         
         g2d.drawString("speed = " + pro.get(0)._vel.getSize(), 200, 200);   // Debug info
@@ -157,7 +213,8 @@ public class attempt extends JPanel {
         g2d.drawString("x = " + pro.get(0).cord1._x + "\t y = " + pro.get(0).cord1._y, 200, 250);
         g2d.drawString("Energy = " + Physics.Energy(pro.get(0),this.getSize()) , 200, 300);
         g2d.drawString("num of Proj: " + proSize , 200, 400);
-        
+        g2d.setColor(Color.white);
+        g2d.drawString("Press B to add more balls, 	V to launch balls, 	W to add more walls, 	and M to add more round walls" , 200, attempt.getHeight() - 50);
         
     }
     
@@ -165,8 +222,10 @@ public class attempt extends JPanel {
     	InputManager manage = new InputManager();
         KeyListener Klistener = manage.new MyActionListener();
         MouseListener Mlistener = manage.new MyActionListener();
+        MouseMotionListener MMlistener = manage.new MyActionListener();
         addKeyListener(Klistener);
         addMouseListener(Mlistener);
+        addMouseMotionListener(MMlistener);
         setFocusable(true);
     }
     
@@ -241,6 +300,63 @@ public class attempt extends JPanel {
             	System.out.println("Round Wall");
             	CurMode = mode.RWALL;
             }
+            if (mousePressed)
+            	startLocation = new Coord(mouseLocation);
+            if (!mousePressed && startLocation != null)
+            {
+            	endLocation = new Coord(mouseLocation);
+            	switch(CurMode)
+            	{
+	            	case BALL:
+	            	{
+		            	double rad = Physics.CoordDist(startLocation, endLocation)/2;
+		            	Coord cent = Physics.findMiddle(startLocation, endLocation);
+		            	pro.add(new Proj(cent, rad));
+		            	proSize++;
+		            	break;
+	            	}
+	            	case WALL:
+	            	{
+	            		double minX = Math.min(startLocation._x, endLocation._x);
+	            		double maxX = Math.max(startLocation._x, endLocation._x);
+	            		double minY = Math.min(startLocation._y, endLocation._y);
+	            		double maxY = Math.max(startLocation._y, endLocation._y);
+	            		Coord c1 = new Coord(minX, maxY);
+	            		Coord c2 = new Coord(maxX, minY);
+	            		
+	            		walls.add(new Wall(c1,c2));
+	            		wallSize++;
+	            		break;
+	            	}
+	            	case RWALL:
+	            	{
+	            		double rad = Physics.CoordDist(startLocation, endLocation)/2;
+		            	Coord cent = Physics.findMiddle(startLocation, endLocation);
+	            		walls.add(new RoundWall(cent, rad));
+	            		wallSize++;
+	            		break;
+	            	}
+					case VBALL:
+					{
+						double rad = PLAYER_SIZE/2;
+		            	Coord cent = startLocation;
+						double dir = Math.atan2(startLocation._y - endLocation._y, startLocation._x - endLocation._x);
+						double size = Physics.CoordDist(startLocation, endLocation)*10;
+						Vect vel = new Vect ((float)size, (float)dir);
+						pro.add(new Proj(cent, vel, rad));
+		            	proSize++;
+						break;
+					}
+					default:
+					{
+						System.out.println("Got default in mode switch case");
+						break;
+					}
+            	}
+            	startLocation = null;
+            	endLocation = null;
+            }
+            	
         }
         
         public void run()

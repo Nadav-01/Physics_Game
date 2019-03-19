@@ -23,6 +23,12 @@ public class Wall extends Item
         cord2 = new Coord(w,z);
     }
     
+    public Wall(Coord c1, Coord c2)
+    {
+        super(c1);
+        cord2 = new Coord(c2);
+    }
+    
     public double getHeight()
     {
         return Math.abs(cord2._y - cord1._y);

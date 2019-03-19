@@ -5,12 +5,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 public class InputManager 
 {
 	//static int action;
 	
-	public class MyActionListener implements KeyListener, MouseListener {
+	public class MyActionListener implements KeyListener, MouseListener, MouseMotionListener {
     	
         @Override
         public void keyTyped(KeyEvent e) {
@@ -86,32 +87,44 @@ public class InputManager
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
-			attempt.mouseLocation = (new Coord(e.getPoint().getX(), e.getPoint().getY()));
+			attempt.mouseLocation = (new Coord(e.getPoint().getX(), e.getPoint().getY()).intoJcoord());
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			attempt.mouseInScreen = true;
-			attempt.mouseLocation = (new Coord(e.getPoint().getX(), e.getPoint().getY()));
+			attempt.mouseLocation = (new Coord(e.getPoint().getX(), e.getPoint().getY()).intoJcoord());
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
 			attempt.mouseInScreen = false;
-			attempt.mouseLocation = (new Coord(e.getPoint().getX(), e.getPoint().getY()));
+			attempt.mouseLocation = (new Coord(e.getPoint().getX(), e.getPoint().getY()).intoJcoord());
 		}
 
 		@Override
 		public void mousePressed(MouseEvent e) {
 			attempt.mousePressed = true;
-			attempt.mouseLocation = (new Coord(e.getPoint().getX(), e.getPoint().getY()));
+			attempt.mouseLocation = (new Coord(e.getPoint().getX(), e.getPoint().getY()).intoJcoord());
 			
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			attempt.mousePressed = false;
-			attempt.mouseLocation = (new Coord(e.getPoint().getX(), e.getPoint().getY()));
+			attempt.mouseLocation = (new Coord(e.getPoint().getX(), e.getPoint().getY()).intoJcoord());
+		}
+
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			// TODO Auto-generated method stub
+			attempt.curMouseLoc = (new Coord(e.getPoint().getX(), e.getPoint().getY()).intoJcoord());
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			// TODO Auto-generated method stub
+			attempt.curMouseLoc = (new Coord(e.getPoint().getX(), e.getPoint().getY()).intoJcoord());
 		}
     }
 	

@@ -13,7 +13,13 @@ public class RoundWall extends Item
         super(x,y);
         _rad = rad;
     }
-	
+    
+    public RoundWall(Coord c, double rad)
+    {
+        super(c);
+        _rad = rad;
+    }
+    
     public boolean isCol(Item other)
     {
         if (other instanceof Proj)
