@@ -16,5 +16,10 @@ public abstract class Item
         cord1 = new Coord(x,y);
     }
     
+    public Item(Coord c)
+    {
+        cord1 = new Coord(c);
+    }
+    
     public abstract boolean isCol(Item other);  // Items on the screen must be able to interact with eachother.
 }

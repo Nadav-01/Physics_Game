@@ -311,18 +311,43 @@ public class Physics
 	//fixes overlap between two overlapping projectiles.
 	public static void fixOverlap(Proj a, Proj b)
 	{
+		
+		
 		double dist = projDist(a,b);		
 		double angle = Math.atan(((a.cord1._y - b.cord1._y)/(a.cord1._x - b.cord1._x)));	//gets the angle between a and b.
 		if (a.cord1._x < b.cord1._x)	//if a is more left then b, add PI to the angle, so the math will work.
 			angle += Math.PI;
 		
+		boolean aNextToWall = false, bNextToWall = false;
+		
+		for (int i = 0; i < attempt.wallSize; i++)
+		{
+			if (a.isCol(attempt.walls.get(i)))
+					aNextToWall = true;
+			if (b.isCol(attempt.walls.get(i)))
+					bNextToWall = true;
+		}
+		
 		double d = a._rad + b._rad - dist;
 		d *= 1.05;
-		
-		a.cord1._x += d * Math.cos(angle) * b._mass/(a._mass + b._mass);	//changes the location of both projectiles,
-		a.cord1._y += d * Math.sin(angle) * b._mass/(a._mass + b._mass);	//inversly proportional to their mass,
-		b.cord1._x -= d * Math.cos(angle) * a._mass/(a._mass + b._mass);	//so they wont overlap anymore.
-		b.cord1._y -= d * Math.sin(angle) * a._mass/(a._mass + b._mass);
+		if (!aNextToWall && !bNextToWall)
+		{
+			
+			a.cord1._x += d * Math.cos(angle) * b._mass/(a._mass + b._mass);	//changes the location of both projectiles,
+			a.cord1._y += d * Math.sin(angle) * b._mass/(a._mass + b._mass);	//inversly proportional to their mass,
+			b.cord1._x -= d * Math.cos(angle) * a._mass/(a._mass + b._mass);	//so they wont overlap anymore.
+			b.cord1._y -= d * Math.sin(angle) * a._mass/(a._mass + b._mass);
+		}
+		else if (!aNextToWall)
+		{
+			a.cord1._x += d * Math.cos(angle);
+			a.cord1._y += d * Math.sin(angle);
+		}
+		else if (!bNextToWall)
+		{
+			b.cord1._x -= d * Math.cos(angle);
+			b.cord1._y -= d * Math.sin(angle);
+		}
 	}
 	
 	//checks if there's overlap between a projectile and a wall

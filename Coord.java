@@ -11,9 +11,17 @@ public class Coord
 		_y = y;
 	}
 	
+	
+	public Coord(Coord c)
+	{
+		_x = c._x;
+		_y = c._y;
+	}
+	
 	public Coord intoJcoord()
 	{
 		return new Coord(_x, attempt.attempt.getHeight() -_y);
 	}
+	
 	
 }

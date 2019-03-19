@@ -1,9 +1,11 @@
 package src;
 
 import java.awt.event.KeyEvent;		//for input
-import java.awt.event.KeyListener;	
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 import java.awt.Graphics;			//for graphics
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import javax.swing.JFrame;			//to render the frame
 import javax.swing.JPanel;
@@ -16,13 +18,27 @@ import java.util.TimerTask;
 @SuppressWarnings("serial")
 public class attempt extends JPanel {
     
-	static boolean[] key = new boolean[Math.max(KeyEvent.VK_UP, Math.max(KeyEvent.VK_RIGHT, Math.max(KeyEvent.VK_DOWN, Math.max(KeyEvent.VK_LEFT, KeyEvent.VK_R)))) + 1];
+	static boolean[] key = new boolean[9];
 	
-    //static int up = KeyEvent.VK_UP; 
-    //static int right = KeyEvent.VK_RIGHT;
-    //static int down = KeyEvent.VK_DOWN;
-    //static int left = KeyEvent.VK_LEFT;
-    //static int reset = KeyEvent.VK_R;
+	enum keyCode {
+		UP (0),
+		DOWN (1),
+		LEFT (2),
+		RIGHT (3),
+		RESET (4),
+		BALL (5),
+		VBALL (6),
+		WALL (7),
+		RWALL (8);
+		
+		public int code;
+		keyCode(int code)
+		{
+			this.code = code;
+		} 
+	}
+	
+    enum mode {BALL, WALL, RWALL,VBALL};
     static attempt attempt = new attempt();
     
     static final int PLAYER_SIZE = 60;
@@ -39,6 +55,13 @@ public class attempt extends JPanel {
     																							
     static int proSize;
     static int wallSize;
+    static mode CurMode;
+    
+    static Coord mouseLocation = new Coord (0,0);
+    static boolean mouseInScreen;
+    static boolean mousePressed;
+    
+    static Point windowLocation;
     
     static long oldT;
     
@@ -122,20 +145,25 @@ public class attempt extends JPanel {
         		Putstuff.putRoundwall((RoundWall)walls.get(i),g2d); 
         }
         
+        Coord loc = mouseLocation.intoJcoord();
+        g2d.drawString(" mouse location: x = " + loc._x + " y = " + loc._y , 500, 400);
+        
         g2d.drawString("speed = " + pro.get(0)._vel.getSize(), 200, 200);   // Debug info
         g2d.drawString("dir = " + pro.get(0)._vel.getDir(), 200, 150);
         g2d.drawLine(350, 150, 350 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 150 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())));
         g2d.fillOval(347 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 147 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())), 5, 5);
         g2d.drawString("x = " + pro.get(0).cord1._x + "\t y = " + pro.get(0).cord1._y, 200, 250);
         g2d.drawString("Energy = " + Physics.Energy(pro.get(0),this.getSize()) , 200, 300);
-        
+        g2d.drawString("num of Proj: " + proSize , 200, 400);
         
     }
     
     public attempt() {  // Implementing keylistener
     	InputManager manage = new InputManager();
-        KeyListener listener = manage.new MyKeyListener();
-        addKeyListener(listener);
+        KeyListener Klistener = manage.new MyActionListener();
+        MouseListener Mlistener = manage.new MyActionListener();
+        addKeyListener(Klistener);
+        addMouseListener(Mlistener);
         setFocusable(true);
     }
     
@@ -160,39 +188,61 @@ public class attempt extends JPanel {
         {
         	int POWER = 4000000;
         	//action = InputManager.action;
-        	if (key[KeyEvent.VK_UP])
+        	if (key[keyCode.UP.code])
             {
                 System.out.println("up");
                 Physics.upplyF(pro.get(0), new Vect(POWER,(float)(Math.PI/2)));
                 Physics.upplyF(pro.get(1), new Vect(POWER,(float)(3*Math.PI/2)));
             }
-            if (key[KeyEvent.VK_DOWN])
+            if (key[keyCode.DOWN.code])
             {
                 System.out.println("down");
                 Physics.upplyF(pro.get(0), new Vect(POWER,(float)(3*Math.PI/2)));
                 Physics.upplyF(pro.get(1), new Vect(POWER,(float)(Math.PI/2)));
             }
-            if (key[KeyEvent.VK_RIGHT])
+            if (key[keyCode.RIGHT.code])
             {
                 System.out.println("right");
                 Physics.upplyF(pro.get(0), new Vect(POWER,(float)(0)));
                 Physics.upplyF(pro.get(1), new Vect(POWER,(float)(Math.PI)));
             }
-            if (key[KeyEvent.VK_LEFT])
+            if (key[keyCode.LEFT.code])
             {
                 System.out.println("left");
                 Physics.upplyF(pro.get(0), new Vect(POWER,(float)(Math.PI)));
                 Physics.upplyF(pro.get(1), new Vect(POWER,(float)(0)));
             }
-            if (key[KeyEvent.VK_R])
+            if (key[keyCode.RESET.code])
             {
             	System.out.println("reset");
             	inintilizeProj();
+            }
+            if (key[keyCode.BALL.code])
+            {
+            	System.out.println("Ball");
+            	CurMode = mode.BALL;
+            }
+            if (key[keyCode.VBALL.code])
+            {
+            	System.out.println("Velocity Ball");
+            	CurMode = mode.VBALL;
+            }
+            if (key[keyCode.WALL.code])
+            {
+            	System.out.println("Velocity Ball");
+            	CurMode = mode.WALL;
+            }
+            
+            if (key[keyCode.RWALL.code])
+            {
+            	System.out.println("Round Wall");
+            	CurMode = mode.RWALL;
             }
         }
         
         public void run()
         {
+        	windowLocation = attempt.getLocation();
         	initilizeWall();
         	long newT = System.currentTimeMillis();	//gets new time from the system.
         	long deltaT = newT - oldT;				//gets the difference of the times between last frame and now.
