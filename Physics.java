@@ -83,7 +83,7 @@ public class Physics
         {
             Physics.fixOverlap(a,b);
         }
-    	double angle = Math.atan(((a.cord1._y - b.cord1._y)/(a.cord1._x - b.cord1._x)));	//gets the angle between a and b.
+    	double angle = Math.atan2((a.cord1._y - b.cord1._y),(a.cord1._x - b.cord1._x));	//gets the angle between a and b.
 		if (a.cord1._x < b.cord1._x)	//if a is more left then b, add PI to the angle, so the math will work.
 			angle += Math.PI;
     	
@@ -314,7 +314,15 @@ public class Physics
 		
 		
 		double dist = projDist(a,b);		
-		double angle = Math.atan(((a.cord1._y - b.cord1._y)/(a.cord1._x - b.cord1._x)));	//gets the angle between a and b.
+		double angle = 0;
+		if (a.cord1._x != b.cord1._x)
+			angle = Math.atan(((a.cord1._y - b.cord1._y)/(a.cord1._x - b.cord1._x)));	//gets the angle between a and b.
+		else
+			if (a.cord1._y > b.cord1._y)
+				angle = Math.PI/2;
+			else
+				angle = 3*Math.PI/2;
+
 		if (a.cord1._x < b.cord1._x)	//if a is more left then b, add PI to the angle, so the math will work.
 			angle += Math.PI;
 		

@@ -158,6 +158,7 @@ public class attempt extends JPanel {
         g2d.drawString("Energy = " + Physics.Energy(pro.get(0),this.getSize()) , 200, 300);
         g2d.drawString("num of Proj: " + proSize , 200, 400);
         
+        
     }
     
     public attempt() {  // Implementing keylistener
