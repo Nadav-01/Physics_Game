@@ -8,6 +8,7 @@ import java.awt.RenderingHints;
 import javax.swing.JFrame;			//to render the frame
 import javax.swing.JPanel;
 import java.awt.Color;
+import java.util.LinkedList;
 import java.util.Timer;				//to keep fps stable
 import java.util.TimerTask;
 
@@ -30,23 +31,25 @@ public class attempt extends JPanel {
     static attempt attempt = new attempt();
     
     static final int PLAYER_SIZE = 60;
-    static Proj[] pro; // Projectile array
-    static Item[] walls = {	new Wall(-100,100,attempt.getWidth()+100,-100),		// floor
-    						new Wall(-100,attempt.getHeight()+100,100,-100 ),	// leftwall	
-    						new Wall(attempt.getWidth()-100,attempt.getHeight()+100,attempt.getWidth()+100,-100), 	// rightwall
-    						new Wall(-100,attempt.getHeight()+100,attempt.getWidth()+100,attempt.getHeight()-100),		// ceiling
+    //static Proj[] pro; // Projectile array
+    static LinkedList<Proj> pro = new LinkedList<Proj>();
+    static LinkedList<Item> walls = new LinkedList<Item>();
+    //static Item[] walls = {	new Wall(-100,100,attempt.getWidth()+100,-100),		// floor
+    //						new Wall(-100,attempt.getHeight()+100,100,-100 ),	// leftwall	
+    //						new Wall(attempt.getWidth()-100,attempt.getHeight()+100,attempt.getWidth()+100,-100), 	// rightwall
+    //						new Wall(-100,attempt.getHeight()+100,attempt.getWidth()+100,attempt.getHeight()-100),		// ceiling
     						//new Wall(200,200,250,250),
     						//new RoundWall(400,400,60)
-    };   // Wall array
+    //};   // Wall array
     																							
     static int proSize;
-    static int wallSize = walls.length;
+    static int wallSize;
     
     static long oldT;
     
     public static void initilizeWall()
     {
-    	walls = new Item[] {	new Wall(-100,100,attempt.getWidth()+100,-100),		// floor
+    	/*walls = new Item[] {	new Wall(-100,100,attempt.getWidth()+100,-100),		// floor
 				new Wall(-100,attempt.getHeight()+100,100,-100 ),	// leftwall	
 				new Wall(attempt.getWidth()-100,attempt.getHeight()+100,attempt.getWidth()+100,-100), 	// rightwall
 				new Wall(-100,attempt.getHeight()+100,attempt.getWidth()+100,attempt.getHeight()-100),		// ceiling
@@ -54,12 +57,32 @@ public class attempt extends JPanel {
 				new RoundWall(400,400,60),
 				new RoundWall(800,400,2)
     		};   // Wall array
-    	wallSize = walls.length;
+    		
+    		wallSize = walls.length;*/
+    	
+    	walls.clear();
+    	walls.add(new Wall(-100,100,attempt.getWidth()+100,-100));	// floor
+    	walls.add(new Wall(-100,attempt.getHeight()+100,100,-100 ));	//leftwall
+    	walls.add(new Wall(attempt.getWidth()-100,attempt.getHeight()+100,attempt.getWidth()+100,-100));	// rightwall
+    	walls.add(new Wall(-100,attempt.getHeight()+100,attempt.getWidth()+100,attempt.getHeight()-100));	//ceiling
+    	
+    	wallSize = walls.size();
     }
     
     public static void inintilizeProj()	//initilize projectile array.
     {
-    	pro = new Proj[] { 	new Proj(300,300,PLAYER_SIZE),
+    	if (!pro.isEmpty())
+    		pro.clear();
+    	pro.add(new Proj(300,300,PLAYER_SIZE));
+    	pro.add(new Proj(250,250,PLAYER_SIZE/2));
+    	pro.add(new Proj(250,250,PLAYER_SIZE/2));
+    	pro.add(new Proj(250,250,PLAYER_SIZE/2));
+    	pro.add(new Proj(250,250,PLAYER_SIZE/3));
+    	pro.add(new Proj(250,250,PLAYER_SIZE/4));
+    	pro.add(new Proj(250,250,PLAYER_SIZE/1.5));
+    	proSize = pro.size();
+    	
+    	/*pro = new Proj[] { 	new Proj(300,300,PLAYER_SIZE),
     						new Proj(250,250,PLAYER_SIZE/2),
     						new Proj(250,250,PLAYER_SIZE/2),
     						new Proj(250,250,PLAYER_SIZE/2),
@@ -68,7 +91,7 @@ public class attempt extends JPanel {
     						new Proj(250,250,PLAYER_SIZE/1.5)
     						}; 
     	pro[0]._mass = pro[1]._mass;
-    	proSize = pro.length;
+    	proSize = pro.length;*/
     }
     
     @Override   // Overriding paint of Jpanel
@@ -88,7 +111,7 @@ public class attempt extends JPanel {
         g2d.setColor(Color.black);
         for (int i = 0; i < proSize; i++)	//paints projectiles
         {
-        	Putstuff.putProj(pro[i],g2d);   // Paint projectiles
+        	Putstuff.putProj(pro.get(i),g2d);   // Paint projectiles
         }
         
         g2d.setColor(Color.red);
@@ -97,18 +120,18 @@ public class attempt extends JPanel {
         g2d.setColor(Color.black);
         for (int i = 0; i < wallSize; i++) // Paints walls
         {
-        	if (walls[i] instanceof Wall)
-        		Putstuff.putWall((Wall)walls[i],g2d); 
-        	if (walls[i] instanceof RoundWall)
-        		Putstuff.putRoundwall((RoundWall)walls[i],g2d); 
+        	if (walls.get(i) instanceof Wall)
+        		Putstuff.putWall((Wall)walls.get(i),g2d); 
+        	if (walls.get(i) instanceof RoundWall)
+        		Putstuff.putRoundwall((RoundWall)walls.get(i),g2d); 
         }
         
-        g2d.drawString("speed = " + pro[0]._vel.getSize(), 200, 200);   // Debug info
-        g2d.drawString("dir = " + pro[0]._vel.getDir(), 200, 150);
-        g2d.drawLine(350, 150, 350 + (int)(10 * Math.cos(pro[0]._vel.getDir())), 150 - (int)(10 * Math.sin(pro[0]._vel.getDir())));
-        g2d.fillOval(347 + (int)(10 * Math.cos(pro[0]._vel.getDir())), 147 - (int)(10 * Math.sin(pro[0]._vel.getDir())), 5, 5);
-        g2d.drawString("x = " + pro[0].cord1._x + "\t y = " + pro[0].cord1._y, 200, 250);
-        g2d.drawString("Energy = " + Physics.Energy(pro[0],this.getSize()) , 200, 300);
+        g2d.drawString("speed = " + pro.get(0)._vel.getSize(), 200, 200);   // Debug info
+        g2d.drawString("dir = " + pro.get(0)._vel.getDir(), 200, 150);
+        g2d.drawLine(350, 150, 350 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 150 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())));
+        g2d.fillOval(347 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 147 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())), 5, 5);
+        g2d.drawString("x = " + pro.get(0).cord1._x + "\t y = " + pro.get(0).cord1._y, 200, 250);
+        g2d.drawString("Energy = " + Physics.Energy(pro.get(0),this.getSize()) , 200, 300);
         
         
     }
@@ -144,26 +167,26 @@ public class attempt extends JPanel {
         	if (key[KeyEvent.VK_UP])
             {
                 System.out.println("up");
-                Physics.upplyF(pro[0], new Vect(POWER,(float)(Math.PI/2)));
-                Physics.upplyF(pro[1], new Vect(POWER,(float)(3*Math.PI/2)));
+                Physics.upplyF(pro.get(0), new Vect(POWER,(float)(Math.PI/2)));
+                Physics.upplyF(pro.get(1), new Vect(POWER,(float)(3*Math.PI/2)));
             }
             if (key[KeyEvent.VK_DOWN])
             {
                 System.out.println("down");
-                Physics.upplyF(pro[0], new Vect(POWER,(float)(3*Math.PI/2)));
-                Physics.upplyF(pro[1], new Vect(POWER,(float)(Math.PI/2)));
+                Physics.upplyF(pro.get(0), new Vect(POWER,(float)(3*Math.PI/2)));
+                Physics.upplyF(pro.get(1), new Vect(POWER,(float)(Math.PI/2)));
             }
             if (key[KeyEvent.VK_RIGHT])
             {
                 System.out.println("right");
-                Physics.upplyF(pro[0], new Vect(POWER,(float)(0)));
-                Physics.upplyF(pro[1], new Vect(POWER,(float)(Math.PI)));
+                Physics.upplyF(pro.get(0), new Vect(POWER,(float)(0)));
+                Physics.upplyF(pro.get(1), new Vect(POWER,(float)(Math.PI)));
             }
             if (key[KeyEvent.VK_LEFT])
             {
                 System.out.println("left");
-                Physics.upplyF(pro[0], new Vect(POWER,(float)(Math.PI)));
-                Physics.upplyF(pro[1], new Vect(POWER,(float)(0)));
+                Physics.upplyF(pro.get(0), new Vect(POWER,(float)(Math.PI)));
+                Physics.upplyF(pro.get(1), new Vect(POWER,(float)(0)));
             }
             if (key[KeyEvent.VK_R])
             {
@@ -187,10 +210,10 @@ public class attempt extends JPanel {
             {
                 for (int j = 0; j < wallSize; j++)
                 {
-                    if (Physics.areColliding((Item)pro[i],(Item)walls[j]))
+                    if (Physics.areColliding((Item)pro.get(i),(Item)walls.get(j)))
                     {
                         System.out.println("bounce wall");
-                        Physics.collision(pro[i],(Item)walls[j]);
+                        Physics.collision(pro.get(i),(Item)walls.get(j));
                     }
                 }
             }
@@ -201,14 +224,14 @@ public class attempt extends JPanel {
                 for (int j = i+1; j < proSize; j++)
                 {
                 	
-                    if (Physics.areColliding((Item)pro[i],(Item)pro[j]))
+                    if (Physics.areColliding((Item)pro.get(i),(Item)pro.get(j)))
                     {
                         System.out.println("bounce");
                        /* if(Physics.isOverlap(pro[i],pro[j]))
                         {
                             Physics.fixOverlap(pro[i],pro[j]);
                         }*/
-                       Physics.collision(pro[i],pro[j]);
+                       Physics.collision(pro.get(i),pro.get(j));
                     }
                 }
             }
@@ -229,20 +252,20 @@ public class attempt extends JPanel {
             	
             	
 
-        		pro[i].cord1._x += deltaT*pro[i]._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
-        		pro[i].cord1._y += deltaT*pro[i]._vel.getY()/1000;
+        		pro.get(i).cord1._x += deltaT*pro.get(i)._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
+        		pro.get(i).cord1._y += deltaT*pro.get(i)._vel.getY()/1000;
 
                 
-                if (pro[i].cord1._x < -1000 || pro[i].cord1._x > 2000 || pro[i].cord1._y < -1000 || pro[i].cord1._y > 2000)
+                if (pro.get(i).cord1._x < -1000 || pro.get(i).cord1._x > 2000 || pro.get(i).cord1._y < -1000 || pro.get(i).cord1._y > 2000)
                 {
-                	if ( 50 + i*pro[i]._rad*2 < 680)
-                		pro[i].cord1._x = 50 + i*pro[i]._rad*2;
+                	if ( 50 + i*pro.get(i)._rad*2 < 680)
+                		pro.get(i).cord1._x = 50 + i*pro.get(i)._rad*2;
                 	
-                	if (50 + i*pro[i]._rad*2 < 550)
-                		pro[i].cord1._y = 50 + i*pro[i]._rad*2;
+                	if (50 + i*pro.get(i)._rad*2 < 550)
+                		pro.get(i).cord1._y = 50 + i*pro.get(i)._rad*2;
                 	
-                    if (pro[i]._vel.getSize() > 500)
-                        pro[i]._vel.setSize(50);
+                    if (pro.get(i)._vel.getSize() > 500)
+                        pro.get(i)._vel.setSize(50);
                 }
             } 
             

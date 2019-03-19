@@ -1,6 +1,7 @@
 package src;
 
 import java.awt.Dimension;
+import java.util.LinkedList;
 
 public class Physics
 {
@@ -23,14 +24,14 @@ public class Physics
     }
     
     // Upplys Gravity on an array of projectiles.
-    public static void upplyG(Proj p[], int n)
+    public static void upplyG(LinkedList<Proj> p, int n)
     {
         Vect Wei = new Vect(grav);
         for (int i = 0; i < n; i++)
         {
             Wei = new Vect(grav);
-            Wei.sizeMult(p[i]._mass);
-            upplyF(p[i],Wei);
+            Wei.sizeMult(p.get(i)._mass);
+            upplyF(p.get(i),Wei);
         }
     }
     
