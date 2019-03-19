@@ -205,9 +205,9 @@ public class Physics
         		y = b.cord2._y;
         	}
         	
-        	double angle = Math.tan((a.cord1._y - y)/(a.cord1._x - x));
-        	angle += Math.PI/2;
-        	Vec_Math.flipAxis(a._vel, angle);
+        	double angle = Math.atan2((a.cord1._y - y),(a.cord1._x - x));
+        	angle -= Math.PI/2;
+        	Vec_Math.flipUpAxis(a._vel, angle);
         }
         long newT = System.currentTimeMillis();
     	long deltaT =  newT - attempt.oldT;

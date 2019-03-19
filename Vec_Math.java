@@ -85,4 +85,15 @@ public abstract class Vec_Math
 		v.setDir((float)(angle +  newDir));
 	}
     
+	
+	public static void flipUpAxis(Vect v, double angle)
+	{
+	
+		double newDir = v.getDir() - angle;
+		Vect temp = new Vect(1, (float)newDir);
+		flipUp(temp);
+		
+		
+		v.setDir(temp.getDir() + (float)angle);
+	}
 }
