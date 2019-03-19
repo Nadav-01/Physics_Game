@@ -64,6 +64,8 @@ public class attempt extends JPanel {
     static Point windowLocation;
     
     static long oldT;
+    static int oldHeight;
+    static int oldWidth;
     
     public static void initilizeWall()
     {
@@ -229,7 +231,7 @@ public class attempt extends JPanel {
             }
             if (key[keyCode.WALL.code])
             {
-            	System.out.println("Velocity Ball");
+            	System.out.println("Wall");
             	CurMode = mode.WALL;
             }
             
@@ -243,7 +245,11 @@ public class attempt extends JPanel {
         public void run()
         {
         	windowLocation = attempt.getLocation();
-        	initilizeWall();
+        	if (oldHeight != attempt.getHeight() || oldWidth != attempt.getWidth())
+        		initilizeWall();
+        	oldHeight = attempt.getHeight();
+        	oldWidth = attempt.getWidth();
+        	
         	long newT = System.currentTimeMillis();	//gets new time from the system.
         	long deltaT = newT - oldT;				//gets the difference of the times between last frame and now.
         	
@@ -328,6 +334,7 @@ public class attempt extends JPanel {
     		key[i] = false;}
     	inintilizeProj();
     	oldT = System.currentTimeMillis();
+    	
         Physics phy = new Physics();
         JFrame frame = new JFrame("game");
         
@@ -336,6 +343,8 @@ public class attempt extends JPanel {
         frame.setSize(1800, 1000);	//setting window size
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        oldHeight = 1000;
+        oldWidth = 1800;
         
         //int flipXcnt = 1;
         //int flipYcnt = 1;

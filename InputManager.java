@@ -86,18 +86,19 @@ public class InputManager
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+			attempt.mouseLocation = (new Coord(e.getPoint().getX(), e.getPoint().getY()));
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			attempt.mouseInScreen = true;
+			attempt.mouseLocation = (new Coord(e.getPoint().getX(), e.getPoint().getY()));
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
 			attempt.mouseInScreen = false;
-			
+			attempt.mouseLocation = (new Coord(e.getPoint().getX(), e.getPoint().getY()));
 		}
 
 		@Override
