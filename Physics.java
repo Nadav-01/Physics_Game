@@ -41,7 +41,7 @@ public class Physics
         Vect fric = new Vect(p._vel);
         fric.setDir(fric.getDir() + (float)(Math.PI));	//friction is in opposite direction to velocity.
         fric.setSize(fric.getSize() * Physics.airFric);
-        fric = new Vect(fric.getX()/3,fric.getY());
+        fric = new Vect(fric.getX()/3,fric.getY()/3);
         Physics.upplyF(p, fric);
     }
     

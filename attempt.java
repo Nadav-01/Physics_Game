@@ -101,7 +101,9 @@ public class attempt extends JPanel {
     	if (!pro.isEmpty())
     		pro.clear();
     	pro.add(new Proj(300,300,PLAYER_SIZE));
-    	pro.add(new Proj(250,250,PLAYER_SIZE/2));
+    	pro.add(new Proj(500,300,PLAYER_SIZE));
+    	//pro.add(new Proj(300,300,PLAYER_SIZE));
+    	//pro.add(new Proj(250,250,PLAYER_SIZE/2));
     	//pro.add(new Proj(250,250,PLAYER_SIZE/2));
     	//pro.add(new Proj(250,250,PLAYER_SIZE/2));
     	//pro.add(new Proj(250,250,PLAYER_SIZE/3));
@@ -207,16 +209,18 @@ public class attempt extends JPanel {
         
         Coord loc = curMouseLoc;
         g2d.drawString(" mouse location: x = " + loc._x + " y = " + loc._y , 500, 400);
-        
-        g2d.drawString("speed = " + pro.get(0)._vel.getSize(), 200, 200);   // Debug info
-        g2d.drawString("dir = " + pro.get(0)._vel.getDir(), 200, 150);
-        g2d.drawLine(350, 150, 350 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 150 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())));
-        g2d.fillOval(347 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 147 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())), 5, 5);
-        g2d.drawString("x = " + pro.get(0).cord1._x + "\t y = " + pro.get(0).cord1._y, 200, 250);
-        double energy = 0;
-        for (int i = 0; i < proSize; i++)
-	        energy += Physics.Energy(pro.get(i),this.getSize());
-        g2d.drawString("Energy = " + energy , 200, 300);
+        if (!pro.isEmpty())
+        {
+	        g2d.drawString("speed = " + pro.get(0)._vel.getSize(), 200, 200);   // Debug info
+	        g2d.drawString("dir = " + pro.get(0)._vel.getDir(), 200, 150);
+	        g2d.drawLine(350, 150, 350 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 150 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())));
+	        g2d.fillOval(347 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 147 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())), 5, 5);
+	        g2d.drawString("x = " + pro.get(0).cord1._x + "\t y = " + pro.get(0).cord1._y, 200, 250);
+	        double energy = 0;
+	        for (int i = 0; i < proSize; i++)
+		        energy += Physics.Energy(pro.get(i),this.getSize());
+	        g2d.drawString("Energy = " + energy , 200, 300);
+        }
         g2d.drawString("num of Proj: " + proSize , 200, 400);
         g2d.setColor(Color.white);
         g2d.drawString("Press B to add more balls, V to launch balls, W to add more walls, M to add more round walls, G to toggle gravity, and H + arrowkey to control gravity direction" , 200, attempt.getHeight() - 50);
@@ -258,26 +262,26 @@ public class attempt extends JPanel {
         	if (key[keyCode.UP.code]) 
             {
                 System.out.println("up");
-                Physics.upplyF(pro.get(0), new Vect(POWER,(float)(Math.PI/2)));
-                Physics.upplyF(pro.get(1), new Vect(POWER,(float)(3*Math.PI/2)));
+                //Physics.upplyF(pro.get(0), new Vect(POWER,(float)(Math.PI/2)));
+                //Physics.upplyF(pro.get(1), new Vect(POWER,(float)(3*Math.PI/2)));
             }
             if (key[keyCode.DOWN.code])
             {
                 System.out.println("down");
-                Physics.upplyF(pro.get(0), new Vect(POWER,(float)(3*Math.PI/2)));
-                Physics.upplyF(pro.get(1), new Vect(POWER,(float)(Math.PI/2)));
+                //Physics.upplyF(pro.get(0), new Vect(POWER,(float)(3*Math.PI/2)));
+                //Physics.upplyF(pro.get(1), new Vect(POWER,(float)(Math.PI/2)));
             }
             if (key[keyCode.RIGHT.code])
             {
                 System.out.println("right");
-                Physics.upplyF(pro.get(0), new Vect(POWER,(float)(0)));
-                Physics.upplyF(pro.get(1), new Vect(POWER,(float)(Math.PI)));
+                //Physics.upplyF(pro.get(0), new Vect(POWER,(float)(0)));
+                //Physics.upplyF(pro.get(1), new Vect(POWER,(float)(Math.PI)));
             }
             if (key[keyCode.LEFT.code])
             {
                 System.out.println("left");
-                Physics.upplyF(pro.get(0), new Vect(POWER,(float)(Math.PI)));
-                Physics.upplyF(pro.get(1), new Vect(POWER,(float)(0)));
+                //Physics.upplyF(pro.get(0), new Vect(POWER,(float)(Math.PI)));
+                //Physics.upplyF(pro.get(1), new Vect(POWER,(float)(0)));
             }
             if (key[keyCode.RESET.code])
             {
