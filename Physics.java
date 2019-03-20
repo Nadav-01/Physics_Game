@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 public class Physics
 {
-    public static Vect grav = new Vect(0.09, (float)(3*Math.PI/2));
+    public static Vect grav = new Vect(900, (float)(3*Math.PI/2));
     public static double airFric = 0.8;
     
     public Physics()

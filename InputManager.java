@@ -47,6 +47,12 @@ public class InputManager
         	case (KeyEvent.VK_M):
         		attempt.key[attempt.keyCode.RWALL.code] = true;
         		break;
+        	case (KeyEvent.VK_G):
+        		attempt.key[attempt.keyCode.GRAV.code] = true;
+        		break;
+        	case (KeyEvent.VK_H):
+        		attempt.key[attempt.keyCode.SGRAV.code] = true;
+        		break;
         	}
             
         }
@@ -80,6 +86,12 @@ public class InputManager
         		break;
         	case (KeyEvent.VK_M):
         		attempt.key[attempt.keyCode.RWALL.code] = false;
+        		break;
+        	case (KeyEvent.VK_G):
+        		attempt.key[attempt.keyCode.GRAV.code] = false;
+        		break;
+        	case (KeyEvent.VK_H):
+        		attempt.key[attempt.keyCode.SGRAV.code] = false;
         		break;
         	}
         }

@@ -19,7 +19,7 @@ import java.util.TimerTask;
 @SuppressWarnings("serial")
 public class attempt extends JPanel {
     
-	static boolean[] key = new boolean[9];
+	
 	
 	enum keyCode {
 		UP (0),
@@ -30,14 +30,16 @@ public class attempt extends JPanel {
 		BALL (5),
 		VBALL (6),
 		WALL (7),
-		RWALL (8);
-		
+		RWALL (8),
+		GRAV (9),
+		SGRAV (10);
 		public int code;
 		keyCode(int code)
 		{
 			this.code = code;
 		} 
 	}
+	static boolean[] key = new boolean[keyCode.values().length];
 	
     enum mode {BALL, WALL, RWALL,VBALL};
     static attempt attempt = new attempt();
@@ -100,12 +102,12 @@ public class attempt extends JPanel {
     		pro.clear();
     	pro.add(new Proj(300,300,PLAYER_SIZE));
     	pro.add(new Proj(250,250,PLAYER_SIZE/2));
-    	pro.add(new Proj(250,250,PLAYER_SIZE/2));
-    	pro.add(new Proj(250,250,PLAYER_SIZE/2));
-    	pro.add(new Proj(250,250,PLAYER_SIZE/3));
-    	pro.add(new Proj(250,250,PLAYER_SIZE/4));
-    	pro.add(new Proj(250,250,PLAYER_SIZE/1.5));
-    	pro.add(new Proj(250,250,PLAYER_SIZE*2));
+    	//pro.add(new Proj(250,250,PLAYER_SIZE/2));
+    	//pro.add(new Proj(250,250,PLAYER_SIZE/2));
+    	//pro.add(new Proj(250,250,PLAYER_SIZE/3));
+    	//pro.add(new Proj(250,250,PLAYER_SIZE/4));
+    	//pro.add(new Proj(250,250,PLAYER_SIZE/1.5));
+    	//pro.add(new Proj(250,250,PLAYER_SIZE*2));
     	proSize = pro.size();
     	
     	/*pro = new Proj[] { 	new Proj(300,300,PLAYER_SIZE),
@@ -211,10 +213,13 @@ public class attempt extends JPanel {
         g2d.drawLine(350, 150, 350 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 150 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())));
         g2d.fillOval(347 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 147 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())), 5, 5);
         g2d.drawString("x = " + pro.get(0).cord1._x + "\t y = " + pro.get(0).cord1._y, 200, 250);
-        g2d.drawString("Energy = " + Physics.Energy(pro.get(0),this.getSize()) , 200, 300);
+        double energy = 0;
+        for (int i = 0; i < proSize; i++)
+	        energy += Physics.Energy(pro.get(i),this.getSize());
+        g2d.drawString("Energy = " + energy , 200, 300);
         g2d.drawString("num of Proj: " + proSize , 200, 400);
         g2d.setColor(Color.white);
-        g2d.drawString("Press B to add more balls, 	V to launch balls, 	W to add more walls, 	and M to add more round walls" , 200, attempt.getHeight() - 50);
+        g2d.drawString("Press B to add more balls, V to launch balls, W to add more walls, M to add more round walls, and G to toggle gravity" , 200, attempt.getHeight() - 50);
         
     }
     
@@ -250,7 +255,7 @@ public class attempt extends JPanel {
         {
         	int POWER = 4000000;
         	//action = InputManager.action;
-        	if (key[keyCode.UP.code])
+        	if (key[keyCode.UP.code]) 
             {
                 System.out.println("up");
                 Physics.upplyF(pro.get(0), new Vect(POWER,(float)(Math.PI/2)));
@@ -300,6 +305,44 @@ public class attempt extends JPanel {
             	System.out.println("Round Wall");
             	CurMode = mode.RWALL;
             }
+            
+            if (key[keyCode.GRAV.code])
+            {
+            	System.out.println("Gravity");
+            	if (Physics.grav.getSize() != 0)
+            		Physics.grav.setSize(0);
+            	
+            	else if (Physics.grav.getSize() == 0)
+            		Physics.grav = new Vect(900, (float)(3*Math.PI/2));
+            }
+            
+            if (key[keyCode.SGRAV.code] && (key[keyCode.UP.code] || key[keyCode.DOWN.code] || key[keyCode.RIGHT.code] || key[keyCode.LEFT.code]))
+            {
+            	System.out.println("Gravity sideways");
+            	float dir;
+            	Vect tempDir = new Vect(0,0.0);
+            	Vect up = new Vect(1, (float)(Math.PI/2));
+            	Vect down = new Vect(1, (float)(3*Math.PI/2));
+            	Vect left = new Vect(1, (float)(Math.PI));
+            	Vect right = new Vect(1, (float)(0));
+            	
+            	if (key[keyCode.UP.code])
+            		tempDir = Vec_Math.vectAdd(tempDir, up);
+            	
+            	if (key[keyCode.DOWN.code])
+            		tempDir = Vec_Math.vectAdd(tempDir, down);
+            	
+            	if (key[keyCode.LEFT.code])
+            		tempDir = Vec_Math.vectAdd(tempDir, left);
+            	
+            	if (key[keyCode.RIGHT.code])
+            		tempDir = Vec_Math.vectAdd(tempDir, right);
+            	
+            	dir = tempDir.getDir();
+            	Physics.grav.setDir(dir);
+            }
+            
+            
             if (mousePressed)
             	startLocation = new Coord(mouseLocation);
             if (!mousePressed && startLocation != null)
@@ -342,6 +385,8 @@ public class attempt extends JPanel {
 		            	Coord cent = startLocation;
 						double dir = Math.atan2(startLocation._y - endLocation._y, startLocation._x - endLocation._x);
 						double size = Physics.CoordDist(startLocation, endLocation)*10;
+						if (size > 3000)	//to prevent passing through walls.
+							size = 3000;
 						Vect vel = new Vect ((float)size, (float)dir);
 						pro.add(new Proj(cent, vel, rad));
 		            	proSize++;
