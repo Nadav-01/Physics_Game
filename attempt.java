@@ -225,6 +225,7 @@ public class attempt extends JPanel {
         g2d.drawString("num of Proj: " + proSize , 200, 400);
         g2d.setColor(Color.white);
         g2d.drawString("Press B to add more balls, V to launch balls, W to add more walls, M to add more round walls, G to toggle gravity, and H + arrowkey to control gravity direction" , 200, attempt.getHeight() - 50);
+        g2d.drawString("(release H while the arrow keys are still held)" , 810, attempt.getHeight() - 30);
         
     }
     
