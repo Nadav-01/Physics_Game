@@ -226,6 +226,24 @@ public class attempt extends JPanel {
         g2d.setColor(Color.white);
         g2d.drawString("Press B to add more balls, V to launch balls, W to add more walls, M to add more round walls, G to toggle gravity, and H + arrowkey to control gravity direction" , 200, attempt.getHeight() - 50);
         g2d.drawString("(release H while the arrow keys are still held)" , 810, attempt.getHeight() - 30);
+        switch (CurMode)
+        {
+		case BALL:
+			g2d.drawString("Current Mode: Ball" , 100, 50);
+			break;
+		case RWALL:
+			g2d.drawString("Current Mode: Round Wall" , 100, 50);
+			break;
+		case VBALL:
+			g2d.drawString("Current Mode: Launch Ball" , 100, 50);
+			break;
+		case WALL:
+			g2d.drawString("Current Mode: Wall" , 100, 50);
+			break;
+		default:
+			break;
+        
+        }
         
     }
     
