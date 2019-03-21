@@ -40,6 +40,7 @@ public class attempt extends JPanel {
 		} 
 	}
 	static boolean[] key = new boolean[keyCode.values().length];
+	static boolean[] keyReleased = new boolean[keyCode.values().length];
 	
     enum mode {BALL, WALL, RWALL,VBALL};
     static attempt attempt = new attempt();
@@ -310,7 +311,7 @@ public class attempt extends JPanel {
             	CurMode = mode.RWALL;
             }
             
-            if (key[keyCode.GRAV.code])
+            if (keyReleased[keyCode.GRAV.code])
             {
             	System.out.println("Gravity");
             	if (Physics.grav.getSize() != 0)
@@ -320,7 +321,7 @@ public class attempt extends JPanel {
             		Physics.grav = new Vect(900, (float)(3*Math.PI/2));
             }
             
-            if (key[keyCode.SGRAV.code] && (key[keyCode.UP.code] || key[keyCode.DOWN.code] || key[keyCode.RIGHT.code] || key[keyCode.LEFT.code]))
+            if (keyReleased[keyCode.SGRAV.code] && (key[keyCode.UP.code] || key[keyCode.DOWN.code] || key[keyCode.RIGHT.code] || key[keyCode.LEFT.code]))
             {
             	System.out.println("Gravity sideways");
             	float dir;
@@ -405,6 +406,10 @@ public class attempt extends JPanel {
             	startLocation = null;
             	endLocation = null;
             }
+            for (int i = 0; i < keyReleased.length ; i++)
+            	keyReleased[i] = false;
+            	
+            
             	
         }
         

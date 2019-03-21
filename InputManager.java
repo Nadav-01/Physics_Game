@@ -62,36 +62,47 @@ public class InputManager
         	switch (e.getExtendedKeyCode()) {
         	case (KeyEvent.VK_UP):
         		attempt.key[attempt.keyCode.UP.code] = false;
+        		attempt.keyReleased[attempt.keyCode.UP.code] = true;
         		break;
         	case (KeyEvent.VK_DOWN):
         		attempt.key[attempt.keyCode.DOWN.code] = false;
-        		break;
+	        	attempt.keyReleased[attempt.keyCode.DOWN.code] = true;	
+	        	break;
         	case (KeyEvent.VK_LEFT):
         		attempt.key[attempt.keyCode.LEFT.code] = false;
+        		attempt.keyReleased[attempt.keyCode.LEFT.code] = true;
         		break;
         	case (KeyEvent.VK_RIGHT):
         		attempt.key[attempt.keyCode.RIGHT.code] = false;
+        		attempt.keyReleased[attempt.keyCode.RIGHT.code] = true;
         		break;
         	case (KeyEvent.VK_R):
         		attempt.key[attempt.keyCode.RESET.code] = false;
+        		attempt.keyReleased[attempt.keyCode.RESET.code] = true;
         		break;
         	case (KeyEvent.VK_B):
         		attempt.key[attempt.keyCode.BALL.code] = false;
+        		attempt.keyReleased[attempt.keyCode.BALL.code] = true;
         		break;
         	case (KeyEvent.VK_V):
         		attempt.key[attempt.keyCode.VBALL.code] = false;
+        		attempt.keyReleased[attempt.keyCode.VBALL.code] = true;
         		break;
         	case (KeyEvent.VK_W):
         		attempt.key[attempt.keyCode.WALL.code] = false;
+        		attempt.keyReleased[attempt.keyCode.WALL.code] = true;
         		break;
         	case (KeyEvent.VK_M):
         		attempt.key[attempt.keyCode.RWALL.code] = false;
+        		attempt.keyReleased[attempt.keyCode.RWALL.code] = true;
         		break;
         	case (KeyEvent.VK_G):
         		attempt.key[attempt.keyCode.GRAV.code] = false;
+        		attempt.keyReleased[attempt.keyCode.GRAV.code] = true;
         		break;
         	case (KeyEvent.VK_H):
         		attempt.key[attempt.keyCode.SGRAV.code] = false;
+        		attempt.keyReleased[attempt.keyCode.SGRAV.code] = true;
         		break;
         	}
         }
