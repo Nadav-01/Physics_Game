@@ -181,7 +181,11 @@ public class attempt extends JPanel {
 				}
 				case VBALL:
 				{
-					double rad = PLAYER_SIZE/2;
+					double rad;
+					if (pro.isEmpty())
+						rad = PLAYER_SIZE/2;
+					else
+						rad = pro.get(pro.size()-1)._rad;
 	            	Coord cent = startLocation;
 	            	Proj temp = new Proj(cent, rad);
 	            	Putstuff.putProj(temp,g2d);
@@ -419,7 +423,11 @@ public class attempt extends JPanel {
 					case VBALL:
 					{
 						
-						double rad = PLAYER_SIZE/2;
+						double rad;
+						if (pro.isEmpty())
+							rad = PLAYER_SIZE/2;
+						else
+							rad = pro.get(pro.size()-1)._rad;
 						Coord cent = startLocation;
 						double dir = Math.atan2(startLocation._y - endLocation._y, startLocation._x - endLocation._x);
 						double size = Physics.CoordDist(startLocation, endLocation)*10;
