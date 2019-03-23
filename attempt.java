@@ -32,7 +32,8 @@ public class attempt extends JPanel {
 		WALL (7),
 		RWALL (8),
 		GRAV (9),
-		SGRAV (10);
+		SGRAV (10),
+		SHIFT (11);
 		public int code;
 		keyCode(int code)
 		{
@@ -56,7 +57,9 @@ public class attempt extends JPanel {
     						//new Wall(200,200,250,250),
     						//new RoundWall(400,400,60)
     //};   // Wall array
-    																							
+    							
+    static int totalBounce = 0;
+    static double totalDist = 0;
     static int proSize;
     static int wallSize;
     static mode CurMode = mode.BALL;
@@ -101,8 +104,8 @@ public class attempt extends JPanel {
     {
     	if (!pro.isEmpty())
     		pro.clear();
-    	pro.add(new Proj(300,300,PLAYER_SIZE));
-    	pro.add(new Proj(500,300,PLAYER_SIZE));
+    	//pro.add(new Proj(300,300,PLAYER_SIZE));
+    	//pro.add(new Proj(500,300,PLAYER_SIZE));
     	//pro.add(new Proj(300,300,PLAYER_SIZE));
     	//pro.add(new Proj(250,250,PLAYER_SIZE/2));
     	//pro.add(new Proj(250,250,PLAYER_SIZE/2));
@@ -185,6 +188,14 @@ public class attempt extends JPanel {
 	            	Coord strtLoc = startLocation.intoJcoord();
 	            	Coord curMseLoc = curMouseLoc.intoJcoord();
 	            	
+	            	if (key[keyCode.SHIFT.code])
+					{
+						if (Math.abs(curMseLoc._x - strtLoc._x) >=  Math.abs(curMseLoc._y - strtLoc._y))
+							curMseLoc._y = strtLoc._y;
+						else if (Math.abs(curMseLoc._x - strtLoc._x) <  Math.abs(curMseLoc._y - strtLoc._y))
+							curMseLoc._x = strtLoc._x;
+					}
+	            	
 	            	g2d.drawLine((int)strtLoc._x,  (int)strtLoc._y, (int)curMseLoc._x, (int)curMseLoc._y);
 	            	
 					break;
@@ -223,6 +234,8 @@ public class attempt extends JPanel {
 	        g2d.drawString("Energy = " + energy , 200, 300);
         }
         g2d.drawString("num of Proj: " + proSize , 200, 400);
+        g2d.drawString("total bounce's: " + totalBounce , 200, 450);
+        g2d.drawString("total distance: " + totalDist , 200, 500);
         g2d.setColor(Color.white);
         g2d.drawString("Press B to add more balls, V to launch balls, W to add more walls, M to add more round walls, G to toggle gravity, and H + arrowkey to control gravity direction" , 200, attempt.getHeight() - 50);
         g2d.drawString("(release H while the arrow keys are still held)" , 810, attempt.getHeight() - 30);
@@ -405,13 +418,22 @@ public class attempt extends JPanel {
 	            	}
 					case VBALL:
 					{
+						
 						double rad = PLAYER_SIZE/2;
-		            	Coord cent = startLocation;
+						Coord cent = startLocation;
 						double dir = Math.atan2(startLocation._y - endLocation._y, startLocation._x - endLocation._x);
 						double size = Physics.CoordDist(startLocation, endLocation)*10;
 						if (size > 3000)	//to prevent passing through walls.
 							size = 3000;
+						
 						Vect vel = new Vect ((float)size, (float)dir);
+						if (key[keyCode.SHIFT.code])
+						{
+							if (Math.abs(vel.getX()) >=  Math.abs(vel.getY()))
+								vel.setY(0);
+							else if (Math.abs(vel.getX()) <  Math.abs(vel.getY()))
+								vel.setX(0);
+						}
 						pro.add(new Proj(cent, vel, rad));
 		            	proSize++;
 						break;
@@ -454,6 +476,7 @@ public class attempt extends JPanel {
                 {
                     if (Physics.areColliding((Item)pro.get(i),(Item)walls.get(j)))
                     {
+                    	totalBounce++;
                         System.out.println("bounce wall");
                         Physics.collision(pro.get(i),(Item)walls.get(j));
                     }
@@ -468,6 +491,7 @@ public class attempt extends JPanel {
                 	
                     if (Physics.areColliding((Item)pro.get(i),(Item)pro.get(j)))
                     {
+                    	totalBounce++;
                         System.out.println("bounce");
                        /* if(Physics.isOverlap(pro[i],pro[j]))
                         {
@@ -496,12 +520,12 @@ public class attempt extends JPanel {
 
         		pro.get(i).cord1._x += deltaT*pro.get(i)._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
         		pro.get(i).cord1._y += deltaT*pro.get(i)._vel.getY()/1000;
-
+        		totalDist += deltaT*pro.get(i)._vel.getSize()/1000;
                 
-                if 		(pro.get(i).cord1._x < ((Wall)walls.get(1)).cord2._x ||
-                		pro.get(i).cord1._x > walls.get(2).cord1._x ||
-                		pro.get(i).cord1._y < walls.get(0).cord1._y ||
-                		pro.get(i).cord1._y > ((Wall)walls.get(3)).cord2._y)
+                if 		(pro.get(i).cord1._x < ((Wall)walls.get(1)).cord2._x - 20 ||
+                		pro.get(i).cord1._x > walls.get(2).cord1._x + 20 ||
+                		pro.get(i).cord1._y < walls.get(0).cord1._y - 20 ||
+                		pro.get(i).cord1._y > ((Wall)walls.get(3)).cord2._y + 20)
                 {
                 		pro.get(i).cord1._x = 450;
                 		pro.get(i).cord1._y = 450;

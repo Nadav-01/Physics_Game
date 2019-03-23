@@ -53,6 +53,9 @@ public class InputManager
         	case (KeyEvent.VK_H):
         		attempt.key[attempt.keyCode.SGRAV.code] = true;
         		break;
+        	case (KeyEvent.VK_SHIFT):
+        		attempt.key[attempt.keyCode.SHIFT.code] = true;
+        		break;
         	}
             
         }
@@ -104,6 +107,10 @@ public class InputManager
         		attempt.key[attempt.keyCode.SGRAV.code] = false;
         		attempt.keyReleased[attempt.keyCode.SGRAV.code] = true;
         		break;
+        	case (KeyEvent.VK_SHIFT):
+        		attempt.key[attempt.keyCode.SHIFT.code] = false;
+        		break;
+        		
         	}
         }
 

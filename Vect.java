@@ -115,6 +115,20 @@ public class Vect
      return Math.sin(_dir)*_size;
  }
  
+ public void setX(double x)
+ {
+	 Vect temp = new Vect(x, this.getY());
+	  this.setDir(temp.getDir()); 
+	  this.setSize(temp.getSize()); 
+ }
+ 
+ public void setY(double y)
+ {
+	 Vect temp = new Vect(this.getX(), y);
+	  this.setDir(temp.getDir()); 
+	  this.setSize(temp.getSize()); 
+ }
+ 
  //multiplys the vector's size. can include negetive values; will reverse the vector.
  public void sizeMult(double scal)
  {
