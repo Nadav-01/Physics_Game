@@ -54,12 +54,12 @@ public class Physics
     
     public static double kineticE(Proj p)	//returns kinetic energy- 0.5 * m * v^2
     {
-        return p._mass * Math.pow(p._vel.getSize(),2)/2;
+        return p._mass * Math.pow(p._vel.getSize() , 2) / 2;
     }
     
     public static double potenE(Proj p, Dimension winSize)	//returns potential (height) energy- m*g*h
     {
-        return p._mass * grav.getSize()*(winSize.getHeight()-p.cord1._y);
+        return p._mass * grav.getSize()*p.cord1._y;
     }
     
     public static double Energy(Proj p, Dimension winSize)	//returns total energy- E_k + U_g
@@ -159,6 +159,10 @@ public class Physics
                 }
             }
 		}
+		if(Physics.isOverlap(a,b))
+        {
+            Physics.fixOverlap(a,b);
+        }
 	}
     
     public static void collision(Proj a, Item b)
@@ -351,7 +355,7 @@ public class Physics
 		}
 		
 		double d = a._rad + b._rad - dist;
-		d *= 1.05;
+		d += 5;
 		if (!aNextToWall && !bNextToWall)
 		{
 			
@@ -420,11 +424,11 @@ public class Physics
 
 		if (a._vel.getSize() != 0)
 		{
-			double dir = a._vel.getDir()+Math.PI;
+			double dir = a._vel.getDir();
 			while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
 			{
-				a.cord1._x += Math.cos(dir);
-				a.cord1._y += Math.sin(dir);
+				a.cord1._x -= Math.cos(dir);
+				a.cord1._y -= Math.sin(dir);
 			}
 		}
 		else

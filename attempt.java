@@ -50,13 +50,7 @@ public class attempt extends JPanel {
     //static Proj[] pro; // Projectile array
     static LinkedList<Proj> pro = new LinkedList<Proj>();
     static LinkedList<Item> walls = new LinkedList<Item>();
-    //static Item[] walls = {	new Wall(-100,100,attempt.getWidth()+100,-100),		// floor
-    //						new Wall(-100,attempt.getHeight()+100,100,-100 ),	// leftwall	
-    //						new Wall(attempt.getWidth()-100,attempt.getHeight()+100,attempt.getWidth()+100,-100), 	// rightwall
-    //						new Wall(-100,attempt.getHeight()+100,attempt.getWidth()+100,attempt.getHeight()-100),		// ceiling
-    						//new Wall(200,200,250,250),
-    						//new RoundWall(400,400,60)
-    //};   // Wall array
+    static LinkedList<Proj> proPred= new LinkedList<Proj>();
     							
     static int totalBounce = 0;
     static double totalDist = 0;
@@ -501,36 +495,18 @@ public class attempt extends JPanel {
                     {
                     	totalBounce++;
                         System.out.println("bounce");
-                       /* if(Physics.isOverlap(pro[i],pro[j]))
-                        {
-                            Physics.fixOverlap(pro[i],pro[j]);
-                        }*/
                        Physics.collision(pro.get(i),pro.get(j));
                     }
                 }
             }
-            /*
-            if(Physics.areColliding(pro[0],pro[1]))	//collision calculations and updates
-            {
-            	 if(Physics.isOverlap(pro[0],pro[1]))
-                 {
-                     Physics.fixOverlap(pro[0],pro[1]);
-                 }
-                Physics.collision(pro[0],pro[1]);
-               
-            }
-            */
             
             for (int i = 0; i < proSize; i++) // apply speed to projectiles.
             {
-            	
-            	
-
         		pro.get(i).cord1._x += deltaT*pro.get(i)._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
         		pro.get(i).cord1._y += deltaT*pro.get(i)._vel.getY()/1000;
         		totalDist += deltaT*pro.get(i)._vel.getSize()/1000;
                 
-                if 		(pro.get(i).cord1._x < ((Wall)walls.get(1)).cord2._x ||
+                if 		(pro.get(i).cord1._x < ((Wall)walls.get(1)).cord2._x ||	//if out of bounds
                 		pro.get(i).cord1._x > walls.get(2).cord1._x ||
                 		pro.get(i).cord1._y < walls.get(0).cord1._y ||
                 		pro.get(i).cord1._y > ((Wall)walls.get(3)).cord2._y)
@@ -557,7 +533,7 @@ public class attempt extends JPanel {
     	inintilizeProj();
     	oldT = System.currentTimeMillis();
     	
-        Physics phy = new Physics();
+        //Physics phy = new Physics();
         JFrame frame = new JFrame("game");
         
 
@@ -572,6 +548,6 @@ public class attempt extends JPanel {
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(gameloop, 0, 1);	//setting fps
+        timer.scheduleAtFixedRate(gameloop, 0, 5);	//setting fps
     }
 }
