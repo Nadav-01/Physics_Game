@@ -422,6 +422,29 @@ public class Physics
 	public static void fixOverlap(Proj a, Wall b)
 	{
 
+		for (int i = 0; i < 4; i++)
+		{
+			if (b.equals(attempt.walls.get(i)))
+			{
+				switch (i)
+				{
+				case 0:
+					a.cord1._y = 100 + a._rad;
+					break;
+				case 1:
+					a.cord1._x = 100 + a._rad;
+					break;
+				case 2:
+					a.cord1._x = attempt.walls.get(2).cord1._x - a._rad;
+					break;
+				case 3:
+					a.cord1._y = ((Wall) attempt.walls.get(3)).cord2._y - a._rad;;
+					break;
+				}
+				return;
+			}
+		}
+		
 		if (a._vel.getSize() != 0)
 		{
 			double dir = a._vel.getDir();
