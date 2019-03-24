@@ -530,10 +530,10 @@ public class attempt extends JPanel {
         		pro.get(i).cord1._y += deltaT*pro.get(i)._vel.getY()/1000;
         		totalDist += deltaT*pro.get(i)._vel.getSize()/1000;
                 
-                if 		(pro.get(i).cord1._x < ((Wall)walls.get(1)).cord2._x - 20 ||
-                		pro.get(i).cord1._x > walls.get(2).cord1._x + 20 ||
-                		pro.get(i).cord1._y < walls.get(0).cord1._y - 20 ||
-                		pro.get(i).cord1._y > ((Wall)walls.get(3)).cord2._y + 20)
+                if 		(pro.get(i).cord1._x < ((Wall)walls.get(1)).cord2._x ||
+                		pro.get(i).cord1._x > walls.get(2).cord1._x ||
+                		pro.get(i).cord1._y < walls.get(0).cord1._y ||
+                		pro.get(i).cord1._y > ((Wall)walls.get(3)).cord2._y)
                 {
                 		pro.get(i).cord1._x = 450;
                 		pro.get(i).cord1._y = 450;
