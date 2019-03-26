@@ -142,7 +142,12 @@ public class attempt extends JPanel {
         {
 	        for (int i = 0; i < proSize; i++)	//paints projectiles
 	        {
+	        	if (i == 0)
+	        		g2d.setColor(Color.blue);
+	        	if (i == 1)
+	        		g2d.setColor(Color.red);
 	        	Putstuff.putProj(pro.get(i),g2d);   // Paint projectiles
+	        	g2d.setColor(Color.black);
 	        }
         }
         g2d.setColor(Color.red);
@@ -235,7 +240,9 @@ public class attempt extends JPanel {
         g2d.drawString(" mouse location: x = " + loc._x + " y = " + loc._y , 900, 150);
         if (!pro.isEmpty())
         {
+        	g2d.setColor(Color.blue);
         	g2d.drawString("First proj: ", 200, 150);   // Debug info
+        	g2d.setColor(Color.black);
         	g2d.drawString("dir = " + pro.get(0)._vel.getDir(), 200, 175);
         	g2d.drawLine(350, 175, 350 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 175 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())));
 	        g2d.fillOval(347 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 172 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())), 5, 5);
@@ -245,7 +252,9 @@ public class attempt extends JPanel {
 	        
 	        if (pro.size() > 1)
 	        {
+	        	g2d.setColor(Color.red);
 		        g2d.drawString("Second proj: ", 500, 150);   // Debug info
+	        	g2d.setColor(Color.black);
 	        	g2d.drawString("dir = " + pro.get(1)._vel.getDir(), 500, 175);
 	        	g2d.drawLine(650, 175, 650 + (int)(10 * Math.cos(pro.get(1)._vel.getDir())), 175 - (int)(10 * Math.sin(pro.get(1)._vel.getDir())));
 		        g2d.fillOval(647 + (int)(10 * Math.cos(pro.get(1)._vel.getDir())), 172 - (int)(10 * Math.sin(pro.get(1)._vel.getDir())), 5, 5);
@@ -262,7 +271,7 @@ public class attempt extends JPanel {
         g2d.drawString("total bounce's: " + totalBounce , 200, 450);
         g2d.drawString("total distance: " + totalDist , 200, 500);
         g2d.setColor(Color.white);
-        g2d.drawString("Press B to add more balls, V to launch balls, W to add more walls, M to add more round walls, G to toggle gravity, and H + arrowkey to control gravity direction" , 200, attempt.getHeight() - 50);
+        g2d.drawString("Press B to add more balls, V to launch balls, W to add more walls, M to add more round walls, G to toggle gravity, and H + arrowkey to control gravity direction, E to erase" , 200, attempt.getHeight() - 50);
         g2d.drawString("(release H while the arrow keys are still held)" , 810, attempt.getHeight() - 30);
         
         g2d.drawString("FPS = " + 100/FPS , 1000, 50);
@@ -495,7 +504,7 @@ public class attempt extends JPanel {
 	            		
 	            		for (int i = 0; i < proSize; i++)
 	            		{
-	            			if (pro.get(i).isCol(temp))
+	            			if (pro.get(i).isCol2(temp))
 	            			{
 	            				pro.remove(i);
 	            				proSize--;

@@ -30,30 +30,46 @@ public class RoundWall extends Item
         else if (other instanceof Wall)
         {
             // Checks if the distance between the center of the projectile and any of the corners of  the wall is smaller then its radius.
+        	Coord UL = other.cord1;
+        	Coord UR = new Coord(((Wall)other).cord2._x, other.cord1._y);
+        	Coord LL = new Coord(other.cord1._x,((Wall)other).cord2._y);
+        	Coord LR = ((Wall)other).cord2;
+        	
             return 	
-            		((Math.abs(this.cord1._y - ((Wall)other).cord2._y) <= _rad
+            		(
+            		(Math.abs(this.cord1._y - ((Wall)other).cord2._y) <= _rad	//the projectile comes from below
             		&&
-            		this.cord1._x <= ((Wall)other).cord2._x + _rad
+            		this.cord1._x <= ((Wall)other).cord2._x
             		&&
-            		this.cord1._x >= ((Wall)other).cord1._x - _rad)
+            		this.cord1._x >= ((Wall)other).cord1._x)
             		||
-            		(Math.abs(other.cord1._y - this.cord1._y) <= _rad
+            		(Math.abs(this.cord1._y - other.cord1._y) <= _rad	//the projectile comes from above
             		&&
-            		this.cord1._x <= ((Wall)other).cord2._x + _rad 
+            		this.cord1._x <= ((Wall)other).cord2._x
             		&&
-            		this.cord1._x >= ((Wall)other).cord1._x - _rad )
+            		this.cord1._x >= ((Wall)other).cord1._x)
             		||
-            		(Math.abs(this.cord1._x - ((Wall)other).cord2._x) <= _rad
+            		(Math.abs(this.cord1._x - ((Wall)other).cord2._x) <= _rad	//the projectile comes from the right
             		&&
-            		this.cord1._y <= ((Wall)other).cord2._y + _rad
+            		this.cord1._y <= ((Wall)other).cord1._y
             		&&
-            		this.cord1._y >= ((Wall)other).cord1._y - _rad)
+            		this.cord1._y >= ((Wall)other).cord2._y)
 					||
-            		(Math.abs(other.cord1._x - this.cord1._x) <= _rad
+            		(Math.abs(this.cord1._x - other.cord1._x) <= _rad	//the projectile comes from the left
             		&&
-            		this.cord1._y <= ((Wall)other).cord2._y + _rad
+            		this.cord1._y <= ((Wall)other).cord1._y
             		&&
-            		this.cord1._y >= ((Wall)other).cord1._y - _rad));
+            		this.cord1._y >= ((Wall)other).cord2._y)
+            		)
+            		||
+            		Physics.projDist(this, UL) <= _rad
+            		||
+            		Physics.projDist(this, UR) <= _rad
+            		||
+            		Physics.projDist(this, LL) <= _rad
+            		||
+            		Physics.projDist(this, LR) <= _rad
+            		|| this.isWithin((Wall)other);
         }
         else if (other instanceof RoundWall)
         {
@@ -67,5 +83,21 @@ public class RoundWall extends Item
         }
         
     }
+    
+    public boolean isWithin(Wall other) 
+	{
+		boolean ret;
+		ret =
+				this.cord1._x >= other.cord1._x
+				&&
+				this.cord1._x <= other.cord2._x
+				&&
+				this.cord1._y <= other.cord1._y
+				&&
+				this.cord1._y >= other.cord2._y;
+
+		
+		return ret;
+	}
 	
 }

@@ -72,7 +72,7 @@ public class Wall extends Item
         		if (isWithin(co[i]))
         			ret=true;
         	}
-        	return ret || b.isCol(this);
+        	return ret || b.isCol2(this);
         	
         	/*
             if (cord1._x <= ((Wall)other).cord1._x)
@@ -109,7 +109,24 @@ public class Wall extends Item
         }
     }
     
-    public boolean isWithin(Coord c)
+    private boolean isCol2(Wall b) 
+    {
+    	boolean ret = false;
+    	Coord[] co = new Coord[4];
+    	co[0] = new Coord(b.cord1);
+    	co[1] = new Coord(b.cord1._y, b.cord2._x);
+    	co[2] = new Coord(b.cord2);
+    	co[3] = new Coord(b.cord1._x, b.cord2._y);
+    	
+    	for (int i = 0; i < 4; i++)
+    	{
+    		if (isWithin(co[i]))
+    			ret=true;
+    	}
+    	return ret;
+	}
+
+	public boolean isWithin(Coord c)
     {
     	return c._x >= cord1._x && c._x <= cord2._x && c._y <= cord1._y && c._y >= cord2._y; 
     }

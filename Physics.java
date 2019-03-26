@@ -310,6 +310,10 @@ public class Physics
         return Math.sqrt(Math.pow(a.cord1._x - b.cord1._x,2) + Math.pow(a.cord1._y - b.cord1._y,2) );
     }
     
+    public static double projDist(RoundWall a, Coord b)
+    {
+        return Math.sqrt(Math.pow(a.cord1._x - b._x,2) + Math.pow(a.cord1._y - b._y,2) );
+    }
     
     public static double projDist(Proj a, Coord b)
     {
