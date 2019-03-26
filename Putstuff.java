@@ -18,6 +18,13 @@ public abstract class Putstuff
 		g2d.fillRect(x, y, (int)w.getLength(),  (int)w.getHeight());  
 	}
 	
+	public static void putErase(Wall w, Graphics2D g2d)
+	{
+		int x = (int)w.cord1.intoJcoord()._x;
+		int y = (int)w.cord1.intoJcoord()._y;
+		g2d.drawRect(x, y, (int)w.getLength(),  (int)w.getHeight());  
+	}
+	
 	public static void putRoundwall(RoundWall w, Graphics2D g2d)
 	{
 		int x = (int)w.cord1.intoJcoord()._x;

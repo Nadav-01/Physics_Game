@@ -59,6 +59,22 @@ public class Wall extends Item
         
         else if (other instanceof Wall)
         {
+        	Wall b = (Wall)other;
+        	boolean ret = false;
+        	Coord[] co = new Coord[4];
+        	co[0] = new Coord(b.cord1);
+        	co[1] = new Coord(b.cord1._y, b.cord2._x);
+        	co[2] = new Coord(b.cord2);
+        	co[3] = new Coord(b.cord1._x, b.cord2._y);
+        	
+        	for (int i = 0; i < 4; i++)
+        	{
+        		if (isWithin(co[i]))
+        			ret=true;
+        	}
+        	return ret || b.isCol(this);
+        	
+        	/*
             if (cord1._x <= ((Wall)other).cord1._x)
             {
                 if (cord1._y <= ((Wall)other).cord1._y)
@@ -80,7 +96,7 @@ public class Wall extends Item
                 {
                     return (cord1._x - ((Wall)other).cord1._x <= ((Wall)other).getLength() &&  cord1._y - ((Wall)other).cord1._y <= ((Wall)other).getHeight());
                 }
-            }
+            }*/
         }
         else if (other instanceof RoundWall)
         {
@@ -91,5 +107,10 @@ public class Wall extends Item
             System.out.println("Error: got non Wall or Projectile item int isCol");
             return false;
         }
+    }
+    
+    public boolean isWithin(Coord c)
+    {
+    	return c._x >= cord1._x && c._x <= cord2._x && c._y <= cord1._y && c._y >= cord2._y; 
     }
 }

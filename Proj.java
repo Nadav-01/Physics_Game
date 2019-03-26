@@ -104,6 +104,7 @@ public class Proj extends Item
             		Physics.projDist(this, LL) <= _rad
             		||
             		Physics.projDist(this, LR) <= _rad
+            		||this.isWithin((Wall)other)
             		;
         }
         else if (other instanceof RoundWall)
@@ -118,4 +119,20 @@ public class Proj extends Item
         }
         
     }
+
+	public boolean isWithin(Wall other) 
+	{
+		boolean ret;
+		ret =
+				this.cord1._x >= other.cord1._x
+				&&
+				this.cord1._x <= other.cord2._x
+				&&
+				this.cord1._y <= other.cord1._y
+				&&
+				this.cord1._y >= other.cord2._y;
+
+		
+		return ret;
+	}
 }

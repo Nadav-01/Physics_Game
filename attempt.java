@@ -33,7 +33,8 @@ public class attempt extends JPanel {
 		RWALL (8),
 		GRAV (9),
 		SGRAV (10),
-		SHIFT (11);
+		ERASE (11),
+		SHIFT (12);
 		public int code;
 		keyCode(int code)
 		{
@@ -43,7 +44,7 @@ public class attempt extends JPanel {
 	static boolean[] key = new boolean[keyCode.values().length];
 	static boolean[] keyReleased = new boolean[keyCode.values().length];
 	
-    enum mode {BALL, WALL, RWALL,VBALL};
+    enum mode {BALL, WALL, RWALL,VBALL, ERASE};
     static attempt attempt = new attempt();
     
     static final int PLAYER_SIZE = 60;
@@ -137,11 +138,13 @@ public class attempt extends JPanel {
     {
     	
         g2d.setColor(Color.black);
-        for (int i = 0; i < proSize; i++)	//paints projectiles
+        if (!pro.isEmpty())
         {
-        	Putstuff.putProj(pro.get(i),g2d);   // Paint projectiles
+	        for (int i = 0; i < proSize; i++)	//paints projectiles
+	        {
+	        	Putstuff.putProj(pro.get(i),g2d);   // Paint projectiles
+	        }
         }
-        
         g2d.setColor(Color.red);
         //g2d.fillOval((int)(pro[1].cord1._x - pro[1]._rad), (int)(pro[1].cord1._y - pro[1]._rad), (int)pro[1]._rad*2, (int)pro[1]._rad*2);   // Paint negetive proj
 
@@ -210,6 +213,17 @@ public class attempt extends JPanel {
             		Putstuff.putWall(temp,g2d);
 					break;
 				}
+				case ERASE:
+					double minX = Math.min(startLocation._x, curMouseLoc._x);
+            		double maxX = Math.max(startLocation._x, curMouseLoc._x);
+            		double minY = Math.min(startLocation._y, curMouseLoc._y);
+            		double maxY = Math.max(startLocation._y, curMouseLoc._y);
+            		Coord c1 = new Coord(minX, maxY);
+            		Coord c2 = new Coord(maxX, minY);
+            		Wall temp = new Wall(c1,c2);
+            		Putstuff.putErase(temp,g2d);
+					break;
+					
 				default:
 				{
 					break;
@@ -266,6 +280,9 @@ public class attempt extends JPanel {
 			break;
 		case WALL:
 			g2d.drawString("Current Mode: Wall" , 100, 50);
+			break;
+		case ERASE:
+			g2d.drawString("Current Mode: Erase" , 100, 50);
 			break;
 		default:
 			break;
@@ -367,6 +384,12 @@ public class attempt extends JPanel {
             		Physics.grav = new Vect(900, (float)(3*Math.PI/2));
             }
             
+            if (key[keyCode.ERASE.code])
+            {
+            	System.out.println("Erase");
+            	CurMode = mode.ERASE;
+            }
+            
             if (keyReleased[keyCode.SGRAV.code] && (key[keyCode.UP.code] || key[keyCode.DOWN.code] || key[keyCode.RIGHT.code] || key[keyCode.LEFT.code]))
             {
             	System.out.println("Gravity sideways");
@@ -456,6 +479,43 @@ public class attempt extends JPanel {
 		            	proSize++;
 						break;
 					}
+					case ERASE:
+	            	{
+	            		int sumProErased = 0;
+	            		int sumWallErased = 0;
+
+	            		double minX = Math.min(startLocation._x, endLocation._x);
+	            		double maxX = Math.max(startLocation._x, endLocation._x);
+	            		double minY = Math.min(startLocation._y, endLocation._y);
+	            		double maxY = Math.max(startLocation._y, endLocation._y);
+	            		Coord c1 = new Coord(minX, maxY);
+	            		Coord c2 = new Coord(maxX, minY);
+	            		
+	            		Wall temp = new Wall(c1,c2);
+	            		
+	            		for (int i = 0; i < proSize; i++)
+	            		{
+	            			if (pro.get(i).isCol(temp))
+	            			{
+	            				pro.remove(i);
+	            				proSize--;
+	            				sumProErased++;
+	            				i=-1;	//the for loop will automatilcally do i++;
+	            			}
+	            		}
+	            		for (int i = 4; i < wallSize; i++)
+	            		{
+	            			if (walls.get(i).isCol(temp))
+	            			{
+	            				walls.remove(i);
+	            				wallSize--;
+	            				sumWallErased++;
+	            				i=3;	//the for loop will automatilcally do i++;
+	            			}
+	            		}
+	            		System.out.println("Erased " + sumProErased + " projectiles and " + sumWallErased + " walls");
+	            		break;
+	            	}
 					default:
 					{
 						System.out.println("Got default in mode switch case");
@@ -484,7 +544,8 @@ public class attempt extends JPanel {
         	long deltaT = newT - oldT;				//gets the difference of the times between last frame and now.
         	
             // Upply gravity and friction to all projectiles.
-            Physics.upplyG(pro, proSize);
+        	if (!pro.isEmpty())
+        		Physics.upplyG(pro, proSize);
             //Physics.upplyFric(pro, 2);
             
             
