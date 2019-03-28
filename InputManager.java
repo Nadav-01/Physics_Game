@@ -61,6 +61,10 @@ public class InputManager
         	case (KeyEvent.VK_P):
         		attempt.key[attempt.keyCode.PAUSE.code] = true;
         		break;
+        	case (KeyEvent.VK_ENTER):
+        		attempt.ip = attempt.ipText.getText();
+        		attempt.ipText.setText("");
+        		break;
         	}
             
         }

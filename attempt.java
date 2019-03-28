@@ -1,5 +1,6 @@
 package src;
 
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;		//for input
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
@@ -7,9 +8,12 @@ import java.awt.event.MouseMotionListener;
 import java.awt.Graphics;			//for graphics
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import javax.swing.JFrame;			//to render the frame
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -47,6 +51,9 @@ public class attempt extends JPanel {
 	static boolean[] key = new boolean[keyCode.values().length];
 	static boolean[] keyReleased = new boolean[keyCode.values().length];
 	static Timer timer = new Timer(true);
+	static JTextField ipText = new JTextField(0);
+	
+	static String ip;
 	
     enum mode {BALL, WALL, RWALL,VBALL, ERASE, PAUSE};
     static mode lastMode;
@@ -139,9 +146,13 @@ public class attempt extends JPanel {
         putItems(g2d);
         if(CurMode == mode.PAUSE)	//pause menu
         {
-        	Color tempCol = new Color(0,0,0,240);
+        	
+        	
+        	
+        	Color tempCol = new Color(0,0,0,200);
         	g2d.setColor(tempCol);
         	g2d.fillRect(0, 0, attempt.getWidth(), attempt.getHeight());
+ 
         	g2d.setColor(Color.WHITE);
         	Font font = new Font ("Arial", 10, 50);
         	g2d.setFont(font);
@@ -152,7 +163,20 @@ public class attempt extends JPanel {
         	g2d.setFont(font);
         	
         	g2d.drawString("if you want to connect to another computer, put the ip here: " , attempt.getWidth()/2- str.length()*12, attempt.getHeight()/2 + 50);
-        	g2d.fillRect(attempt.getWidth()/2 - str.length()*12 + 380, attempt.getHeight()/2 + 38, 200, 15);
+        	
+            //ipText = new JTextField(); // suggest a size in columns
+            //ipText = new JTextField(8);
+        	ipText.setBounds(attempt.getWidth()/2 - str.length()*12 + 380, attempt.getHeight()/2 + 38, 200, 15);       
+        	
+        	
+
+        	
+        }
+        else
+        {
+        	
+        	ipText.setBounds(0,0,0,0);
+
         }
         	
     }
@@ -298,6 +322,7 @@ public class attempt extends JPanel {
         g2d.drawString("(release H while the arrow keys are still held)" , 810, attempt.getHeight() - 30);
         
         g2d.drawString("FPS = " + 100/FPS , 1000, 50);
+        g2d.drawString("ip = " + ip, 700,50);
         
         switch (CurMode)
         {
@@ -334,6 +359,7 @@ public class attempt extends JPanel {
         addKeyListener(Klistener);
         addMouseListener(Mlistener);
         addMouseMotionListener(MMlistener);
+        ipText.addKeyListener(Klistener);
         setFocusable(true);
     }
     
@@ -684,10 +710,13 @@ public class attempt extends JPanel {
         oldHeight = 1000;
         oldWidth = 1800;
         
+        
+        
         //int flipXcnt = 1;
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
         Timer timer = new Timer(true);
+        attempt.add(ipText);
         timer.scheduleAtFixedRate(gameloop, 0, FPS);	//setting fps
     }
 }
