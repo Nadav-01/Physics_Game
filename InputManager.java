@@ -14,9 +14,8 @@ public class InputManager
 	public class MyActionListener implements KeyListener, MouseListener, MouseMotionListener {
     	
         @Override
-        public void keyTyped(KeyEvent e) {
-        }
-
+        public void keyTyped(KeyEvent e) 
+        {}
         @Override
         public void keyPressed(KeyEvent e) {
         	switch (e.getExtendedKeyCode()) {
@@ -58,6 +57,9 @@ public class InputManager
         		break;
         	case (KeyEvent.VK_SHIFT):
         		attempt.key[attempt.keyCode.SHIFT.code] = true;
+        		break;
+        	case (KeyEvent.VK_P):
+        		attempt.key[attempt.keyCode.PAUSE.code] = true;
         		break;
         	}
             
@@ -116,7 +118,14 @@ public class InputManager
         		break;
         		
         	case (KeyEvent.VK_SHIFT):
+        		
         		attempt.key[attempt.keyCode.SHIFT.code] = false;
+        		attempt.keyReleased[attempt.keyCode.SHIFT.code] = true;
+        		break;
+        		
+        	case (KeyEvent.VK_P):
+        		attempt.key[attempt.keyCode.PAUSE.code] = false;
+        		attempt.keyReleased[attempt.keyCode.PAUSE.code] = true;
         		break;
         		
         	}
