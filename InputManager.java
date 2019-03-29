@@ -61,9 +61,15 @@ public class InputManager
         	case (KeyEvent.VK_P):
         		attempt.key[attempt.keyCode.PAUSE.code] = true;
         		break;
+        	case (KeyEvent.VK_C):
+        		attempt.key[attempt.keyCode.CRAZY.code] = true;
+        		break;
         	case (KeyEvent.VK_ENTER):
-        		attempt.ip = attempt.ipText.getText();
-        		attempt.ipText.setText("");
+        		if (attempt.CurMode == attempt.mode.PAUSE)
+        		{
+	        		attempt.ip = attempt.ipText.getText();
+	        		attempt.ipText.setText("");
+        		}
         		break;
         	}
             
@@ -130,6 +136,11 @@ public class InputManager
         	case (KeyEvent.VK_P):
         		attempt.key[attempt.keyCode.PAUSE.code] = false;
         		attempt.keyReleased[attempt.keyCode.PAUSE.code] = true;
+        		break;
+        		
+        	case (KeyEvent.VK_C):
+        		attempt.key[attempt.keyCode.CRAZY.code] = false;
+        		attempt.keyReleased[attempt.keyCode.CRAZY.code] = true;
         		break;
         		
         	}

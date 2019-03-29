@@ -40,7 +40,8 @@ public class attempt extends JPanel {
 		SGRAV (10),
 		ERASE (11),
 		SHIFT (12),
-		PAUSE (13)
+		PAUSE (13),
+		CRAZY (14)
 		;
 		public int code;
 		keyCode(int code)
@@ -55,7 +56,7 @@ public class attempt extends JPanel {
 	
 	static String ip;
 	
-    enum mode {BALL, WALL, RWALL,VBALL, ERASE, PAUSE};
+    enum mode {BALL, WALL, RWALL,VBALL, ERASE, PAUSE, CRAZY};
     static mode lastMode;
     static attempt attempt = new attempt();
     
@@ -136,8 +137,10 @@ public class attempt extends JPanel {
     }
     
     @Override   // Overriding paint of Jpanel
-    public void paint(Graphics g) {
-        super.paint(g);
+    public void paintComponent(Graphics g) {
+        //super.paint(g);
+    	if (CurMode != mode.CRAZY)
+    		super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -148,8 +151,8 @@ public class attempt extends JPanel {
         {
         	
         	
-        	
-        	Color tempCol = new Color(0,0,0,200);
+        	ipText.grabFocus();
+        	Color tempCol = new Color(25,30,30,200);
         	g2d.setColor(tempCol);
         	g2d.fillRect(0, 0, attempt.getWidth(), attempt.getHeight());
  
@@ -164,10 +167,9 @@ public class attempt extends JPanel {
         	
         	g2d.drawString("if you want to connect to another computer, put the ip here: " , attempt.getWidth()/2- str.length()*12, attempt.getHeight()/2 + 50);
         	
-            //ipText = new JTextField(); // suggest a size in columns
-            //ipText = new JTextField(8);
         	ipText.setBounds(attempt.getWidth()/2 - str.length()*12 + 380, attempt.getHeight()/2 + 38, 200, 15);       
-        	
+        	g2d.setColor(new Color(255,255,255,100));
+        	g2d.fillRect(attempt.getWidth()/2 - str.length()*12 + 380, attempt.getHeight()/2 + 38, 200, 15);
         	
 
         	
@@ -344,6 +346,9 @@ public class attempt extends JPanel {
 		case PAUSE:
 			g2d.drawString("paused" , 100, 50);
 			break;
+		case CRAZY:
+			g2d.drawString("CRAZY" , 100, 50);
+			break;
 		default:
 			break;
         
@@ -483,6 +488,10 @@ public class attempt extends JPanel {
             	dir = tempDir.getDir();
             	Physics.grav.setDir(dir);
             }
+            if (key[keyCode.CRAZY.code])
+            {
+            	CurMode = mode.CRAZY;
+            }
             
             
             
@@ -617,6 +626,9 @@ public class attempt extends JPanel {
         	
         	
         	long deltaT = newT - oldT;				//gets the difference of the times between last frame and now.
+        	
+        	if (CurMode != mode.PAUSE)
+        		ipText.setText("");
         	
             // Upply gravity and friction to all projectiles.
         	if (!pro.isEmpty())
