@@ -387,7 +387,6 @@ public class Physics
     	Coord UR = new Coord(((Wall)b).cord2._x, b.cord1._y);
     	Coord LL = new Coord(b.cord1._x,((Wall)b).cord2._y);
     	Coord LR = ((Wall)b).cord2;
-    	
 		return ((Math.abs(a.cord1._y - b.cord2._y) < a._rad
         		&&
         		a.cord1._x < b.cord2._x + a._rad
@@ -426,6 +425,8 @@ public class Physics
 	public static void fixOverlap(Proj a, Wall b)
 	{
 
+		
+    	
 		for (int i = 0; i < 4; i++)
 		{
 			if (b.equals(attempt.walls.get(i)))
@@ -449,25 +450,31 @@ public class Physics
 			}
 		}
 		
-		if (a._vel.getSize() != 0)
+		boolean fromBelow =	a.cord1._y <= b.cord2._y;
+		
+		boolean fromAbove =	a.cord1._y >= b.cord1._y;
+
+    	boolean fromLeft = 	a.cord1._x <= b.cord1._x;
+
+    	boolean fromRight = a.cord1._x >= b.cord2._x;
+    	
+    	boolean isDiag = !(Math.abs(2*a._vel.getDir()/Math.PI - Math.round(2*a._vel.getDir()/Math.PI)) < 0.1);
+    	if (isDiag)
+    		System.out.println("Diag");
+    	
+		if (a._vel.getSize() != 0 && isDiag)
 		{
 			double dir = a._vel.getDir();
 			while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
 			{
+
 				a.cord1._x -= Math.cos(dir);
 				a.cord1._y -= Math.sin(dir);
 			}
 		}
 		else
 		{
-			boolean fromBelow =	a.cord1._y <= b.cord2._y;
 			
-			boolean fromAbove =	a.cord1._y >= b.cord1._y;
-	
-	    	boolean fromLeft = 	a.cord1._x <= b.cord1._x;
-	
-	    	boolean fromRight = a.cord1._x >= b.cord2._x;
-	    	
 	    	if (fromBelow)
 				a.cord1._y = b.cord2._y - a._rad - 1;
 			else if (fromAbove)

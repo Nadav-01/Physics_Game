@@ -72,7 +72,26 @@ public class Wall extends Item
         		if (isWithin(co[i]))
         			ret=true;
         	}
-        	return ret || b.isCol2(this);
+        	
+        	boolean temp = 
+        			(cord1._x < b.cord1._x 
+        			&&
+        			cord1._y < b.cord1._y
+        			&&
+        			cord2._x > b.cord1._x
+        			&&
+        			cord2._y > b.cord2._y)
+        			||
+        			(b.cord1._x < cord1._x 
+        			&&
+        			b.cord1._y < cord1._y
+        			&&
+        			b.cord2._x > cord1._x
+        			&&
+        			b.cord2._y > cord2._y);
+        			
+        	
+        	return temp || ret || b.isCol2(this);
         	
         	/*
             if (cord1._x <= ((Wall)other).cord1._x)

@@ -324,7 +324,8 @@ public class attempt extends JPanel {
         g2d.drawString("(release H while the arrow keys are still held)" , 810, attempt.getHeight() - 30);
         
         g2d.drawString("FPS = " + 100/FPS , 1000, 50);
-        g2d.drawString("ip = " + ip, 700,50);
+        if (ip != null)
+        	g2d.drawString("ip = " + ip, 700,50);
         
         switch (CurMode)
         {
