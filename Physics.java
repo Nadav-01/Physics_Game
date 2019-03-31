@@ -57,14 +57,14 @@ public class Physics
         return p._mass * Math.pow(p._vel.getSize() , 2) / 2;
     }
     
-    public static double potenE(Proj p, Dimension winSize)	//returns potential (height) energy- m*g*h
+    public static double potenE(Proj p)	//returns potential (height) energy- m*g*h
     {
         return p._mass * grav.getSize()*p.cord1._y;
     }
     
-    public static double Energy(Proj p, Dimension winSize)	//returns total energy- E_k + U_g
+    public static double Energy(Proj p)	//returns total energy- E_k + U_g
     {
-        return kineticE(p) + potenE(p, winSize);
+        return kineticE(p) + potenE(p);
     }
     
     public static Vect momentum(Proj p)	//returns momentum- m*v
@@ -79,6 +79,7 @@ public class Physics
      */
     public static void collision(Proj a, Proj b)
     {
+    	
     	if(Physics.isOverlap(a,b))
         {
             Physics.fixOverlap(a,b);
@@ -163,6 +164,7 @@ public class Physics
         {
             Physics.fixOverlap(a,b);
         }
+		
 	}
     
     public static void collision(Proj a, Item b)

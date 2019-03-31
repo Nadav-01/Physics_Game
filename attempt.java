@@ -313,7 +313,7 @@ public class attempt extends JPanel {
 	        }
 	        double energy = 0;
 	        for (int i = 0; i < proSize; i++)
-		        energy += Physics.Energy(pro.get(i),this.getSize());
+		        energy += Physics.Energy(pro.get(i));
 	        g2d.drawString("Energy = " + energy , 200, 300);
         }
         g2d.drawString("num of Proj: " + proSize , 200, 400);
