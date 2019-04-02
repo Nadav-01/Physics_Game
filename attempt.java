@@ -388,32 +388,6 @@ public class attempt extends JPanel {
         
         public static void processInput()
         {
-        	int POWER = 4000000;
-        	//action = InputManager.action;
-        	if (key[keyCode.UP.code]) 
-            {
-                System.out.println("up");
-                //Physics.upplyF(pro.get(0), new Vect(POWER,(float)(Math.PI/2)));
-                //Physics.upplyF(pro.get(1), new Vect(POWER,(float)(3*Math.PI/2)));
-            }
-            if (key[keyCode.DOWN.code])
-            {
-                System.out.println("down");
-                //Physics.upplyF(pro.get(0), new Vect(POWER,(float)(3*Math.PI/2)));
-                //Physics.upplyF(pro.get(1), new Vect(POWER,(float)(Math.PI/2)));
-            }
-            if (key[keyCode.RIGHT.code])
-            {
-                System.out.println("right");
-                //Physics.upplyF(pro.get(0), new Vect(POWER,(float)(0)));
-                //Physics.upplyF(pro.get(1), new Vect(POWER,(float)(Math.PI)));
-            }
-            if (key[keyCode.LEFT.code])
-            {
-                System.out.println("left");
-                //Physics.upplyF(pro.get(0), new Vect(POWER,(float)(Math.PI)));
-                //Physics.upplyF(pro.get(1), new Vect(POWER,(float)(0)));
-            }
             if (key[keyCode.RESET.code])
             {
             	System.out.println("reset");
@@ -493,12 +467,9 @@ public class attempt extends JPanel {
             {
             	CurMode = mode.CRAZY;
             }
-            
-            
-            
-            
-            if (mousePressed)
+            if (mousePressed && startLocation == null)
             	startLocation = new Coord(mouseLocation);
+            
             if (!mousePressed && startLocation != null)
             {
             	endLocation = new Coord(mouseLocation);
@@ -606,10 +577,7 @@ public class attempt extends JPanel {
             	endLocation = null;
             }
             for (int i = 0; i < keyReleased.length ; i++)
-            	keyReleased[i] = false;
-            	
-            
-            	
+            	keyReleased[i] = false;  	
         }
         
         public void run()
@@ -682,17 +650,6 @@ public class attempt extends JPanel {
         		
         		if (pro.get(i).cord1._y > ((Wall)walls.get(3)).cord2._y)
         			pro.get(i).cord1._y = ((Wall)walls.get(3)).cord2._y - pro.get(i)._rad + 0.5;
-        		
-        		/*
-                if 		(pro.get(i).cord1._x < ((Wall)walls.get(1)).cord2._x-20 ||	//if out of bounds
-                		pro.get(i).cord1._x > walls.get(2).cord1._x+20 ||
-                		pro.get(i).cord1._y < walls.get(0).cord1._y-20 ||
-                		pro.get(i).cord1._y > ((Wall)walls.get(3)).cord2._y+20)
-                {
-                	
-                		pro.get(i).cord1._x = 450;
-                		pro.get(i).cord1._y = 450;
-                }*/
             } 
             
             
@@ -712,7 +669,6 @@ public class attempt extends JPanel {
     	inintilizeProj();
     	oldT = System.currentTimeMillis();
     	
-        //Physics phy = new Physics();
         JFrame frame = new JFrame("game");
         
 
