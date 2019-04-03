@@ -41,7 +41,8 @@ public class attempt extends JPanel {
 		ERASE (11),
 		SHIFT (12),
 		PAUSE (13),
-		CRAZY (14)
+		CRAZY (14),
+		FREEZE (15)
 		;
 		public int code;
 		keyCode(int code)
@@ -71,6 +72,8 @@ public class attempt extends JPanel {
     static int proSize;
     static int wallSize;
     static mode CurMode = mode.BALL;
+    static boolean FirstFreezeCheck = false;
+    static boolean isFrozen = false;
     
     static Coord mouseLocation = new Coord (0,0);
     static Coord curMouseLoc = new Coord(0,0);
@@ -467,6 +470,21 @@ public class attempt extends JPanel {
             {
             	CurMode = mode.CRAZY;
             }
+            if (key[keyCode.FREEZE.code] && !isFrozen)
+            {
+            	isFrozen = true;
+            }
+            
+            if (keyReleased[keyCode.FREEZE.code] && !FirstFreezeCheck)
+            {
+            	FirstFreezeCheck = true;
+            }
+            else if (keyReleased[keyCode.FREEZE.code] && FirstFreezeCheck)
+            {
+            	isFrozen = false;;
+            	FirstFreezeCheck = false;
+            }
+            
             if (mousePressed && startLocation == null)
             	startLocation = new Coord(mouseLocation);
             
@@ -590,7 +608,7 @@ public class attempt extends JPanel {
         	oldWidth = attempt.getWidth();
         	
         	long newT = System.currentTimeMillis();	//gets new time from the system.
-        	if (CurMode == mode.PAUSE)
+        	if (CurMode == mode.PAUSE ||  isFrozen)
         		oldT = System.currentTimeMillis();	//if paused, make it so time doesnt pass
         	
         	

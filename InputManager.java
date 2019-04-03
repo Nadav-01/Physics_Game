@@ -64,6 +64,9 @@ public class InputManager
         	case (KeyEvent.VK_C):
         		attempt.key[attempt.keyCode.CRAZY.code] = true;
         		break;
+        	case (KeyEvent.VK_F):
+        		attempt.key[attempt.keyCode.FREEZE.code] = true;
+        		break;
         	case (KeyEvent.VK_ENTER):
         		if (attempt.CurMode == attempt.mode.PAUSE)
         		{
@@ -141,6 +144,10 @@ public class InputManager
         	case (KeyEvent.VK_C):
         		attempt.key[attempt.keyCode.CRAZY.code] = false;
         		attempt.keyReleased[attempt.keyCode.CRAZY.code] = true;
+        		break;
+        	case (KeyEvent.VK_F):
+        		attempt.key[attempt.keyCode.FREEZE.code] = false;
+        		attempt.keyReleased[attempt.keyCode.FREEZE.code] = true;
         		break;
         		
         	}
