@@ -46,10 +46,10 @@ public class Physics
     }
     
     // Upplys friction on an array of projectiles.
-    public static void upplyFric(Proj p[], int n)
+    public static void upplyFric(LinkedList<Proj> p, int n)
     {
         for (int i = 0; i < n; i++)
-            upplyFric(p[i]);
+            upplyFric(p.get(i));
     }
     
     public static double kineticE(Proj p)	//returns kinetic energy- 0.5 * m * v^2
@@ -59,7 +59,7 @@ public class Physics
     
     public static double potenE(Proj p)	//returns potential (height) energy- m*g*h
     {
-        return p._mass * grav.getSize()*p.cord1._y;
+        return p._mass * grav.getSize()*(p.cord1._y - p._rad - 100);
     }
     
     public static double Energy(Proj p)	//returns total energy- E_k + U_g
@@ -230,6 +230,7 @@ public class Physics
         	angle -= Math.PI/2;
         	Vec_Math.flipUpAxis(a._vel, angle);
         }
+        a._vel.setSize(a._vel.getSize()*0.999);
         /*
         long newT = System.currentTimeMillis();
     	long deltaT =  newT - attempt.oldT;

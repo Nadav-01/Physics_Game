@@ -619,9 +619,10 @@ public class attempt extends JPanel {
         	
             // Upply gravity and friction to all projectiles.
         	if (!pro.isEmpty())
+        	{
         		Physics.upplyG(pro, proSize);
-            //Physics.upplyFric(pro, 2);
-            
+            	Physics.upplyFric(pro, proSize);
+        	}
             
             for (int i = 0; i < proSize; i++) // Check all combination of items that can collide with each other
             {
