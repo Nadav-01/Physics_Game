@@ -1,6 +1,5 @@
 package src;
 
-import java.awt.Dimension;
 import java.util.LinkedList;
 
 public class Physics
@@ -14,7 +13,7 @@ public class Physics
     }
     
     // Upplys force on a projectile.
-    public static void upplyF(Proj p, Vect f)
+    public static void applyF(Proj p, Vect f)
     {
     	long newT = System.currentTimeMillis();	//applying as much force as needed depending on how much time has passed since last frame.
     	long deltaT =  newT - attempt.oldT;
@@ -24,32 +23,32 @@ public class Physics
     }
     
     // Upplys Gravity on an array of projectiles.
-    public static void upplyG(LinkedList<Proj> p, int n)
+    public static void applyG(LinkedList<Proj> p, int n)
     {
         Vect Wei = new Vect(grav);
         for (int i = 0; i < n; i++)
         {
             Wei = new Vect(grav);
             Wei.sizeMult(p.get(i)._mass);
-            upplyF(p.get(i),Wei);
+            applyF(p.get(i),Wei);
         }
     }
     
     // Upplys friction on a projectile.
-    public static void upplyFric(Proj p)
+    public static void applyFric(Proj p)
     {
         Vect fric = new Vect(p._vel);
         fric.setDir(fric.getDir() + (float)(Math.PI));	//friction is in opposite direction to velocity.
         fric.setSize(fric.getSize() * Physics.airFric);
         fric = new Vect(fric.getX()/3,fric.getY()/3);
-        Physics.upplyF(p, fric);
+        Physics.applyF(p, fric);
     }
     
     // Upplys friction on an array of projectiles.
-    public static void upplyFric(LinkedList<Proj> p, int n)
+    public static void applyFric(LinkedList<Proj> p, int n)
     {
         for (int i = 0; i < n; i++)
-            upplyFric(p.get(i));
+            applyFric(p.get(i));
     }
     
     public static double kineticE(Proj p)	//returns kinetic energy- 0.5 * m * v^2

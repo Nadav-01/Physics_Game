@@ -11,16 +11,18 @@ public class Wall extends Item
     /**
      * Constructor for objects of class Wall
      */
-    public Wall()
-    {
-        super(0,0);
-        cord2 = new Coord(0,0);
-    }
+    
 
     public Wall(double x, double y, double w, double z)
     {
         super(x,y);
         cord2 = new Coord(w,z);
+    }
+    
+    public Wall()
+    {
+        super(0,0);
+        cord2 = new Coord(0,0);
     }
     
     public Wall(Coord c1, Coord c2)

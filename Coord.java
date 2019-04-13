@@ -22,8 +22,4 @@ public class Coord
 	{
 		return new Coord(_x, attempt.attempt.getHeight() -_y);
 	}
-	
-	
-	
-	
 }

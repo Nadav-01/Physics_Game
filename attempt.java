@@ -1,21 +1,18 @@
 package src;
 
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;		//for input
+
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.Graphics;			//for graphics
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import javax.swing.JFrame;			//to render the frame
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.util.LinkedList;
 import java.util.Timer;				//to keep fps stable
@@ -497,8 +494,11 @@ public class attempt extends JPanel {
 	            	{
 		            	double rad = Physics.CoordDist(startLocation, endLocation)/2;
 		            	Coord cent = Physics.findMiddle(startLocation, endLocation);
-		            	pro.add(new Proj(cent, rad));
-		            	proSize++;
+		            	if (rad != 0)
+		            	{
+		            		pro.add(new Proj(cent, rad));
+		            		proSize++;
+		            	}
 		            	break;
 	            	}
 	            	case WALL:
@@ -620,8 +620,8 @@ public class attempt extends JPanel {
             // Upply gravity and friction to all projectiles.
         	if (!pro.isEmpty())
         	{
-        		Physics.upplyG(pro, proSize);
-            	Physics.upplyFric(pro, proSize);
+        		Physics.applyG(pro, proSize);
+            	Physics.applyFric(pro, proSize);
         	}
             
             for (int i = 0; i < proSize; i++) // Check all combination of items that can collide with each other
