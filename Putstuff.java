@@ -9,6 +9,15 @@ public abstract class Putstuff
 		int x = (int)p.cord1.intoJcoord()._x;
 		int y = (int)p.cord1.intoJcoord()._y;
 		g2d.drawOval(x - (int)p._rad , y - (int)p._rad, (int)p._rad*2, (int)p._rad*2);  
+		if (attempt.debug)
+		{
+			int X = (int) (p.cord1._x + 0.1*p._vel.getX());
+			int Y = (int) (p.cord1._y + 0.1*p._vel.getY());
+			Coord to = new Coord(X,Y);
+			
+			g2d.drawLine(x, y, (int)to.intoJcoord()._x, (int)to.intoJcoord()._y);
+		}
+		
 	}
 	
 	public static void putWall(Wall w, Graphics2D g2d)

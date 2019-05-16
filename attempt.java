@@ -41,7 +41,8 @@ public class attempt extends JPanel {
 		CRAZY (14),
 		FREEZE (15),
 		REWIND (16),
-		FORWARD (17)
+		FORWARD (17),
+		DEBUG (18)
 		;
 		public int code;
 		keyCode(int code)
@@ -76,6 +77,7 @@ public class attempt extends JPanel {
     static mode CurMode = mode.BALL;
     static boolean FirstFreezeCheck = false;
     static boolean isFrozen = false;
+    static boolean debug = true;
     
     static Coord mouseLocation = new Coord (0,0);
     static Coord curMouseLoc = new Coord(0,0);
@@ -225,6 +227,7 @@ public class attempt extends JPanel {
         	{
             	case BALL:
             	{
+            	
 	        	double rad = Physics.CoordDist(startLocation, curMouseLoc)/2;
 	        	Coord cent = Physics.findMiddle(startLocation, curMouseLoc);
 	        	Proj temp = new Proj(cent, rad);
@@ -294,69 +297,90 @@ public class attempt extends JPanel {
         }
         
         Coord loc = curMouseLoc;
-        g2d.drawString(" mouse location: x = " + loc._x + " y = " + loc._y , 900, 150);
-        if (!pro.isEmpty())
+        if (debug)
         {
-        	g2d.setColor(Color.blue);
-        	g2d.drawString("First proj: ", 200, 150);   // Debug info
-        	g2d.setColor(Color.black);
-        	g2d.drawString("dir = " + pro.get(0)._vel.getDir(), 200, 175);
-        	g2d.drawLine(350, 175, 350 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 175 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())));
-	        g2d.fillOval(347 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 172 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())), 5, 5);
-	        g2d.drawString("speed = " + pro.get(0)._vel.getSize(), 200, 200);
-	        g2d.drawString("rad = " + pro.get(0)._rad, 200, 225);
-	        g2d.drawString("x = " + pro.get(0).cord1._x + "\t y = " + pro.get(0).cord1._y, 200, 250);
-	        
-	        if (pro.size() > 1)
+	        g2d.drawString(" mouse location: x = " + loc._x + " y = " + loc._y , 900, 150);
+	        if (!pro.isEmpty())
 	        {
-	        	g2d.setColor(Color.red);
-		        g2d.drawString("Second proj: ", 500, 150);   // Debug info
+	        	g2d.setColor(Color.blue);
+	        	g2d.drawString("First proj: ", 200, 150);   // Debug info
 	        	g2d.setColor(Color.black);
-	        	g2d.drawString("dir = " + pro.get(1)._vel.getDir(), 500, 175);
-	        	g2d.drawLine(650, 175, 650 + (int)(10 * Math.cos(pro.get(1)._vel.getDir())), 175 - (int)(10 * Math.sin(pro.get(1)._vel.getDir())));
-		        g2d.fillOval(647 + (int)(10 * Math.cos(pro.get(1)._vel.getDir())), 172 - (int)(10 * Math.sin(pro.get(1)._vel.getDir())), 5, 5);
-		        g2d.drawString("speed = " + pro.get(1)._vel.getSize(), 500, 200);
-		        g2d.drawString("rad = " + pro.get(1)._rad, 500, 225);
-		        g2d.drawString("x = " + pro.get(1).cord1._x + "\t y = " + pro.get(1).cord1._y, 500, 250);
+	        	g2d.drawString("dir = " + pro.get(0)._vel.getDir(), 200, 175);
+	        	g2d.drawLine(350, 175, 350 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 175 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())));
+		        g2d.fillOval(347 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 172 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())), 5, 5);
+		        g2d.drawString("speed = " + pro.get(0)._vel.getSize(), 200, 200);
+		        g2d.drawString("rad = " + pro.get(0)._rad, 200, 225);
+		        g2d.drawString("x = " + pro.get(0).cord1._x + "\t y = " + pro.get(0).cord1._y, 200, 250);
+		        
+		        if (pro.size() > 1)
+		        {
+		        	g2d.setColor(Color.red);
+			        g2d.drawString("Second proj: ", 500, 150);   // Debug info
+		        	g2d.setColor(Color.black);
+		        	g2d.drawString("dir = " + pro.get(1)._vel.getDir(), 500, 175);
+		        	g2d.drawLine(650, 175, 650 + (int)(10 * Math.cos(pro.get(1)._vel.getDir())), 175 - (int)(10 * Math.sin(pro.get(1)._vel.getDir())));
+			        g2d.fillOval(647 + (int)(10 * Math.cos(pro.get(1)._vel.getDir())), 172 - (int)(10 * Math.sin(pro.get(1)._vel.getDir())), 5, 5);
+			        g2d.drawString("speed = " + pro.get(1)._vel.getSize(), 500, 200);
+			        g2d.drawString("rad = " + pro.get(1)._rad, 500, 225);
+			        g2d.drawString("x = " + pro.get(1).cord1._x + "\t y = " + pro.get(1).cord1._y, 500, 250);
+		        }
+		        double energy = 0;
+		        for (int i = 0; i < proSize; i++)
+			        energy += Physics.Energy(pro.get(i));
+		        g2d.drawString("Energy = " + energy , 200, 300);
 	        }
-	        double energy = 0;
-	        for (int i = 0; i < proSize; i++)
-		        energy += Physics.Energy(pro.get(i));
-	        g2d.drawString("Energy = " + energy , 200, 300);
+	        g2d.drawString("num of Proj: " + proSize , 200, 400);
+	        g2d.drawString("total bounce's: " + totalBounce , 200, 450);
+	        g2d.drawString("total distance: " + totalDist , 200, 500);
+	        g2d.setColor(Color.white);
+	        
+	        g2d.drawString("FPS = " + 100/FPS , 1000, 50);
+	        if (ip != null)
+	        	g2d.drawString("ip = " + ip, 700,50);
         }
-        g2d.drawString("num of Proj: " + proSize , 200, 400);
-        g2d.drawString("total bounce's: " + totalBounce , 200, 450);
-        g2d.drawString("total distance: " + totalDist , 200, 500);
-        g2d.setColor(Color.white);
-        g2d.drawString("Press B to add more balls, V to launch balls, W to add more walls, M to add more round walls, G to toggle gravity, and H + arrowkey to control gravity direction, E to erase" , 200, attempt.getHeight() - 50);
-        g2d.drawString("(release H while the arrow keys are still held)" , 810, attempt.getHeight() - 30);
-        
-        g2d.drawString("FPS = " + 100/FPS , 1000, 50);
-        if (ip != null)
-        	g2d.drawString("ip = " + ip, 700,50);
-        
+        g2d.drawString("Relevant keys:" , 5, 100);
+        g2d.drawString("B- ball" , 5, 120);
+        g2d.drawString("V- vball" , 5, 140);
+        g2d.drawString("W- wall" , 5, 160);
+        g2d.drawString("M- rwall" , 5, 180);
+        g2d.drawString("E- erase" , 5, 200);
+        g2d.drawString("G- grav" , 5, 220);
+        g2d.drawString("H- dirgrav" , 5, 240);
+        g2d.drawString("F- freeze" , 5, 260);
+        g2d.drawString("C- crazy" , 5, 280);
+        g2d.drawString("D- debug" , 5, 300);
+        if (isFrozen)
+        {
+			g2d.drawString("Press < while frozen to rewind to 0.1 earlier, or > to go forward" , 200, attempt.getHeight() - 30);
+        }
         switch (CurMode)
         {
 		case BALL:
 			g2d.drawString("Current Mode: Ball" , 100, 50);
+			g2d.drawString("Press and hold the mouse to create a bouncing ball" , 200, attempt.getHeight() - 50);
 			break;
 		case RWALL:
 			g2d.drawString("Current Mode: Round Wall" , 100, 50);
+			g2d.drawString("Press and hold the mouse to create a ball shaped wall" , 200, attempt.getHeight() - 50);
 			break;
 		case VBALL:
 			g2d.drawString("Current Mode: Launch Ball" , 100, 50);
+			g2d.drawString("Press and hold the mouse to launch a bouncing ball at a controlled velocity" , 200, attempt.getHeight() - 50);
 			break;
 		case WALL:
 			g2d.drawString("Current Mode: Wall" , 100, 50);
+			g2d.drawString("Press and hold the mouse to create a rectangular wall" , 200, attempt.getHeight() - 50);
 			break;
 		case ERASE:
 			g2d.drawString("Current Mode: Erase" , 100, 50);
+			g2d.drawString("Press and hold the mouse erase objects" , 200, attempt.getHeight() - 50);
 			break;
 		case PAUSE:
 			g2d.drawString("paused" , 100, 50);
 			break;
 		case CRAZY:
 			g2d.drawString("CRAZY" , 100, 50);
+			g2d.drawString("CRAZY MODE" , 200, attempt.getHeight() - 50);
 			break;
 		default:
 			break;
@@ -452,7 +476,10 @@ public class attempt extends JPanel {
             	else if (Physics.grav.getSize() == 0)
             		Physics.grav = new Vect(900, (float)(3*Math.PI/2));
             }
-            
+            if (keyReleased[keyCode.DEBUG.code])
+            {
+            	debug = !debug;
+            }
             if (isFrozen && keyReleased[keyCode.REWIND.code])
             {
             	if (curState > 1)
