@@ -39,10 +39,11 @@ public class attempt extends JPanel {
 		SHIFT (12),
 		PAUSE (13),
 		CRAZY (14),
-		FREEZE (15),
-		REWIND (16),
-		FORWARD (17),
-		DEBUG (18)
+		ART (15),
+		FREEZE (16),
+		REWIND (17),
+		FORWARD (18),
+		DEBUG (19)
 		;
 		public int code;
 		keyCode(int code)
@@ -78,7 +79,8 @@ public class attempt extends JPanel {
     static boolean FirstFreezeCheck = false;
     static boolean isFrozen = false;
     static boolean debug = true;
-    
+    static boolean art = false;
+
     static Coord mouseLocation = new Coord (0,0);
     static Coord curMouseLoc = new Coord(0,0);
     
@@ -495,7 +497,7 @@ public class attempt extends JPanel {
 	            	}
 	            	for (Item w : states.get(curState).walls)
 	            	{
-	            		walls.add((Wall)w);
+	            		walls.add(w);
 	            	}
             	}
             	proSize = pro.size();
@@ -554,6 +556,10 @@ public class attempt extends JPanel {
             if (key[keyCode.CRAZY.code])
             {
             	CurMode = mode.CRAZY;
+            }
+            if (keyReleased[keyCode.ART.code])
+            {
+            	art = !art;
             }
             if (key[keyCode.FREEZE.code] && !isFrozen)
             {

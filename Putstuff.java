@@ -17,6 +17,13 @@ public abstract class Putstuff
 			
 			g2d.drawLine(x, y, (int)to.intoJcoord()._x, (int)to.intoJcoord()._y);
 		}
+		if (attempt.art)
+		{
+			int X = (int) (x + p._vel.getX());
+			int Y = (int) (y + p._vel.getY());
+			
+			g2d.drawLine(x, y, X, Y);
+		}
 		
 	}
 	

@@ -63,6 +63,9 @@ public class InputManager
         	case (KeyEvent.VK_C):
         		attempt.key[attempt.keyCode.CRAZY.code] = true;
         		break;
+        	case (KeyEvent.VK_A):
+        		attempt.key[attempt.keyCode.ART.code] = true;
+        		break;
         	case (KeyEvent.VK_F):
         		attempt.key[attempt.keyCode.FREEZE.code] = true;
         		break;
@@ -152,6 +155,10 @@ public class InputManager
         	case (KeyEvent.VK_C):
         		attempt.key[attempt.keyCode.CRAZY.code] = false;
         		attempt.keyReleased[attempt.keyCode.CRAZY.code] = true;
+        		break;
+        	case (KeyEvent.VK_A):
+        		attempt.key[attempt.keyCode.ART.code] = false;
+        		attempt.keyReleased[attempt.keyCode.ART.code] = true;
         		break;
         	case (KeyEvent.VK_F):
         		attempt.key[attempt.keyCode.FREEZE.code] = false;
