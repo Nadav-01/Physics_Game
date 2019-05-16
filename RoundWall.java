@@ -29,10 +29,12 @@ public class RoundWall extends Item
         }
         else if (other instanceof Wall)
         {
-            // Checks if the distance between the center of the projectile and any of the corners of  the wall is smaller then its radius.
+        	 // Checks if the distance between the center of the projectile and any of the corners of  the wall is smaller then its radius.
         	Coord UL = other.cord1;
         	Coord UR = new Coord(((Wall)other).cord2._x, other.cord1._y);
         	Coord LL = new Coord(other.cord1._x,((Wall)other).cord2._y);
+        	
+        	
         	Coord LR = ((Wall)other).cord2;
         	
             return 	

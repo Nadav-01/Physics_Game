@@ -66,6 +66,12 @@ public class InputManager
         	case (KeyEvent.VK_F):
         		attempt.key[attempt.keyCode.FREEZE.code] = true;
         		break;
+        	case (KeyEvent.VK_COMMA):
+        		attempt.key[attempt.keyCode.REWIND.code] = true;
+        		break;
+        	case (KeyEvent.VK_PERIOD):
+        		attempt.key[attempt.keyCode.FORWARD.code] = true;
+        		break;
         	case (KeyEvent.VK_ENTER):
         		if (attempt.CurMode == attempt.mode.PAUSE)
         		{
@@ -147,6 +153,14 @@ public class InputManager
         	case (KeyEvent.VK_F):
         		attempt.key[attempt.keyCode.FREEZE.code] = false;
         		attempt.keyReleased[attempt.keyCode.FREEZE.code] = true;
+        		break;
+        	case (KeyEvent.VK_COMMA):
+        		attempt.key[attempt.keyCode.REWIND.code] = false;
+        		attempt.keyReleased[attempt.keyCode.REWIND.code] = true;
+        		break;
+        	case (KeyEvent.VK_PERIOD):
+        		attempt.key[attempt.keyCode.FORWARD.code] = false;
+        		attempt.keyReleased[attempt.keyCode.FORWARD.code] = true;
         		break;
         		
         	}

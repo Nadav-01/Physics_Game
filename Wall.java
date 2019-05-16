@@ -25,6 +25,13 @@ public class Wall extends Item
         cord2 = new Coord(0,0);
     }
     
+    public Wall(Wall w)
+    {
+        super(0,0);
+        cord2 = new Coord(w.cord2);
+    }
+    
+    
     public Wall(Coord c1, Coord c2)
     {
         super(c1);

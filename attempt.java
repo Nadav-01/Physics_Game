@@ -39,7 +39,9 @@ public class attempt extends JPanel {
 		SHIFT (12),
 		PAUSE (13),
 		CRAZY (14),
-		FREEZE (15)
+		FREEZE (15),
+		REWIND (16),
+		FORWARD (17)
 		;
 		public int code;
 		keyCode(int code)
@@ -63,6 +65,9 @@ public class attempt extends JPanel {
     static LinkedList<Proj> pro = new LinkedList<Proj>();
     static LinkedList<Item> walls = new LinkedList<Item>();
     static LinkedList<Proj> proPred= new LinkedList<Proj>();
+    static LinkedList<gamestate> states = new LinkedList<gamestate>();
+    static int curState = 0;
+    static long lastSave = 0;
     							
     static int totalBounce = 0;
     static double totalDist = 0;
@@ -205,10 +210,13 @@ public class attempt extends JPanel {
         g2d.setColor(Color.black);
         for (int i = 0; i < wallSize; i++) // Paints walls
         {
-        	if (walls.get(i) instanceof Wall)
-        		Putstuff.putWall((Wall)walls.get(i),g2d); 
-        	if (walls.get(i) instanceof RoundWall)
-        		Putstuff.putRoundwall((RoundWall)walls.get(i),g2d); 
+        	if (!walls.isEmpty())
+        	{
+	        	if (walls.get(i) instanceof Wall)
+	        		Putstuff.putWall((Wall)walls.get(i),g2d); 
+	        	if (walls.get(i) instanceof RoundWall)
+	        		Putstuff.putRoundwall((RoundWall)walls.get(i),g2d); 
+        	}
         }
         
         if (startLocation != null)	//if the cursor is clicked (a new item is added) draw a display
@@ -371,8 +379,19 @@ public class attempt extends JPanel {
     
     
 
-    
-    
+    public static class SaveState extends TimerTask
+    {
+	    
+
+		@Override
+		public void run() {
+			if (!isFrozen)
+			{
+				states.add(new gamestate(pro,walls));
+				curState = states.size()-1;
+			}
+		}
+    }
     public static class gameloop extends TimerTask
     {
     	
@@ -432,6 +451,46 @@ public class attempt extends JPanel {
             		Physics.grav = new Vect(900, (float)(3*Math.PI/2));
             }
             
+            if (isFrozen && keyReleased[keyCode.REWIND.code])
+            {
+            	if (curState > 1)
+            		curState--;
+            	
+            	if (curState >= 0  && !states.isEmpty())
+            	{
+            		pro.clear();
+            		walls.clear();
+	            	for (Proj p : states.get(curState).pro)
+	            	{
+	            		pro.add(p);
+	            	}
+	            	for (Item w : states.get(curState).walls)
+	            	{
+	            		walls.add((Wall)w);
+	            	}
+            	}
+            	proSize = pro.size();
+            	wallSize = walls.size();
+            }
+            if (isFrozen && keyReleased[keyCode.FORWARD.code])
+            {
+            	if (curState < states.size())
+            		curState++;
+            	
+            	if (curState >= 0 && curState < states.size() &&  !states.isEmpty())
+            	{
+            		pro.clear();
+            		walls.clear();
+	            	for (Proj p : states.get(curState).pro)
+	            		pro.add(p);
+	            	
+	            	for (Item w : states.get(curState).walls)
+	            		walls.add(w);
+            	}
+            	proSize = pro.size();
+            	wallSize = walls.size();
+            }
+            
             if (key[keyCode.ERASE.code])
             {
             	System.out.println("Erase");
@@ -480,6 +539,9 @@ public class attempt extends JPanel {
             {
             	isFrozen = false;;
             	FirstFreezeCheck = false;
+            	
+            	while (states.size() > curState+1)
+            		states.remove(curState+1);
             }
             
             if (mousePressed && startLocation == null)
@@ -601,6 +663,7 @@ public class attempt extends JPanel {
         public void run()
         {
         	
+        	
         	windowLocation = attempt.getLocation();
         	if (oldHeight != attempt.getHeight() || oldWidth != attempt.getWidth())
         		initilizeWall();
@@ -610,7 +673,6 @@ public class attempt extends JPanel {
         	long newT = System.currentTimeMillis();	//gets new time from the system.
         	if (CurMode == mode.PAUSE ||  isFrozen)
         		oldT = System.currentTimeMillis();	//if paused, make it so time doesnt pass
-        	
         	
         	long deltaT = newT - oldT;				//gets the difference of the times between last frame and now.
         	
@@ -657,18 +719,20 @@ public class attempt extends JPanel {
         		pro.get(i).cord1._x += deltaT*pro.get(i)._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
         		pro.get(i).cord1._y += deltaT*pro.get(i)._vel.getY()/1000;
         		totalDist += deltaT*pro.get(i)._vel.getSize()/1000;
-                
-        		if (pro.get(i).cord1._x < ((Wall)walls.get(1)).cord2._x)
-        			pro.get(i).cord1._x = ((Wall)walls.get(1)).cord2._x + pro.get(i)._rad - 0.5;
-        		
-        		if (pro.get(i).cord1._x > walls.get(2).cord1._x)
-        			pro.get(i).cord1._x = walls.get(2).cord1._x - pro.get(i)._rad + 0.5;
-        		
-        		if (pro.get(i).cord1._y < walls.get(0).cord1._y)
-        			pro.get(i).cord1._y = walls.get(0).cord1._y + pro.get(i)._rad - 0.5;
-        		
-        		if (pro.get(i).cord1._y > ((Wall)walls.get(3)).cord2._y)
-        			pro.get(i).cord1._y = ((Wall)walls.get(3)).cord2._y - pro.get(i)._rad + 0.5;
+                if (wallSize > 4)
+                {
+	        		if (pro.get(i).cord1._x < ((Wall)walls.get(1)).cord2._x)
+	        			pro.get(i).cord1._x = ((Wall)walls.get(1)).cord2._x + pro.get(i)._rad - 0.5;
+	        		
+	        		if (pro.get(i).cord1._x > walls.get(2).cord1._x)
+	        			pro.get(i).cord1._x = walls.get(2).cord1._x - pro.get(i)._rad + 0.5;
+	        		
+	        		if (pro.get(i).cord1._y < walls.get(0).cord1._y)
+	        			pro.get(i).cord1._y = walls.get(0).cord1._y + pro.get(i)._rad - 0.5;
+	        		
+	        		if (pro.get(i).cord1._y > ((Wall)walls.get(3)).cord2._y)
+	        			pro.get(i).cord1._y = ((Wall)walls.get(3)).cord2._y - pro.get(i)._rad + 0.5;
+                }
             } 
             
             
@@ -703,8 +767,11 @@ public class attempt extends JPanel {
         //int flipXcnt = 1;
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
+        TimerTask SaveState = new SaveState();
+        
         Timer timer = new Timer(true);
         attempt.add(ipText);
         timer.scheduleAtFixedRate(gameloop, 0, FPS);	//setting fps
+        timer.scheduleAtFixedRate(SaveState,0,200);
     }
 }
