@@ -388,6 +388,8 @@ public class attempt extends JPanel {
 			if (!isFrozen)
 			{
 				states.add(new gamestate(pro,walls));
+				if (states.size() > 100)
+					states.removeFirst();
 				curState = states.size()-1;
 			}
 		}
@@ -772,6 +774,6 @@ public class attempt extends JPanel {
         Timer timer = new Timer(true);
         attempt.add(ipText);
         timer.scheduleAtFixedRate(gameloop, 0, FPS);	//setting fps
-        timer.scheduleAtFixedRate(SaveState,0,200);
+        timer.scheduleAtFixedRate(SaveState,0,100);
     }
 }
