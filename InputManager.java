@@ -72,6 +72,9 @@ public class InputManager
         	case (KeyEvent.VK_D):
         		attempt.key[attempt.keyCode.DEBUG.code] = true;
         		break;
+        	case (KeyEvent.VK_S):
+        		attempt.key[attempt.keyCode.SLOMO.code] = true;
+        		break;
         	case (KeyEvent.VK_COMMA):
         		attempt.key[attempt.keyCode.REWIND.code] = true;
         		break;
@@ -167,6 +170,10 @@ public class InputManager
         	case (KeyEvent.VK_D):
         		attempt.key[attempt.keyCode.DEBUG.code] = false;
     			attempt.keyReleased[attempt.keyCode.DEBUG.code] = true;
+    			break;
+        	case (KeyEvent.VK_S):
+        		attempt.key[attempt.keyCode.SLOMO.code] = false;
+    			attempt.keyReleased[attempt.keyCode.SLOMO.code] = true;
     			break;
         	case (KeyEvent.VK_COMMA):
         		attempt.key[attempt.keyCode.REWIND.code] = false;

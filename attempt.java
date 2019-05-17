@@ -43,7 +43,8 @@ public class attempt extends JPanel {
 		FREEZE (16),
 		REWIND (17),
 		FORWARD (18),
-		DEBUG (19)
+		DEBUG (19),
+		SLOMO (20)
 		;
 		public int code;
 		keyCode(int code)
@@ -80,7 +81,8 @@ public class attempt extends JPanel {
     static boolean isFrozen = false;
     static boolean debug = true;
     static boolean art = false;
-
+    static boolean isSlo = false;
+    
     static Coord mouseLocation = new Coord (0,0);
     static Coord curMouseLoc = new Coord(0,0);
     
@@ -92,6 +94,7 @@ public class attempt extends JPanel {
     static Point windowLocation;
     
     static long oldT;
+    static long newT;
     static int oldHeight;
     static int oldWidth;
     
@@ -351,9 +354,14 @@ public class attempt extends JPanel {
         g2d.drawString("F- freeze" , 5, 260);
         g2d.drawString("C- crazy" , 5, 280);
         g2d.drawString("D- debug" , 5, 300);
+        g2d.drawString("S- slowmo" , 5, 320);
         if (isFrozen)
         {
 			g2d.drawString("Press < while frozen to rewind to 0.1 earlier, or > to go forward" , 200, attempt.getHeight() - 30);
+        }
+        if (isSlo)
+        {
+        	g2d.drawString("Slow Mo" , 200, attempt.getHeight() - 10);
         }
         switch (CurMode)
         {
@@ -482,6 +490,8 @@ public class attempt extends JPanel {
             {
             	debug = !debug;
             }
+            if (keyReleased[keyCode.SLOMO.code])
+        		isSlo = !isSlo;
             if (isFrozen && keyReleased[keyCode.REWIND.code])
             {
             	if (curState > 1)
@@ -527,6 +537,7 @@ public class attempt extends JPanel {
             	System.out.println("Erase");
             	CurMode = mode.ERASE;
             }
+           
             
             if (keyReleased[keyCode.SGRAV.code] && (key[keyCode.UP.code] || key[keyCode.DOWN.code] || key[keyCode.RIGHT.code] || key[keyCode.LEFT.code]))
             {
@@ -705,11 +716,16 @@ public class attempt extends JPanel {
         	oldHeight = attempt.getHeight();
         	oldWidth = attempt.getWidth();
         	
-        	long newT = System.currentTimeMillis();	//gets new time from the system.
+        	newT = System.currentTimeMillis();	//gets new time from the system.
         	if (CurMode == mode.PAUSE ||  isFrozen)
         		oldT = System.currentTimeMillis();	//if paused, make it so time doesnt pass
+        	if (isSlo)
+        		newT = oldT + (newT - oldT)/2;
         	
         	long deltaT = newT - oldT;				//gets the difference of the times between last frame and now.
+        	
+        	
+        		
         	
         	if (CurMode != mode.PAUSE)
         		ipText.setText("");
@@ -774,7 +790,7 @@ public class attempt extends JPanel {
             
             at.repaint();		//repaint the screen
             processInput();
-            oldT = newT;		//update oldT to newT to remember this frames time for the next frame.
+            oldT = System.currentTimeMillis();;		//update oldT to newT to remember this frames time for the next frame.
         }
     }
     

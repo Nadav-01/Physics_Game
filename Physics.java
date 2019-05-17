@@ -15,8 +15,8 @@ public class Physics
     // Upplys force on a projectile.
     public static void applyF(Proj p, Vect f)
     {
-    	long newT = System.currentTimeMillis();	//applying as much force as needed depending on how much time has passed since last frame.
-    	long deltaT =  newT - attempt.oldT;
+    								//applying as much force as needed depending on how much time has passed since last frame.
+    	long deltaT =  attempt.newT - attempt.oldT;
     	
         f.sizeMult(deltaT/(p._mass*1000));	// by formula v = v0 + at -> v = v0 + ft/m. divide by 1000 because messurment is in milliseconds.
         p._vel = Vec_Math.vectAdd(p._vel, f);
