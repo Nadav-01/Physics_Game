@@ -219,9 +219,9 @@ public class attempt extends JPanel {
         {
         	if (!walls.isEmpty())
         	{
-	        	if (walls.get(i) instanceof Wall)
+	        	if (!walls.isEmpty() && walls.get(i) instanceof Wall)
 	        		Putstuff.putWall((Wall)walls.get(i),g2d); 
-	        	if (walls.get(i) instanceof RoundWall)
+	        	if (!walls.isEmpty() && walls.get(i) instanceof RoundWall)
 	        		Putstuff.putRoundwall((RoundWall)walls.get(i),g2d); 
         	}
         }
@@ -340,6 +340,7 @@ public class attempt extends JPanel {
 	        g2d.setColor(Color.white);
 	        
 	        g2d.drawString("FPS = " + 100/FPS , 1000, 50);
+	        g2d.drawString("curState = " + curState , 1100, 50);
 	        if (ip != null)
 	        	g2d.drawString("ip = " + ip, 700,50);
         }
@@ -515,7 +516,7 @@ public class attempt extends JPanel {
             }
             if (isFrozen && keyReleased[keyCode.FORWARD.code])
             {
-            	if (curState < states.size())
+            	if (curState < states.size()-1)
             		curState++;
             	
             	if (curState >= 0 && curState < states.size() &&  !states.isEmpty())
@@ -586,8 +587,9 @@ public class attempt extends JPanel {
             	isFrozen = false;;
             	FirstFreezeCheck = false;
             	
-            	while (states.size() > curState+1)
-            		states.remove(curState+1);
+            	while (states.size() >= curState+1)
+            		states.remove(curState);
+            	curState = states.size();
             }
             
             if (mousePressed && startLocation == null)
@@ -720,7 +722,7 @@ public class attempt extends JPanel {
         	if (CurMode == mode.PAUSE ||  isFrozen)
         		oldT = System.currentTimeMillis();	//if paused, make it so time doesnt pass
         	if (isSlo)
-        		newT = oldT + (newT - oldT)/2;
+        		newT = oldT + FPS*(newT - oldT)/2;
         	
         	long deltaT = newT - oldT;				//gets the difference of the times between last frame and now.
         	
