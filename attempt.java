@@ -565,9 +565,12 @@ public class attempt extends JPanel {
             	dir = tempDir.getDir();
             	Physics.grav.setDir(dir);
             }
-            if (key[keyCode.CRAZY.code])
+            if (keyReleased[keyCode.CRAZY.code])
             {
-            	CurMode = mode.CRAZY;
+            	if (CurMode != mode.CRAZY)
+            		CurMode = mode.CRAZY;
+            	else
+            		CurMode = mode.BALL;
             }
             if (keyReleased[keyCode.ART.code])
             {
