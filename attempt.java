@@ -168,12 +168,14 @@ public class attempt extends JPanel {
         	g2d.setColor(tempCol);
         	g2d.fillRect(0, 0, attempt.getWidth(), attempt.getHeight());
  
+        	
         	g2d.setColor(Color.WHITE);
         	Font font = new Font ("Arial", 10, 50);
         	g2d.setFont(font);
-        	String str = "Paused, move to another mode to unpause";
-        	g2d.drawString(str, attempt.getWidth()/2- str.length()*12, attempt.getHeight()/2);
+        	String str = "Paused";
         	
+        	g2d.drawString(str, attempt.getWidth()/2- str.length()*12, attempt.getHeight()/2);
+        	/*
         	font = new Font ("Arial", 10, 15);
         	g2d.setFont(font);
         	
@@ -182,7 +184,7 @@ public class attempt extends JPanel {
         	ipText.setBounds(attempt.getWidth()/2 - str.length()*12 + 380, attempt.getHeight()/2 + 38, 200, 15);       
         	g2d.setColor(new Color(255,255,255,100));
         	g2d.fillRect(attempt.getWidth()/2 - str.length()*12 + 380, attempt.getHeight()/2 + 38, 200, 15);
-        	
+        	*/
 
         	
         }
@@ -471,13 +473,17 @@ public class attempt extends JPanel {
             	CurMode = mode.RWALL;
             }
             
-            if (key[keyCode.PAUSE.code])
+            if (keyReleased[keyCode.PAUSE.code])
             {
-            	lastMode = CurMode;
-            	System.out.println("pause");
-            	CurMode = mode.PAUSE;
+            	if (CurMode != mode.PAUSE)
+            	{
+	            	lastMode = CurMode;
+	            	System.out.println("pause");
+	            	CurMode = mode.PAUSE;
+            	}
+            	else
+            		CurMode = lastMode;
             }
-            
             if (keyReleased[keyCode.GRAV.code])
             {
             	System.out.println("Gravity");
@@ -568,9 +574,16 @@ public class attempt extends JPanel {
             if (keyReleased[keyCode.CRAZY.code])
             {
             	if (CurMode != mode.CRAZY)
+            	{
+            		lastMode = CurMode;
             		CurMode = mode.CRAZY;
+            	}
+            	else if (CurMode == lastMode)
+            			CurMode = mode.BALL;
             	else
-            		CurMode = mode.BALL;
+            	{
+            		CurMode = lastMode;	
+            	}
             }
             if (keyReleased[keyCode.ART.code])
             {
