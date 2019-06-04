@@ -358,6 +358,7 @@ public class attempt extends JPanel {
         g2d.drawString("C- crazy" , 5, 280);
         g2d.drawString("D- debug" , 5, 300);
         g2d.drawString("S- slowmo" , 5, 320);
+        g2d.drawString("R- reset" , 5, 340);
         if (isFrozen)
         {
 			g2d.drawString("Press < while frozen to rewind to 0.1 earlier, or > to go forward" , 200, attempt.getHeight() - 30);
