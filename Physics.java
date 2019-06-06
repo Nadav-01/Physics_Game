@@ -1,6 +1,5 @@
 package src;
 
-import java.awt.Dimension;
 import java.util.LinkedList;
 
 public class Physics
@@ -14,42 +13,42 @@ public class Physics
     }
     
     // Upplys force on a projectile.
-    public static void upplyF(Proj p, Vect f)
+    public static void applyF(Proj p, Vect f)
     {
-    	long newT = System.currentTimeMillis();	//applying as much force as needed depending on how much time has passed since last frame.
-    	long deltaT =  newT - attempt.oldT;
+    								//applying as much force as needed depending on how much time has passed since last frame.
+    	long deltaT =  attempt.newT - attempt.oldT;
     	
         f.sizeMult(deltaT/(p._mass*1000));	// by formula v = v0 + at -> v = v0 + ft/m. divide by 1000 because messurment is in milliseconds.
         p._vel = Vec_Math.vectAdd(p._vel, f);
     }
     
     // Upplys Gravity on an array of projectiles.
-    public static void upplyG(LinkedList<Proj> p, int n)
+    public static void applyG(LinkedList<Proj> p, int n)
     {
         Vect Wei = new Vect(grav);
         for (int i = 0; i < n; i++)
         {
             Wei = new Vect(grav);
             Wei.sizeMult(p.get(i)._mass);
-            upplyF(p.get(i),Wei);
+            applyF(p.get(i),Wei);
         }
     }
     
     // Upplys friction on a projectile.
-    public static void upplyFric(Proj p)
+    public static void applyFric(Proj p)
     {
         Vect fric = new Vect(p._vel);
         fric.setDir(fric.getDir() + (float)(Math.PI));	//friction is in opposite direction to velocity.
         fric.setSize(fric.getSize() * Physics.airFric);
         fric = new Vect(fric.getX()/3,fric.getY()/3);
-        Physics.upplyF(p, fric);
+        Physics.applyF(p, fric);
     }
     
     // Upplys friction on an array of projectiles.
-    public static void upplyFric(Proj p[], int n)
+    public static void applyFric(LinkedList<Proj> p, int n)
     {
         for (int i = 0; i < n; i++)
-            upplyFric(p[i]);
+            applyFric(p.get(i));
     }
     
     public static double kineticE(Proj p)	//returns kinetic energy- 0.5 * m * v^2
@@ -57,14 +56,14 @@ public class Physics
         return p._mass * Math.pow(p._vel.getSize() , 2) / 2;
     }
     
-    public static double potenE(Proj p, Dimension winSize)	//returns potential (height) energy- m*g*h
+    public static double potenE(Proj p)	//returns potential (height) energy- m*g*h
     {
-        return p._mass * grav.getSize()*p.cord1._y;
+        return p._mass * grav.getSize()*(p.cord1._y - p._rad - 100);
     }
     
-    public static double Energy(Proj p, Dimension winSize)	//returns total energy- E_k + U_g
+    public static double Energy(Proj p)	//returns total energy- E_k + U_g
     {
-        return kineticE(p) + potenE(p, winSize);
+        return kineticE(p) + potenE(p);
     }
     
     public static Vect momentum(Proj p)	//returns momentum- m*v
@@ -79,6 +78,7 @@ public class Physics
      */
     public static void collision(Proj a, Proj b)
     {
+    	
     	if(Physics.isOverlap(a,b))
         {
             Physics.fixOverlap(a,b);
@@ -163,6 +163,7 @@ public class Physics
         {
             Physics.fixOverlap(a,b);
         }
+		
 	}
     
     public static void collision(Proj a, Item b)
@@ -228,6 +229,7 @@ public class Physics
         	angle -= Math.PI/2;
         	Vec_Math.flipUpAxis(a._vel, angle);
         }
+        a._vel.setSize(a._vel.getSize()*0.999);
         /*
         long newT = System.currentTimeMillis();
     	long deltaT =  newT - attempt.oldT;
@@ -387,7 +389,6 @@ public class Physics
     	Coord UR = new Coord(((Wall)b).cord2._x, b.cord1._y);
     	Coord LL = new Coord(b.cord1._x,((Wall)b).cord2._y);
     	Coord LR = ((Wall)b).cord2;
-    	
 		return ((Math.abs(a.cord1._y - b.cord2._y) < a._rad
         		&&
         		a.cord1._x < b.cord2._x + a._rad
@@ -426,6 +427,8 @@ public class Physics
 	public static void fixOverlap(Proj a, Wall b)
 	{
 
+		
+    	
 		for (int i = 0; i < 4; i++)
 		{
 			if (b.equals(attempt.walls.get(i)))
@@ -449,25 +452,31 @@ public class Physics
 			}
 		}
 		
-		if (a._vel.getSize() != 0)
+		boolean fromBelow =	a.cord1._y <= b.cord2._y;
+		
+		boolean fromAbove =	a.cord1._y >= b.cord1._y;
+
+    	boolean fromLeft = 	a.cord1._x <= b.cord1._x;
+
+    	boolean fromRight = a.cord1._x >= b.cord2._x;
+    	
+    	boolean isDiag = !(Math.abs(2*a._vel.getDir()/Math.PI - Math.round(2*a._vel.getDir()/Math.PI)) < 0.1);
+    	if (isDiag)
+    		System.out.println("Diag");
+    	
+		if (a._vel.getSize() != 0 && isDiag)
 		{
 			double dir = a._vel.getDir();
 			while (isOverlap(a,b))	//moves the projectile on the opposite direction to its speed, until it isnt overlapping with the wall anymore.
 			{
+
 				a.cord1._x -= Math.cos(dir);
 				a.cord1._y -= Math.sin(dir);
 			}
 		}
 		else
 		{
-			boolean fromBelow =	a.cord1._y <= b.cord2._y;
 			
-			boolean fromAbove =	a.cord1._y >= b.cord1._y;
-	
-	    	boolean fromLeft = 	a.cord1._x <= b.cord1._x;
-	
-	    	boolean fromRight = a.cord1._x >= b.cord2._x;
-	    	
 	    	if (fromBelow)
 				a.cord1._y = b.cord2._y - a._rad - 1;
 			else if (fromAbove)

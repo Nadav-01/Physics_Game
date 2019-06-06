@@ -11,17 +11,26 @@ public class Wall extends Item
     /**
      * Constructor for objects of class Wall
      */
-    public Wall()
-    {
-        super(0,0);
-        cord2 = new Coord(0,0);
-    }
+    
 
     public Wall(double x, double y, double w, double z)
     {
         super(x,y);
         cord2 = new Coord(w,z);
     }
+    
+    public Wall()
+    {
+        super(0,0);
+        cord2 = new Coord(0,0);
+    }
+    
+    public Wall(Wall w)
+    {
+        super(0,0);
+        cord2 = new Coord(w.cord2);
+    }
+    
     
     public Wall(Coord c1, Coord c2)
     {
@@ -72,7 +81,26 @@ public class Wall extends Item
         		if (isWithin(co[i]))
         			ret=true;
         	}
-        	return ret || b.isCol2(this);
+        	
+        	boolean temp = 
+        			(cord1._x < b.cord1._x 
+        			&&
+        			cord1._y < b.cord1._y
+        			&&
+        			cord2._x > b.cord1._x
+        			&&
+        			cord2._y > b.cord2._y)
+        			||
+        			(b.cord1._x < cord1._x 
+        			&&
+        			b.cord1._y < cord1._y
+        			&&
+        			b.cord2._x > cord1._x
+        			&&
+        			b.cord2._y > cord2._y);
+        			
+        	
+        	return temp || ret || b.isCol2(this);
         	
         	/*
             if (cord1._x <= ((Wall)other).cord1._x)

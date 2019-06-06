@@ -1,6 +1,6 @@
 package src;
 
-import java.awt.event.KeyEvent;		//for input
+
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -10,8 +10,10 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import javax.swing.JFrame;			//to render the frame
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Font;
 import java.util.LinkedList;
 import java.util.Timer;				//to keep fps stable
 import java.util.TimerTask;
@@ -34,7 +36,16 @@ public class attempt extends JPanel {
 		GRAV (9),
 		SGRAV (10),
 		ERASE (11),
-		SHIFT (12);
+		SHIFT (12),
+		PAUSE (13),
+		CRAZY (14),
+		ART (15),
+		FREEZE (16),
+		REWIND (17),
+		FORWARD (18),
+		DEBUG (19),
+		SLOMO (20)
+		;
 		public int code;
 		keyCode(int code)
 		{
@@ -43,21 +54,34 @@ public class attempt extends JPanel {
 	}
 	static boolean[] key = new boolean[keyCode.values().length];
 	static boolean[] keyReleased = new boolean[keyCode.values().length];
+	static Timer timer = new Timer(true);
+	static JTextField ipText = new JTextField(0);
 	
-    enum mode {BALL, WALL, RWALL,VBALL, ERASE};
+	static String ip;
+	
+    enum mode {BALL, WALL, RWALL,VBALL, ERASE, PAUSE, CRAZY};
+    static mode lastMode;
     static attempt attempt = new attempt();
     
     static final int PLAYER_SIZE = 60;
-    static final int FPS = 2;
+    static final int FPS = 1;
     static LinkedList<Proj> pro = new LinkedList<Proj>();
     static LinkedList<Item> walls = new LinkedList<Item>();
     static LinkedList<Proj> proPred= new LinkedList<Proj>();
+    static LinkedList<gamestate> states = new LinkedList<gamestate>();
+    static int curState = 0;
+    static long lastSave = 0;
     							
     static int totalBounce = 0;
     static double totalDist = 0;
     static int proSize;
     static int wallSize;
     static mode CurMode = mode.BALL;
+    static boolean FirstFreezeCheck = false;
+    static boolean isFrozen = false;
+    static boolean debug = true;
+    static boolean art = false;
+    static boolean isSlo = false;
     
     static Coord mouseLocation = new Coord (0,0);
     static Coord curMouseLoc = new Coord(0,0);
@@ -70,6 +94,7 @@ public class attempt extends JPanel {
     static Point windowLocation;
     
     static long oldT;
+    static long newT;
     static int oldHeight;
     static int oldWidth;
     
@@ -124,14 +149,52 @@ public class attempt extends JPanel {
     }
     
     @Override   // Overriding paint of Jpanel
-    public void paint(Graphics g) {
-        super.paint(g);
+    public void paintComponent(Graphics g) {
+        //super.paint(g);
+    	if (CurMode != mode.CRAZY)
+    		super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
                 
+        
         putItems(g2d);
-                
+        if(CurMode == mode.PAUSE)	//pause menu
+        {
+        	
+        	
+        	ipText.grabFocus();
+        	Color tempCol = new Color(25,30,30,200);
+        	g2d.setColor(tempCol);
+        	g2d.fillRect(0, 0, attempt.getWidth(), attempt.getHeight());
+ 
+        	
+        	g2d.setColor(Color.WHITE);
+        	Font font = new Font ("Arial", 10, 50);
+        	g2d.setFont(font);
+        	String str = "Paused";
+        	
+        	g2d.drawString(str, attempt.getWidth()/2- str.length()*12, attempt.getHeight()/2);
+        	/*
+        	font = new Font ("Arial", 10, 15);
+        	g2d.setFont(font);
+        	
+        	g2d.drawString("if you want to connect to another computer, put the ip here: " , attempt.getWidth()/2- str.length()*12, attempt.getHeight()/2 + 50);
+        	
+        	ipText.setBounds(attempt.getWidth()/2 - str.length()*12 + 380, attempt.getHeight()/2 + 38, 200, 15);       
+        	g2d.setColor(new Color(255,255,255,100));
+        	g2d.fillRect(attempt.getWidth()/2 - str.length()*12 + 380, attempt.getHeight()/2 + 38, 200, 15);
+        	*/
+
+        	
+        }
+        else
+        {
+        	
+        	ipText.setBounds(0,0,0,0);
+
+        }
+        	
     }
     
     public void putItems(Graphics2D g2d)
@@ -156,10 +219,13 @@ public class attempt extends JPanel {
         g2d.setColor(Color.black);
         for (int i = 0; i < wallSize; i++) // Paints walls
         {
-        	if (walls.get(i) instanceof Wall)
-        		Putstuff.putWall((Wall)walls.get(i),g2d); 
-        	if (walls.get(i) instanceof RoundWall)
-        		Putstuff.putRoundwall((RoundWall)walls.get(i),g2d); 
+        	if (!walls.isEmpty())
+        	{
+	        	if (!walls.isEmpty() && walls.get(i) instanceof Wall)
+	        		Putstuff.putWall((Wall)walls.get(i),g2d); 
+	        	if (!walls.isEmpty() && walls.get(i) instanceof RoundWall)
+	        		Putstuff.putRoundwall((RoundWall)walls.get(i),g2d); 
+        	}
         }
         
         if (startLocation != null)	//if the cursor is clicked (a new item is added) draw a display
@@ -168,6 +234,7 @@ public class attempt extends JPanel {
         	{
             	case BALL:
             	{
+            	
 	        	double rad = Physics.CoordDist(startLocation, curMouseLoc)/2;
 	        	Coord cent = Physics.findMiddle(startLocation, curMouseLoc);
 	        	Proj temp = new Proj(cent, rad);
@@ -237,61 +304,97 @@ public class attempt extends JPanel {
         }
         
         Coord loc = curMouseLoc;
-        g2d.drawString(" mouse location: x = " + loc._x + " y = " + loc._y , 900, 150);
-        if (!pro.isEmpty())
+        if (debug)
         {
-        	g2d.setColor(Color.blue);
-        	g2d.drawString("First proj: ", 200, 150);   // Debug info
-        	g2d.setColor(Color.black);
-        	g2d.drawString("dir = " + pro.get(0)._vel.getDir(), 200, 175);
-        	g2d.drawLine(350, 175, 350 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 175 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())));
-	        g2d.fillOval(347 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 172 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())), 5, 5);
-	        g2d.drawString("speed = " + pro.get(0)._vel.getSize(), 200, 200);
-	        g2d.drawString("rad = " + pro.get(0)._rad, 200, 225);
-	        g2d.drawString("x = " + pro.get(0).cord1._x + "\t y = " + pro.get(0).cord1._y, 200, 250);
-	        
-	        if (pro.size() > 1)
+	        g2d.drawString(" mouse location: x = " + loc._x + " y = " + loc._y , 900, 150);
+	        if (!pro.isEmpty())
 	        {
-	        	g2d.setColor(Color.red);
-		        g2d.drawString("Second proj: ", 500, 150);   // Debug info
+	        	g2d.setColor(Color.blue);
+	        	g2d.drawString("First proj: ", 200, 150);   // Debug info
 	        	g2d.setColor(Color.black);
-	        	g2d.drawString("dir = " + pro.get(1)._vel.getDir(), 500, 175);
-	        	g2d.drawLine(650, 175, 650 + (int)(10 * Math.cos(pro.get(1)._vel.getDir())), 175 - (int)(10 * Math.sin(pro.get(1)._vel.getDir())));
-		        g2d.fillOval(647 + (int)(10 * Math.cos(pro.get(1)._vel.getDir())), 172 - (int)(10 * Math.sin(pro.get(1)._vel.getDir())), 5, 5);
-		        g2d.drawString("speed = " + pro.get(1)._vel.getSize(), 500, 200);
-		        g2d.drawString("rad = " + pro.get(1)._rad, 500, 225);
-		        g2d.drawString("x = " + pro.get(1).cord1._x + "\t y = " + pro.get(1).cord1._y, 500, 250);
+	        	g2d.drawString("dir = " + pro.get(0)._vel.getDir(), 200, 175);
+	        	g2d.drawLine(350, 175, 350 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 175 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())));
+		        g2d.fillOval(347 + (int)(10 * Math.cos(pro.get(0)._vel.getDir())), 172 - (int)(10 * Math.sin(pro.get(0)._vel.getDir())), 5, 5);
+		        g2d.drawString("speed = " + pro.get(0)._vel.getSize(), 200, 200);
+		        g2d.drawString("rad = " + pro.get(0)._rad, 200, 225);
+		        g2d.drawString("x = " + pro.get(0).cord1._x + "\t y = " + pro.get(0).cord1._y, 200, 250);
+		        
+		        if (pro.size() > 1)
+		        {
+		        	g2d.setColor(Color.red);
+			        g2d.drawString("Second proj: ", 500, 150);   // Debug info
+		        	g2d.setColor(Color.black);
+		        	g2d.drawString("dir = " + pro.get(1)._vel.getDir(), 500, 175);
+		        	g2d.drawLine(650, 175, 650 + (int)(10 * Math.cos(pro.get(1)._vel.getDir())), 175 - (int)(10 * Math.sin(pro.get(1)._vel.getDir())));
+			        g2d.fillOval(647 + (int)(10 * Math.cos(pro.get(1)._vel.getDir())), 172 - (int)(10 * Math.sin(pro.get(1)._vel.getDir())), 5, 5);
+			        g2d.drawString("speed = " + pro.get(1)._vel.getSize(), 500, 200);
+			        g2d.drawString("rad = " + pro.get(1)._rad, 500, 225);
+			        g2d.drawString("x = " + pro.get(1).cord1._x + "\t y = " + pro.get(1).cord1._y, 500, 250);
+		        }
+		        double energy = 0;
+		        for (int i = 0; i < proSize; i++)
+			        energy += Physics.Energy(pro.get(i));
+		        g2d.drawString("Energy = " + energy , 200, 300);
 	        }
-	        double energy = 0;
-	        for (int i = 0; i < proSize; i++)
-		        energy += Physics.Energy(pro.get(i),this.getSize());
-	        g2d.drawString("Energy = " + energy , 200, 300);
+	        g2d.drawString("num of Proj: " + proSize , 200, 400);
+	        g2d.drawString("total bounce's: " + totalBounce , 200, 450);
+	        g2d.drawString("total distance: " + totalDist , 200, 500);
+	        g2d.setColor(Color.white);
+	        
+	        g2d.drawString("FPS = " + 100/FPS , 1000, 50);
+	        g2d.drawString("curState = " + curState , 1100, 50);
+	        if (ip != null)
+	        	g2d.drawString("ip = " + ip, 700,50);
         }
-        g2d.drawString("num of Proj: " + proSize , 200, 400);
-        g2d.drawString("total bounce's: " + totalBounce , 200, 450);
-        g2d.drawString("total distance: " + totalDist , 200, 500);
-        g2d.setColor(Color.white);
-        g2d.drawString("Press B to add more balls, V to launch balls, W to add more walls, M to add more round walls, G to toggle gravity, and H + arrowkey to control gravity direction, E to erase" , 200, attempt.getHeight() - 50);
-        g2d.drawString("(release H while the arrow keys are still held)" , 810, attempt.getHeight() - 30);
-        
-        g2d.drawString("FPS = " + 100/FPS , 1000, 50);
-        
+        g2d.drawString("Relevant keys:" , 5, 100);
+        g2d.drawString("B- ball" , 5, 120);
+        g2d.drawString("V- vball" , 5, 140);
+        g2d.drawString("W- wall" , 5, 160);
+        g2d.drawString("M- rwall" , 5, 180);
+        g2d.drawString("E- erase" , 5, 200);
+        g2d.drawString("G- grav" , 5, 220);
+        g2d.drawString("H- dirgrav" , 5, 240);
+        g2d.drawString("F- freeze" , 5, 260);
+        g2d.drawString("C- crazy" , 5, 280);
+        g2d.drawString("D- debug" , 5, 300);
+        g2d.drawString("S- slowmo" , 5, 320);
+        g2d.drawString("R- reset" , 5, 340);
+        if (isFrozen)
+        {
+			g2d.drawString("Press < while frozen to rewind to 0.1 earlier, or > to go forward" , 200, attempt.getHeight() - 30);
+        }
+        if (isSlo)
+        {
+        	g2d.drawString("Slow Mo" , 200, attempt.getHeight() - 10);
+        }
         switch (CurMode)
         {
 		case BALL:
 			g2d.drawString("Current Mode: Ball" , 100, 50);
+			g2d.drawString("Press and hold the mouse to create a bouncing ball" , 200, attempt.getHeight() - 50);
 			break;
 		case RWALL:
 			g2d.drawString("Current Mode: Round Wall" , 100, 50);
+			g2d.drawString("Press and hold the mouse to create a ball shaped wall" , 200, attempt.getHeight() - 50);
 			break;
 		case VBALL:
 			g2d.drawString("Current Mode: Launch Ball" , 100, 50);
+			g2d.drawString("Press and hold the mouse to launch a bouncing ball at a controlled velocity" , 200, attempt.getHeight() - 50);
 			break;
 		case WALL:
 			g2d.drawString("Current Mode: Wall" , 100, 50);
+			g2d.drawString("Press and hold the mouse to create a rectangular wall" , 200, attempt.getHeight() - 50);
 			break;
 		case ERASE:
 			g2d.drawString("Current Mode: Erase" , 100, 50);
+			g2d.drawString("Press and hold the mouse erase objects" , 200, attempt.getHeight() - 50);
+			break;
+		case PAUSE:
+			g2d.drawString("paused" , 100, 50);
+			break;
+		case CRAZY:
+			g2d.drawString("CRAZY" , 100, 50);
+			g2d.drawString("CRAZY MODE" , 200, attempt.getHeight() - 50);
 			break;
 		default:
 			break;
@@ -308,13 +411,27 @@ public class attempt extends JPanel {
         addKeyListener(Klistener);
         addMouseListener(Mlistener);
         addMouseMotionListener(MMlistener);
+        ipText.addKeyListener(Klistener);
         setFocusable(true);
     }
     
     
 
-    
-    
+    public static class SaveState extends TimerTask
+    {
+	    
+
+		@Override
+		public void run() {
+			if (!isFrozen)
+			{
+				states.add(new gamestate(pro,walls));
+				if (states.size() > 100)
+					states.removeFirst();
+				curState = states.size()-1;
+			}
+		}
+    }
     public static class gameloop extends TimerTask
     {
     	
@@ -330,32 +447,6 @@ public class attempt extends JPanel {
         
         public static void processInput()
         {
-        	int POWER = 4000000;
-        	//action = InputManager.action;
-        	if (key[keyCode.UP.code]) 
-            {
-                System.out.println("up");
-                //Physics.upplyF(pro.get(0), new Vect(POWER,(float)(Math.PI/2)));
-                //Physics.upplyF(pro.get(1), new Vect(POWER,(float)(3*Math.PI/2)));
-            }
-            if (key[keyCode.DOWN.code])
-            {
-                System.out.println("down");
-                //Physics.upplyF(pro.get(0), new Vect(POWER,(float)(3*Math.PI/2)));
-                //Physics.upplyF(pro.get(1), new Vect(POWER,(float)(Math.PI/2)));
-            }
-            if (key[keyCode.RIGHT.code])
-            {
-                System.out.println("right");
-                //Physics.upplyF(pro.get(0), new Vect(POWER,(float)(0)));
-                //Physics.upplyF(pro.get(1), new Vect(POWER,(float)(Math.PI)));
-            }
-            if (key[keyCode.LEFT.code])
-            {
-                System.out.println("left");
-                //Physics.upplyF(pro.get(0), new Vect(POWER,(float)(Math.PI)));
-                //Physics.upplyF(pro.get(1), new Vect(POWER,(float)(0)));
-            }
             if (key[keyCode.RESET.code])
             {
             	System.out.println("reset");
@@ -383,6 +474,17 @@ public class attempt extends JPanel {
             	CurMode = mode.RWALL;
             }
             
+            if (keyReleased[keyCode.PAUSE.code])
+            {
+            	if (CurMode != mode.PAUSE)
+            	{
+	            	lastMode = CurMode;
+	            	System.out.println("pause");
+	            	CurMode = mode.PAUSE;
+            	}
+            	else
+            		CurMode = lastMode;
+            }
             if (keyReleased[keyCode.GRAV.code])
             {
             	System.out.println("Gravity");
@@ -392,12 +494,58 @@ public class attempt extends JPanel {
             	else if (Physics.grav.getSize() == 0)
             		Physics.grav = new Vect(900, (float)(3*Math.PI/2));
             }
+            if (keyReleased[keyCode.DEBUG.code])
+            {
+            	debug = !debug;
+            }
+            if (keyReleased[keyCode.SLOMO.code])
+        		isSlo = !isSlo;
+            if (isFrozen && keyReleased[keyCode.REWIND.code])
+            {
+            	if (curState > 1)
+            		curState--;
+            	
+            	if (curState >= 0  && !states.isEmpty())
+            	{
+            		pro.clear();
+            		walls.clear();
+	            	for (Proj p : states.get(curState).pro)
+	            	{
+	            		pro.add(p);
+	            	}
+	            	for (Item w : states.get(curState).walls)
+	            	{
+	            		walls.add(w);
+	            	}
+            	}
+            	proSize = pro.size();
+            	wallSize = walls.size();
+            }
+            if (isFrozen && keyReleased[keyCode.FORWARD.code])
+            {
+            	if (curState < states.size()-1)
+            		curState++;
+            	
+            	if (curState >= 0 && curState < states.size() &&  !states.isEmpty())
+            	{
+            		pro.clear();
+            		walls.clear();
+	            	for (Proj p : states.get(curState).pro)
+	            		pro.add(p);
+	            	
+	            	for (Item w : states.get(curState).walls)
+	            		walls.add(w);
+            	}
+            	proSize = pro.size();
+            	wallSize = walls.size();
+            }
             
             if (key[keyCode.ERASE.code])
             {
             	System.out.println("Erase");
             	CurMode = mode.ERASE;
             }
+           
             
             if (keyReleased[keyCode.SGRAV.code] && (key[keyCode.UP.code] || key[keyCode.DOWN.code] || key[keyCode.RIGHT.code] || key[keyCode.LEFT.code]))
             {
@@ -424,10 +572,46 @@ public class attempt extends JPanel {
             	dir = tempDir.getDir();
             	Physics.grav.setDir(dir);
             }
+            if (keyReleased[keyCode.CRAZY.code])
+            {
+            	if (CurMode != mode.CRAZY)
+            	{
+            		lastMode = CurMode;
+            		CurMode = mode.CRAZY;
+            	}
+            	else if (CurMode == lastMode)
+            			CurMode = mode.BALL;
+            	else
+            	{
+            		CurMode = lastMode;	
+            	}
+            }
+            if (keyReleased[keyCode.ART.code])
+            {
+            	art = !art;
+            }
+            if (key[keyCode.FREEZE.code] && !isFrozen)
+            {
+            	isFrozen = true;
+            }
             
+            if (keyReleased[keyCode.FREEZE.code] && !FirstFreezeCheck)
+            {
+            	FirstFreezeCheck = true;
+            }
+            else if (keyReleased[keyCode.FREEZE.code] && FirstFreezeCheck)
+            {
+            	isFrozen = false;;
+            	FirstFreezeCheck = false;
+            	
+            	while (states.size() >= curState+1)
+            		states.remove(curState);
+            	curState = states.size();
+            }
             
-            if (mousePressed)
+            if (mousePressed && startLocation == null)
             	startLocation = new Coord(mouseLocation);
+            
             if (!mousePressed && startLocation != null)
             {
             	endLocation = new Coord(mouseLocation);
@@ -437,8 +621,11 @@ public class attempt extends JPanel {
 	            	{
 		            	double rad = Physics.CoordDist(startLocation, endLocation)/2;
 		            	Coord cent = Physics.findMiddle(startLocation, endLocation);
-		            	pro.add(new Proj(cent, rad));
-		            	proSize++;
+		            	if (rad != 0)
+		            	{
+		            		pro.add(new Proj(cent, rad));
+		            		proSize++;
+		            	}
 		            	break;
 	            	}
 	            	case WALL:
@@ -535,28 +722,39 @@ public class attempt extends JPanel {
             	endLocation = null;
             }
             for (int i = 0; i < keyReleased.length ; i++)
-            	keyReleased[i] = false;
-            	
-            
-            	
+            	keyReleased[i] = false;  	
         }
         
         public void run()
         {
+        	
+        	
         	windowLocation = attempt.getLocation();
         	if (oldHeight != attempt.getHeight() || oldWidth != attempt.getWidth())
         		initilizeWall();
         	oldHeight = attempt.getHeight();
         	oldWidth = attempt.getWidth();
         	
-        	long newT = System.currentTimeMillis();	//gets new time from the system.
+        	newT = System.currentTimeMillis();	//gets new time from the system.
+        	if (CurMode == mode.PAUSE ||  isFrozen)
+        		oldT = System.currentTimeMillis();	//if paused, make it so time doesnt pass
+        	if (isSlo)
+        		newT = oldT + FPS*(newT - oldT)/2;
+        	
         	long deltaT = newT - oldT;				//gets the difference of the times between last frame and now.
+        	
+        	
+        		
+        	
+        	if (CurMode != mode.PAUSE)
+        		ipText.setText("");
         	
             // Upply gravity and friction to all projectiles.
         	if (!pro.isEmpty())
-        		Physics.upplyG(pro, proSize);
-            //Physics.upplyFric(pro, 2);
-            
+        	{
+        		Physics.applyG(pro, proSize);
+            	Physics.applyFric(pro, proSize);
+        	}
             
             for (int i = 0; i < proSize; i++) // Check all combination of items that can collide with each other
             {
@@ -591,36 +789,27 @@ public class attempt extends JPanel {
         		pro.get(i).cord1._x += deltaT*pro.get(i)._vel.getX()/1000;	//divide by 1000 because messured by milliseconds.
         		pro.get(i).cord1._y += deltaT*pro.get(i)._vel.getY()/1000;
         		totalDist += deltaT*pro.get(i)._vel.getSize()/1000;
-                
-        		if (pro.get(i).cord1._x < ((Wall)walls.get(1)).cord2._x)
-        			pro.get(i).cord1._x = ((Wall)walls.get(1)).cord2._x + pro.get(i)._rad - 0.5;
-        		
-        		if (pro.get(i).cord1._x > walls.get(2).cord1._x)
-        			pro.get(i).cord1._x = walls.get(2).cord1._x - pro.get(i)._rad + 0.5;
-        		
-        		if (pro.get(i).cord1._y < walls.get(0).cord1._y)
-        			pro.get(i).cord1._y = walls.get(0).cord1._y + pro.get(i)._rad - 0.5;
-        		
-        		if (pro.get(i).cord1._y > ((Wall)walls.get(3)).cord2._y)
-        			pro.get(i).cord1._y = ((Wall)walls.get(3)).cord2._y - pro.get(i)._rad + 0.5;
-        		
-        		/*
-                if 		(pro.get(i).cord1._x < ((Wall)walls.get(1)).cord2._x-20 ||	//if out of bounds
-                		pro.get(i).cord1._x > walls.get(2).cord1._x+20 ||
-                		pro.get(i).cord1._y < walls.get(0).cord1._y-20 ||
-                		pro.get(i).cord1._y > ((Wall)walls.get(3)).cord2._y+20)
+                if (wallSize > 4)
                 {
-                	
-                		pro.get(i).cord1._x = 450;
-                		pro.get(i).cord1._y = 450;
-                }*/
+	        		if (pro.get(i).cord1._x < ((Wall)walls.get(1)).cord2._x)
+	        			pro.get(i).cord1._x = ((Wall)walls.get(1)).cord2._x + pro.get(i)._rad - 0.5;
+	        		
+	        		if (pro.get(i).cord1._x > walls.get(2).cord1._x)
+	        			pro.get(i).cord1._x = walls.get(2).cord1._x - pro.get(i)._rad + 0.5;
+	        		
+	        		if (pro.get(i).cord1._y < walls.get(0).cord1._y)
+	        			pro.get(i).cord1._y = walls.get(0).cord1._y + pro.get(i)._rad - 0.5;
+	        		
+	        		if (pro.get(i).cord1._y > ((Wall)walls.get(3)).cord2._y)
+	        			pro.get(i).cord1._y = ((Wall)walls.get(3)).cord2._y - pro.get(i)._rad + 0.5;
+                }
             } 
             
             
             
             at.repaint();		//repaint the screen
             processInput();
-            oldT = newT;		//update oldT to newT to remember this frames time for the next frame.
+            oldT = System.currentTimeMillis();;		//update oldT to newT to remember this frames time for the next frame.
         }
     }
     
@@ -633,7 +822,6 @@ public class attempt extends JPanel {
     	inintilizeProj();
     	oldT = System.currentTimeMillis();
     	
-        //Physics phy = new Physics();
         JFrame frame = new JFrame("game");
         
 
@@ -644,10 +832,16 @@ public class attempt extends JPanel {
         oldHeight = 1000;
         oldWidth = 1800;
         
+        
+        
         //int flipXcnt = 1;
         //int flipYcnt = 1;
         TimerTask gameloop = new gameloop(attempt);
+        TimerTask SaveState = new SaveState();
+        
         Timer timer = new Timer(true);
+        attempt.add(ipText);
         timer.scheduleAtFixedRate(gameloop, 0, FPS);	//setting fps
+        timer.scheduleAtFixedRate(SaveState,0,100);
     }
 }

@@ -1,6 +1,5 @@
 package src;
 
-import java.awt.MouseInfo;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -14,9 +13,8 @@ public class InputManager
 	public class MyActionListener implements KeyListener, MouseListener, MouseMotionListener {
     	
         @Override
-        public void keyTyped(KeyEvent e) {
-        }
-
+        public void keyTyped(KeyEvent e) 
+        {}
         @Override
         public void keyPressed(KeyEvent e) {
         	switch (e.getExtendedKeyCode()) {
@@ -58,6 +56,37 @@ public class InputManager
         		break;
         	case (KeyEvent.VK_SHIFT):
         		attempt.key[attempt.keyCode.SHIFT.code] = true;
+        		break;
+        	case (KeyEvent.VK_P):
+        		attempt.key[attempt.keyCode.PAUSE.code] = true;
+        		break;
+        	case (KeyEvent.VK_C):
+        		attempt.key[attempt.keyCode.CRAZY.code] = true;
+        		break;
+        	case (KeyEvent.VK_A):
+        		attempt.key[attempt.keyCode.ART.code] = true;
+        		break;
+        	case (KeyEvent.VK_F):
+        		attempt.key[attempt.keyCode.FREEZE.code] = true;
+        		break;
+        	case (KeyEvent.VK_D):
+        		attempt.key[attempt.keyCode.DEBUG.code] = true;
+        		break;
+        	case (KeyEvent.VK_S):
+        		attempt.key[attempt.keyCode.SLOMO.code] = true;
+        		break;
+        	case (KeyEvent.VK_COMMA):
+        		attempt.key[attempt.keyCode.REWIND.code] = true;
+        		break;
+        	case (KeyEvent.VK_PERIOD):
+        		attempt.key[attempt.keyCode.FORWARD.code] = true;
+        		break;
+        	case (KeyEvent.VK_ENTER):
+        		if (attempt.CurMode == attempt.mode.PAUSE)
+        		{
+	        		attempt.ip = attempt.ipText.getText();
+	        		attempt.ipText.setText("");
+        		}
         		break;
         	}
             
@@ -116,7 +145,43 @@ public class InputManager
         		break;
         		
         	case (KeyEvent.VK_SHIFT):
+        		
         		attempt.key[attempt.keyCode.SHIFT.code] = false;
+        		attempt.keyReleased[attempt.keyCode.SHIFT.code] = true;
+        		break;
+        		
+        	case (KeyEvent.VK_P):
+        		attempt.key[attempt.keyCode.PAUSE.code] = false;
+        		attempt.keyReleased[attempt.keyCode.PAUSE.code] = true;
+        		break;
+        		
+        	case (KeyEvent.VK_C):
+        		attempt.key[attempt.keyCode.CRAZY.code] = false;
+        		attempt.keyReleased[attempt.keyCode.CRAZY.code] = true;
+        		break;
+        	case (KeyEvent.VK_A):
+        		attempt.key[attempt.keyCode.ART.code] = false;
+        		attempt.keyReleased[attempt.keyCode.ART.code] = true;
+        		break;
+        	case (KeyEvent.VK_F):
+        		attempt.key[attempt.keyCode.FREEZE.code] = false;
+        		attempt.keyReleased[attempt.keyCode.FREEZE.code] = true;
+        		break;
+        	case (KeyEvent.VK_D):
+        		attempt.key[attempt.keyCode.DEBUG.code] = false;
+    			attempt.keyReleased[attempt.keyCode.DEBUG.code] = true;
+    			break;
+        	case (KeyEvent.VK_S):
+        		attempt.key[attempt.keyCode.SLOMO.code] = false;
+    			attempt.keyReleased[attempt.keyCode.SLOMO.code] = true;
+    			break;
+        	case (KeyEvent.VK_COMMA):
+        		attempt.key[attempt.keyCode.REWIND.code] = false;
+        		attempt.keyReleased[attempt.keyCode.REWIND.code] = true;
+        		break;
+        	case (KeyEvent.VK_PERIOD):
+        		attempt.key[attempt.keyCode.FORWARD.code] = false;
+        		attempt.keyReleased[attempt.keyCode.FORWARD.code] = true;
         		break;
         		
         	}
